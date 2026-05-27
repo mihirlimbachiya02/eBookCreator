@@ -1,0 +1,44 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+build/
+**/dist/
+**/build/
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# OS files
+.DS_Store
+**/.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Uploads - local temp files never commit these
+backend/uploads/
+backend/uploads/**
+temp/
+tmp/
+
+# Documentation files - internal only
+documentations/
+
+# Coverage
+coverage/
+**/coverage/

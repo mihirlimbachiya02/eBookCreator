@@ -1,0 +1,54 @@
+# Environment variables - NEVER commit these
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Dependencies
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
+dist/
+build/
+
+# Temporary uploaded files - never commit
+uploads/
+uploads/**
+uploads/books/
+uploads/profiles/
+uploads/profile-pics/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Debug
+.node_repl_history

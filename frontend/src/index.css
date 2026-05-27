@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:wght@400;500;700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+:root{
+  --font-display: "Inter", sans-serif;
+  --breakpoint-3xl: 1920px;
+  --color-primary: #ff9324;
+}
+
+@layer base{
+  html{
+    font-family: var(--font-display);
+  }
+
+  body{
+    background-color: #fcfbfc;
+  }
+}
+
+
+
+/* --- Editor-Only Syntax Highlighting (No Preview Impact) --- */
+
+/* Bold Text */
+.custom-minimalist-editor .md-editor-textarea-wrapper .cm-strong {
+    color: #9852e4 !important;
+    font-weight: bold !important;
+}
+
+/* Italic Text */
+.custom-minimalist-editor .md-editor-textarea-wrapper .cm-em {
+    color: #e4529b !important;
+    font-style: italic !important;
+}
+
+/* Headers */
+.custom-minimalist-editor .md-editor-textarea-wrapper .cm-header {
+    color: #2e9900 !important;
+    font-weight: bold !important;
+}
+
+/* Blockquotes */
+.custom-minimalist-editor .md-editor-textarea-wrapper .cm-quote {
+    color: #7c3aed !important;
+}
+
+/* Links */
+.custom-minimalist-editor .md-editor-textarea-wrapper .cm-link {
+    color: #0891b2 !important;
+}
