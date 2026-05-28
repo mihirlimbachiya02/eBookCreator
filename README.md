@@ -66,6 +66,7 @@ Generate outlines, write chapters, design covers, and export in multiple formats
 
 ## 📁 Project Structure
 
+```text
 eBookCreator/
 ├── backend/
 │   ├── config/
@@ -89,22 +90,20 @@ eBookCreator/
 │   │   └── exportRoutes.js
 │   ├── .env.example
 │   └── server.js
-│
 └── frontend/
-└── src/
-├── components/
-│   ├── auth/
-│   ├── cards/
-│   ├── editor/
-│   ├── landing/
-│   ├── layout/
-│   ├── modals/
-│   ├── ui/
-│   └── view/
-├── context/
-├── pages/
-└── utils/
-
+    └── src/
+        ├── components/
+        │   ├── auth/
+        │   ├── cards/
+        │   ├── editor/
+        │   ├── landing/
+        │   ├── layout/
+        │   ├── modals/
+        │   ├── ui/
+        │   └── view/
+        ├── context/
+        ├── pages/
+        └── utils/
 
 ---
 
