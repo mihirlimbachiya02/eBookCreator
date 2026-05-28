@@ -178,8 +178,8 @@ CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
 # Server
-PORT=8000
-FRONTEND_URL=http://localhost:5173
+PORT=your_port
+FRONTEND_URL=your_frontend_URL
 ```
 
 ### Frontend `.env`
