@@ -185,7 +185,7 @@ FRONTEND_URL=your_frontend_URL
 ### Frontend `.env`
 
 ```env
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=your_backend_URL
 ```
 
 ---
