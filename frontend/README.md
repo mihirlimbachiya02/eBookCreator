@@ -65,6 +65,7 @@ Generate outlines, write chapters, design covers, and export in multiple formats
 ---
 
 ## 📁 Project Structure
+
 eBookCreator/
 ├── backend/
 │   ├── config/
@@ -103,6 +104,7 @@ eBookCreator/
 ├── context/
 ├── pages/
 └── utils/
+
 
 ---
 
