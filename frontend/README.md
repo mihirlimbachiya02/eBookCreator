@@ -167,7 +167,7 @@ JWT_SECRET=your_super_secret_jwt_key_here
 
 # Google Gemini AI
 GEMINI_API_KEY=your_gemini_api_key_here
-AI_MODEL=gemini-2.5-flash
+AI_MODEL=your_AI_Model
 
 # Stability AI (for cover image generation)
 STABILITY_API_KEY=your_stability_api_key_here
