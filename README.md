@@ -65,6 +65,7 @@ Generate outlines, write chapters, design covers, and export in multiple formats
 ---
 
 ## 📁 Project Structure
+
 eBookCreator/
 ├── backend/
 │   ├── config/
@@ -103,6 +104,7 @@ eBookCreator/
 ├── context/
 ├── pages/
 └── utils/
+
 
 ---
 
@@ -165,7 +167,7 @@ JWT_SECRET=your_super_secret_jwt_key_here
 
 # Google Gemini AI
 GEMINI_API_KEY=your_gemini_api_key_here
-AI_MODEL=gemini-2.5-flash
+AI_MODEL=your_AI_Model
 
 # Stability AI (for cover image generation)
 STABILITY_API_KEY=your_stability_api_key_here
@@ -176,14 +178,14 @@ CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
 # Server
-PORT=8000
-FRONTEND_URL=http://localhost:5173
+PORT=your_port
+FRONTEND_URL=your_frontend_URL
 ```
 
 ### Frontend `.env`
 
 ```env
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=your_backend_URL
 ```
 
 ---
