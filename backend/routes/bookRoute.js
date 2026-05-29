@@ -6,21 +6,19 @@ import {
     updateBookCover,
     updateBook,
     deleteBook,
+    getCloudinaryCovers,
 } from "../controller/bookController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { uploadCoverImage } from "../middlewares/uploadMiddleware.js";
 
 const router = express.Router();
 
-// Routes
+// Static routes MUST come before dynamic /:id routes
+router.get("/cloudinary/covers", protect, getCloudinaryCovers);
 router.get("/", protect, getBooks);
 router.get("/:id", protect, getBookById);
-
-// Ensure the frontend passes the correct key in FormData
 router.post("/", protect, uploadCoverImage, createBook);
 router.put("/cover/:id", protect, uploadCoverImage, updateBookCover);
-
-// Standard JSON routes
 router.put("/:id", protect, updateBook);
 router.delete("/:id", protect, deleteBook);
 

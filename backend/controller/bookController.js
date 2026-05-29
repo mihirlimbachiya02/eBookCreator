@@ -3,6 +3,7 @@ import { cloudinary, uploadToCloudinary } from "../config/cloudinary.js";
 
 
 
+
 // @desc    Create a new book
 export const createBook = async (req, res) => {
     try {
@@ -201,5 +202,32 @@ export const deleteBook = async (req, res) => {
     } catch (error) {
         console.error("DEBUG - [deleteBook] Error:", error.message);
         res.status(500).json({ message: "Server error during deletion." });
+    }
+};
+
+
+// @desc    Get all cover images from Cloudinary for current user's books
+export const getCloudinaryCovers = async (req, res) => {
+    try {
+        // Fetch all images from ebook-creator/books folder
+        const result = await cloudinary.search
+            .expression("folder:ebook-creator/books")
+            .sort_by("created_at", "desc")
+            .max_results(50)
+            .execute();
+
+        const covers = result.resources.map((resource) => ({
+            publicId: resource.public_id,
+            url: resource.secure_url,
+            name: resource.public_id.split("/").pop(),
+            createdAt: resource.created_at,
+            width: resource.width,
+            height: resource.height,
+        }));
+
+        res.status(200).json({ covers });
+    } catch (error) {
+        console.error("Cloudinary fetch error:", error.message);
+        res.status(500).json({ message: "Failed to fetch covers from Cloudinary" });
     }
 };

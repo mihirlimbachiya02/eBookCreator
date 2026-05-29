@@ -15,7 +15,8 @@ export const API_PATHS = {
         GET_BOOK_BY_ID: (id) => `${BASE_URL}/api/books/${id}`,
         UPDATE_BOOK: (id) => `${BASE_URL}/api/books/${id}`,
         DELETE_BOOK: (id) => `${BASE_URL}/api/books/${id}`,
-        UPDATE_COVER: (id) => `${BASE_URL}/api/books/cover/${id}`, // Match your router.put("/cover/:id")
+        UPDATE_COVER: (id) => `${BASE_URL}/api/books/cover/${id}`,
+        GET_CLOUDINARY_COVERS: `${BASE_URL}/api/books/cloudinary/covers`,
     },
     AI: {
         GENERATE_OUTLINE: `${BASE_URL}/api/ai/generate-outline`,
