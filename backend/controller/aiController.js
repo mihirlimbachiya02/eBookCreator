@@ -262,112 +262,62 @@ export const generateText = async (req, res) => {
 
 
 
-// @desc    Generate AI cover image using Stability AI
+// @desc    Generate AI cover image using Pollinations AI (free, no key needed)
+// @desc    Generate AI cover image using Pollinations AI (free, no key needed)
 export const generateCoverImage = async (req, res) => {
     try {
         const { prompt, title } = req.body;
 
         if (!prompt && !title) {
-            return res.status(400).json({
-                message: "Please provide a prompt or title",
-            });
+            return res.status(400).json({ message: "Please provide a prompt or title" });
         }
 
-        if (!process.env.STABILITY_API_KEY) {
-            return res.status(500).json({
-                message: "Image generation service is not configured",
-            });
+        const imagePrompt = prompt?.trim()
+            ? `Book cover design: ${prompt.trim()}. Professional publishing quality, high resolution, visually striking, no text`
+            : `Professional book cover for "${title}". Modern design, high quality, suitable for publishing, no text`;
+
+        const encodedPrompt  = encodeURIComponent(imagePrompt);
+        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=832&height=1216&model=flux&nologo=true&seed=${Date.now()}`;
+
+        // Fetch with 90 second timeout
+        const controller = new AbortController();
+        const timeoutId  = setTimeout(() => controller.abort(), 90000);
+
+        let imageResponse;
+        try {
+            imageResponse = await fetch(pollinationsUrl, { signal: controller.signal });
+        } finally {
+            clearTimeout(timeoutId);
         }
 
-        // Build a strong book cover prompt
-        const imagePrompt =
-            prompt?.trim() ?
-                `Book cover design: ${prompt.trim()}. Professional publishing quality, high resolution, visually striking`
-            :   `Professional book cover for "${title}". Modern design, high quality, suitable for publishing`;
-
-        // Call Stability AI API
-        const stabilityResponse = await fetch(
-            "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
-                },
-                body: JSON.stringify({
-                    text_prompts: [
-                        {
-                            text: imagePrompt,
-                            weight: 1,
-                        },
-                        {
-                            text: "blurry, low quality, distorted, watermark, text, ugly, bad anatomy",
-                            weight: -1,
-                        },
-                    ],
-                    cfg_scale: 7,
-                    height: 1216,
-                    width: 832,
-                    steps: 30,
-                    samples: 1,
-                }),
-            },
-        );
-
-        if (!stabilityResponse.ok) {
-            const errorData = await stabilityResponse.json();
-            console.error("Stability AI error:", errorData);
-
-            if (stabilityResponse.status === 401) {
-                return res.status(401).json({
-                    message: "Invalid Stability AI API key",
-                });
-            }
-            if (stabilityResponse.status === 429) {
-                return res.status(429).json({
-                    message:
-                        "Image generation limit reached. Please try again later.",
-                });
-            }
-            return res.status(500).json({
-                message: "Failed to generate image",
-            });
+        if (!imageResponse.ok) {
+            console.error("Pollinations error:", imageResponse.status);
+            return res.status(500).json({ message: "Failed to generate image" });
         }
 
-        const stabilityData = await stabilityResponse.json();
+        const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
 
-        if (!stabilityData.artifacts || stabilityData.artifacts.length === 0) {
-            return res.status(500).json({
-                message: "No image was generated",
-            });
-        }
-
-        // Get base64 image from response
-        const base64Image = stabilityData.artifacts[0].base64;
-        const imageBuffer = Buffer.from(base64Image, "base64");
-
-        // Upload to Cloudinary
-        const safeTitle =
-            title ?
-                title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
-            :   "ai_cover";
+        const safeTitle = title
+            ? title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
+            : "ai_cover";
 
         const cloudinaryResult = await uploadToCloudinary(imageBuffer, {
-            folder: "ebook-creator/books",
-            public_id: `ai_${safeTitle}_${Date.now()}`,
-            overwrite: false,
+            folder:        "ebook-creator/books",
+            public_id:     `ai_${safeTitle}_${Date.now()}`,
+            overwrite:     false,
             resource_type: "image",
         });
 
         res.status(200).json({
             imageUrl: cloudinaryResult.secure_url,
-            message: "Cover image generated successfully",
+            message:  "Cover image generated successfully",
         });
     } catch (error) {
+        if (error.name === "AbortError") {
+            console.error("Pollinations timed out");
+            return res.status(504).json({ message: "Image generation timed out. Please try again." });
+        }
         console.error("Cover generation error:", error.message);
-        res.status(500).json({
-            message: "Failed to generate cover image. Please try again.",
-        });
+        res.status(500).json({ message: "Failed to generate cover image. Please try again." });
     }
 };

@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import helmet from "helmet";
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
+import uploadedBookRoutes from "./routes/uploadedBookRoutes.js";
 
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
@@ -84,12 +85,6 @@ if (
     process.exit(1);
 }
 
-if (!process.env.STABILITY_API_KEY) {
-    console.warn(
-        "WARNING: STABILITY_API_KEY is not set. AI cover generation will not work.",
-    );
-}
-
 app.use(
     cors({
         origin: process.env.FRONTEND_URL || "http://localhost:5173",
@@ -119,6 +114,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/export", exportRoutes);
+app.use("/api/uploaded-books", uploadedBookRoutes);
 
 // Error Handler
 app.use((err, req, res, next) => {

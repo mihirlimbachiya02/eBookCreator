@@ -9,6 +9,7 @@ import DashboardPage from "./pages/DashboardPage.jsx";
 import EditorPage from "./pages/EditorPage.jsx";
 import ViewBookPage from "./pages/ViewBookPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import ViewUploadedBookPage from "./pages/ViewUploadedBookPage.jsx";
 
 const App = () => {
     const { loading } = useAuth(); // Consume loading state
@@ -63,6 +64,16 @@ const App = () => {
                     </ProtectedRoute>
                 }
             />
+
+            <Route
+                path="/view-uploaded-book/:bookId"
+                element={
+                    <ProtectedRoute>
+                        <ViewUploadedBookPage />
+                    </ProtectedRoute>
+                }
+            />
+            
         </Routes>
     );
 };

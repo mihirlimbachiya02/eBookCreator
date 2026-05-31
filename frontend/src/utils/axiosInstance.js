@@ -3,7 +3,7 @@ import { BASE_URL } from "./apiPaths.js";
 
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL || BASE_URL,
-    timeout: 30000,
+    timeout: 120000,
     withCredentials: true,
     headers: {
         "Content-Type": "application/json",

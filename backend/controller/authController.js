@@ -5,7 +5,7 @@ import { uploadToCloudinary } from "../config/cloudinary.js";
 // Helper: Generate JWT
 const generateToken = (id, tokenVersion) => {
     return jwt.sign({ id, tokenVersion }, process.env.JWT_SECRET, {
-        expiresIn: "2h",
+        expiresIn: process.env.JWT_EXPIRES_IN || "30d",
     });
 };
 
