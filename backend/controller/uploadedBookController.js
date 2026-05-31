@@ -103,46 +103,45 @@ export const importFromUrl = async (req, res) => {
 };
 
 // POST /api/uploaded-books/import-drive
+// POST /api/uploaded-books/import-drive
 export const importFromDrive = async (req, res) => {
     try {
-        const { fileId, accessToken, title, mimeType } = req.body;
-        if (!fileId || !accessToken) {
-            return res
-                .status(400)
-                .json({ message: "fileId and accessToken are required" });
+        const { driveUrl, accessToken, title, mimeType } = req.body;  // ← driveUrl not fileId
+        if (!driveUrl || !accessToken) {
+            return res.status(400).json({ message: "driveUrl and accessToken are required" });
         }
 
-        const driveUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`;
-        const response = await axios.get(driveUrl, {
-            responseType: "arraybuffer",
-            headers: { Authorization: `Bearer ${accessToken}` },
-            timeout: 60000,
-            maxContentLength: 50 * 1024 * 1024,
-        });
-
         const MIME_TO_EXT = {
-            "application/pdf": "pdf",
+            "application/pdf":      "pdf",
             "application/epub+zip": "epub",
-            "application/zip": "zip",
-            "text/html": "html",
+            "application/zip":      "zip",
+            "text/html":            "html",
         };
 
         const ext = MIME_TO_EXT[mimeType] || "pdf";
+
+        const response = await axios.get(driveUrl, {  // ← use driveUrl directly
+            responseType:     "arraybuffer",
+            headers:          { Authorization: `Bearer ${accessToken}` },
+            timeout:          60000,
+            maxContentLength: 50 * 1024 * 1024,
+        });
+
         const buffer = Buffer.from(response.data);
 
         const result = await uploadRawToCloudinary(buffer, {
-            folder: "ebook-creator/uploaded-books",
+            folder:    "ebook-creator/uploaded-books",
             public_id: `book_${Date.now()}`,
-            format: ext,
+            format:    ext,
         });
 
         const book = await UploadedBook.create({
-            user: req.user._id,
-            title: title || `Drive Book ${Date.now()}`,
-            fileUrl: result.secure_url,
+            user:     req.user._id,
+            title:    title || `Drive Book ${Date.now()}`,
+            fileUrl:  result.secure_url,
             publicId: result.public_id,
-            format: ext,
-            source: "drive",
+            format:   ext,
+            source:   "google_drive",  // ← fixed from "drive" to match enum
         });
 
         res.status(201).json(book);
@@ -209,7 +208,10 @@ export const proxyBookFile = async (req, res) => {
             "Content-Type",
             response.headers["content-type"] || "application/pdf",
         );
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // ← specific origin, not *
+        res.setHeader(
+            "Access-Control-Allow-Origin",
+            process.env.FRONTEND_URL || "http://localhost:5173",
+        ); 
         res.setHeader("Access-Control-Allow-Credentials", "true"); // ← allow credentials
         res.setHeader("Cache-Control", "private, max-age=3600");
 
