@@ -52,3 +52,14 @@ coverage/
 
 # Debug
 .node_repl_history
+
+# Postman exports - may contain tokens
+*.postman_collection.json
+*.postman_environment.json
+
+# PM2 ecosystem file (may contain env vars)
+ecosystem.config.js
+
+# Cloudinary cache
+.cloudinary/
+.cloudinary-cache/

@@ -14,6 +14,10 @@ dist/
 dist-ssr/
 build/
 
+# Vite cache
+.vite/
+**/.vite/
+
 # Logs
 logs/
 *.log
@@ -25,7 +29,6 @@ lerna-debug.log*
 
 # Local dev
 *.local
-.vite/
 
 # OS files
 .DS_Store
@@ -54,3 +57,12 @@ storybook-static/
 .cache/
 .parcel-cache/
 .eslintcache
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Test snapshots
+**/__snapshots__/
+
+# pdfjs-dist worker (auto-generated)
+public/pdf.worker.*
