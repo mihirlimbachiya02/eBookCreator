@@ -40,10 +40,17 @@ app.use(
                     "http://localhost:5173",
                     "https://ebook-creator-six.vercel.app",
                     "https://api.pollinations.ai",
-                    "https://accounts.google.com", 
+                    "https://accounts.google.com",
                 ],
             },
         },
+    }),
+);
+
+// To this:
+app.use(
+    helmet({
+        contentSecurityPolicy: false, // ← disable CSP, keep all other helmet protections
     }),
 );
 
