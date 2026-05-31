@@ -1,6 +1,6 @@
 import { MdEditor } from "md-editor-rt";
 import "md-editor-rt/lib/style.css";
-import "./SimpleMDEEditor.css";
+import "./simpleMDEEditor.css";
 
 const SimpleMDEEditor = ({ value = "", onChange }) => {
     
