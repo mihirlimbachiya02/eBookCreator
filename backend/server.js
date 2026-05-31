@@ -27,19 +27,20 @@ app.use(
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                // Combined your custom rules here for a single source of truth
                 imgSrc: [
                     "'self'",
                     "images.unsplash.com",
                     "res.cloudinary.com",
                     "data:",
+                    "blob:",
                 ],
                 scriptSrc: ["'self'"],
                 connectSrc: [
                     "'self'",
-                    ...(process.env.NODE_ENV !== "production" ?
-                        ["http://localhost:5173"]
-                    :   []),
+                    "http://localhost:5173",
+                    "https://ebook-creator-six.vercel.app",
+                    "https://api.pollinations.ai",
+                    "https://accounts.google.com", 
                 ],
             },
         },
