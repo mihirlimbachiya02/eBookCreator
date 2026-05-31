@@ -115,6 +115,7 @@ eBookCreator/
 │   │   ├── bookRoute.js
 │   │   ├── exportRoutes.js
 │   │   └── uploadedBookRoutes.js  
+│   ├── .env.example
 │   ├── package.json
 │   └── server.js
 └── frontend/
@@ -184,7 +185,9 @@ eBookCreator/
     │       ├── axiosInstance.js
     │       ├── data.js
     │       ├── helper.js
-    │       └── uploadedBooksApi.js        
+    │       └── uploadedBooksApi.js
+    ├── .env.example 
+    ├── index.html       
     ├── eslint.config.js
     ├── package.json
     └── vite.config.js
