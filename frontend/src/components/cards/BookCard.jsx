@@ -6,6 +6,7 @@ import { Edit, Trash2 } from "lucide-react";
 const BookCard = ({ book, onDelete }) => {
     const navigate = useNavigate();
     const [imageError, setImageError] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     const cleanImagePath =
         book?.coverImage?.trim() ?
@@ -21,6 +22,17 @@ const BookCard = ({ book, onDelete }) => {
 
     const showImage = coverImageUrl && !imageError;
 
+    const handleError = () => {
+        if (retryCount < 2) {
+            // Retry up to 2 times with a 1.5s delay before giving up
+            setTimeout(() => {
+                setRetryCount((c) => c + 1);
+            }, 1500);
+        } else {
+            setImageError(true);
+        }
+    };
+
     return (
         <div
             className="group relative w-full max-w-[200px] aspect-[2/3] mx-auto rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 cursor-pointer bg-slate-900 select-none"
@@ -30,10 +42,12 @@ const BookCard = ({ book, onDelete }) => {
             <div className="absolute inset-0 w-full h-full">
                 {showImage ?
                     <img
-                        src={coverImageUrl}
+                        key={retryCount}
+                        src={`${coverImageUrl}?r=${retryCount}`}
                         alt={book.title}
                         className="w-full h-full object-fill block"
-                        onError={() => setImageError(true)}
+                        onLoad={() => setImageError(false)}
+                        onError={handleError}
                     />
                 :   <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 gap-1 bg-slate-800">
                         <span className="text-3xl">📖</span>
