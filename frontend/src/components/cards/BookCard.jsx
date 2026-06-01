@@ -10,7 +10,9 @@ const BookCard = ({ book, onDelete }) => {
 
     const cleanImagePath =
         book?.coverImage?.trim() ?
-            book.coverImage.replace(/\\/g, "/").replace(/\/{2,}/g, "/")
+            book.coverImage.startsWith("http") ?
+                book.coverImage
+            :   book.coverImage.replace(/\\/g, "/").replace(/\/{2,}/g, "/")
         :   null;
 
     const coverImageUrl =
