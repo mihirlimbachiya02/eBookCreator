@@ -80,7 +80,10 @@ app.use(
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
+
+
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
+app.set("trust proxy", 1);
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5,
