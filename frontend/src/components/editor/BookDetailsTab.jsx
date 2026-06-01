@@ -74,13 +74,8 @@ const BookDetailsTab = ({
             const finalizedUrl = response.data.imageUrl;
 
             if (finalizedUrl) {
-                await axiosInstance.put(
-                    `/api/books/cover/${book._id}`,
-                    { coverImageUrl: finalizedUrl },
-                    { headers: { "Content-Type": "application/json" } },
-                );
-
-                onAICoverSave(finalizedUrl);
+                // onAICoverSave already saves to DB — no duplicate PUT needed
+                await onAICoverSave(finalizedUrl);
                 toast.success("AI cover generated successfully!", {
                     id: generationToast,
                 });
