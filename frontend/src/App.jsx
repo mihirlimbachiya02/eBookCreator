@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/useAuth.js"; // Import your auth hook
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
@@ -24,57 +25,60 @@ const App = () => {
     }
 
     return (
-        <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+        <>
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/signup" element={<SignupPage />} />
 
-            <Route
-                path="/dashboard"
-                element={
-                    <ProtectedRoute>
-                        <DashboardPage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <DashboardPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/editor/:bookId"
-                element={
-                    <ProtectedRoute>
-                        <EditorPage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/editor/:bookId"
+                    element={
+                        <ProtectedRoute>
+                            <EditorPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/view-book/:bookId"
-                element={
-                    <ProtectedRoute>
-                        <ViewBookPage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/view-book/:bookId"
+                    element={
+                        <ProtectedRoute>
+                            <ViewBookPage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/profile"
-                element={
-                    <ProtectedRoute>
-                        <ProfilePage />
-                    </ProtectedRoute>
-                }
-            />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
 
-            <Route
-                path="/view-uploaded-book/:bookId"
-                element={
-                    <ProtectedRoute>
-                        <ViewUploadedBookPage />
-                    </ProtectedRoute>
-                }
-            />
-            
-        </Routes>
+                <Route
+                    path="/view-uploaded-book/:bookId"
+                    element={
+                        <ProtectedRoute>
+                            <ViewUploadedBookPage />
+                        </ProtectedRoute>
+                    }
+                />
+                
+            </Routes>
+            <SpeedInsights />
+        </>
     );
 };
 
