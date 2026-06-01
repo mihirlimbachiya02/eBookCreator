@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import { Album, BookOpen, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/useAuth.js";
 import ProfileDropdown from "./ProfileDropdown";
 
 const DashboardLayout = ({ children }) => {
     const { user, logout } = useAuth();
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+    const location = useLocation();
+
+    const isDashboard = location.pathname === "/dashboard";
 
     useEffect(() => {
         const handleClickOutside = () => {
@@ -40,25 +43,27 @@ const DashboardLayout = ({ children }) => {
                             </Link>
                         </div>
 
-                        {/* Center: Nav */}
-                        <nav className="hidden sm:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
-                            <a
-                                href="#ai-books"
-                                onClick={(e) => scrollTo(e, "ai-books")}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all"
-                            >
-                                <BookOpen className="w-4 h-4" />
-                                AI eBooks
-                            </a>
-                            <a
-                                href="#uploaded-books"
-                                onClick={(e) => scrollTo(e, "uploaded-books")}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all"
-                            >
-                                <Upload className="w-4 h-4" />
-                                Uploaded Books
-                            </a>
-                        </nav>
+                        {/* Center: Nav — only on dashboard */}
+                        {isDashboard && (
+                            <nav className="hidden sm:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+                                <a
+                                    href="#ai-books"
+                                    onClick={(e) => scrollTo(e, "ai-books")}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all"
+                                >
+                                    <BookOpen className="w-4 h-4" />
+                                    AI eBooks
+                                </a>
+                                <a
+                                    href="#uploaded-books"
+                                    onClick={(e) => scrollTo(e, "uploaded-books")}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all"
+                                >
+                                    <Upload className="w-4 h-4" />
+                                    Uploaded Books
+                                </a>
+                            </nav>
+                        )}
 
                         {/* Right: Profile */}
                         <div className="flex items-center pr-2">
