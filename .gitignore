@@ -60,4 +60,4 @@ coverage/
 .cloudinary/
 
 # Package lock 
-package-lock.json
+package-lock.jsonfrontend/.env
