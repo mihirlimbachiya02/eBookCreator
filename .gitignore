@@ -61,3 +61,4 @@ coverage/
 
 # Package lock 
 package-lock.jsonfrontend/.env
+frontend/.env
