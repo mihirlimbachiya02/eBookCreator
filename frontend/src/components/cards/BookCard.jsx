@@ -15,7 +15,7 @@ const BookCard = ({ book, onDelete }) => {
 
     const coverImageUrl =
         cleanImagePath ?
-            cleanImagePath.startsWith("https") ? cleanImagePath
+            cleanImagePath.startsWith("http") ? cleanImagePath
             : cleanImagePath.startsWith("res.cloudinary.com") ?
                 `https://${cleanImagePath}`
             :   `${BASE_URL.replace(/\/$/, "")}/${cleanImagePath.replace(/^\//, "")}`
