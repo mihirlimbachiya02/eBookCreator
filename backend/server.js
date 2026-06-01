@@ -5,7 +5,6 @@ import path from "path";
 import multer from "multer";
 import mongoose from "mongoose";
 import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
 
 
 import { fileURLToPath } from "url";
@@ -80,18 +79,6 @@ app.use(
 // ─── Body Parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
-
-// ─── NoSQL Injection Protection ───────────────────────────────────────────────
-// Strips $ and . from req.body, req.params, req.query to prevent MongoDB injection
-app.use(
-    mongoSanitize({
-        replaceWith: "_",
-        onSanitize: ({ req, key }) => {
-            console.warn(`Sanitized key: ${key} from ${req.ip}`);
-        },
-        allowDots: true, // don't touch dot notation
-    }),
-);
 
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
 const authLimiter = rateLimit({
