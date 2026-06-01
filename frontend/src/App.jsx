@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/useAuth.js"; // Import your auth hook
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react";
 
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
@@ -78,6 +79,7 @@ const App = () => {
                 
             </Routes>
             <SpeedInsights />
+            <Analytics />
         </>
     );
 };
