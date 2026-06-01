@@ -127,6 +127,11 @@ app.use("/api/ai/generate-cover", imageLimiter);
 app.use("/api/ai", aiLimiter);
 app.use("/api", generalLimiter);
 
+/// ─── Health Check Endpoint ─────────────────────────────────────────────────
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", message: "Server is awake" });
+});
+
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
