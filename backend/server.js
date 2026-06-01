@@ -6,10 +6,11 @@ import multer from "multer";
 import mongoose from "mongoose";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
+
+
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
 import uploadedBookRoutes from "./routes/uploadedBookRoutes.js";
-
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
 import bookRoutes from "./routes/bookRoute.js";
@@ -82,7 +83,15 @@ app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
 // ─── NoSQL Injection Protection ───────────────────────────────────────────────
 // Strips $ and . from req.body, req.params, req.query to prevent MongoDB injection
-app.use(mongoSanitize());
+app.use(
+    mongoSanitize({
+        replaceWith: "_",
+        onSanitize: ({ req, key }) => {
+            console.warn(`Sanitized key: ${key} from ${req.ip}`);
+        },
+        allowDots: true, // don't touch dot notation
+    }),
+);
 
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
 const authLimiter = rateLimit({
