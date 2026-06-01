@@ -148,6 +148,8 @@ export const updateBookCover = async (req, res) => {
         const { id } = req.params;
         const { bookTitle, coverImageUrl } = req.body;
 
+        console.log("coverImageUrl received:", coverImageUrl);
+
         const book = await Book.findById(id);
         if (!book || book.userId.toString() !== req.user._id.toString()) {
             return res.status(404).json({ message: "Book not found." });
