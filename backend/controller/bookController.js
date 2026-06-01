@@ -1,5 +1,5 @@
 import Book from "../models/Book.js";
-import { cloudinary, uploadToCloudinary } from "../config/cloudinary.js";
+import { uploadToCloudinary } from "../config/cloudinary.js";
 
 
 
@@ -211,25 +211,22 @@ export const deleteBook = async (req, res) => {
 // @desc    Get all cover images from Cloudinary for current user's books
 export const getCloudinaryCovers = async (req, res) => {
     try {
-        // Fetch all images from ebook-creator/books folder
-        const result = await cloudinary.search
-            .expression("folder:ebook-creator/books")
-            .sort_by("created_at", "desc")
-            .max_results(50)
-            .execute();
+        const books = await Book.find(
+            { userId: req.user._id, coverImage: { $exists: true, $ne: "" } },
+            { coverImage: 1, title: 1, _id: 0 },
+        );
 
-        const covers = result.resources.map((resource) => ({
-            publicId: resource.public_id,
-            url: resource.secure_url,
-            name: resource.public_id.split("/").pop(),
-            createdAt: resource.created_at,
-            width: resource.width,
-            height: resource.height,
-        }));
+        const covers = books
+            .filter((b) => b.coverImage?.startsWith("http"))
+            .map((b) => ({
+                url: b.coverImage,
+                name: b.title,
+                publicId: b.coverImage.split("/").pop(),
+            }));
 
         res.status(200).json({ covers });
     } catch (error) {
-        console.error("Cloudinary fetch error:", error.message);
-        res.status(500).json({ message: "Failed to fetch covers from Cloudinary" });
+        console.error("Cover fetch error:", error.message);
+        res.status(500).json({ message: "Failed to fetch covers" });
     }
 };
