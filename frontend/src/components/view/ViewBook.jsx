@@ -98,20 +98,22 @@ const ViewBook = ({ book }) => {
                     />
                 </div>
 
-                <header className="h-16 flex items-center justify-between px-6 border-b border-slate-300 bg-white">
-                    <div className="flex items-center gap-4">
+                <header className="h-auto md:h-16 flex flex-wrap items-center justify-between px-4 py-2 border-b border-slate-300 bg-white gap-y-2">
+                    {/* Left Side: Menu + Title */}
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                             className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                         >
                             <Menu size={20} />
                         </button>
-                        <h2 className="text-sm font-semibold text-slate-500 truncate max-w-[200px]">
+                        <h2 className="text-sm font-semibold text-slate-500 truncate">
                             {book.title?.toUpperCase() || "UNTITLED"}
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    {/* Right Side: Zoom + Fullscreen Controls */}
+                    <div className="flex items-center gap-2 w-full md:w-auto justify-end">
                         <button
                             onClick={toggleFullscreen}
                             className="p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 rounded-full transition-all"
@@ -121,23 +123,24 @@ const ViewBook = ({ book }) => {
                             :   <Maximize size={20} />}
                         </button>
 
-                        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
+                        {/* Zoom Controls */}
+                        <div className="flex items-center bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
                             <button
                                 onClick={() =>
                                     setFontSize(Math.max(14, fontSize - 2))
                                 }
-                                className="px-4 py-1.5 rounded-full font-bold text-slate-600 hover:bg-white hover:shadow-sm transition-all"
+                                className="px-3 py-1 rounded-full font-bold text-slate-600 hover:bg-white text-sm"
                             >
                                 A-
                             </button>
-                            <span className="text-xs font-mono font-bold text-slate-400 w-12 text-center">
-                                {fontSize}px
+                            <span className="text-[10px] font-mono font-bold text-slate-400 w-8 text-center">
+                                {fontSize}
                             </span>
                             <button
                                 onClick={() =>
                                     setFontSize(Math.min(28, fontSize + 2))
                                 }
-                                className="px-4 py-1.5 rounded-full font-bold text-slate-600 hover:bg-white hover:shadow-sm transition-all"
+                                className="px-3 py-1 rounded-full font-bold text-slate-600 hover:bg-white text-sm"
                             >
                                 A+
                             </button>
