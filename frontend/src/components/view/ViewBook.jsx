@@ -148,9 +148,9 @@ const ViewBook = ({ book }) => {
                 <div
                     ref={scrollRef}
                     onScroll={handleScroll}
-                    className="flex-1 overflow-y-auto p-12 md:p-10 scroll-smooth bg-[#cbd5e1]"
+                    className="flex-1 overflow-y-auto p-4 md:p-10 scroll-smooth bg-[#cbd5e1]"
                 >
-                    <article className="max-w-4xl mx-auto bg-[#f8fafc] p-12 md:p-16 shadow-lg border border-slate-300 rounded-lg">
+                    <article className="w-fullmax-w-4xl mx-auto bg-[#f8fafc] p-6 md:p-16 shadow-lg border border-slate-300 rounded-lg">
                         <h1 className="text-4xl font-serif font-bold text-slate-900 mb-16 leading-tight">
                             {book.chapters?.[selectedChapterIndex]?.title ||
                                 "Untitled Chapter"}
