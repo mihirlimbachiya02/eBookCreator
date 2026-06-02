@@ -127,16 +127,18 @@ const PdfViewer = ({ url }) => {
             </div>
 
             {/* Controls */}
-            <div className="h-16 flex items-center justify-between px-6 border-b border-slate-300 bg-white shrink-0">
-                <div className="flex items-center gap-2">
+            {/* Updated Controls Section */}
+            <div className="h-auto md:h-16 flex flex-wrap items-center justify-between px-4 py-3 border-b border-slate-300 bg-white shrink-0 gap-y-3">
+                {/* 1. Page Navigation (Always on top row) */}
+                <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
                     <button
                         onClick={() => setPageNum((p) => Math.max(1, p - 1))}
                         disabled={pageNum <= 1}
                         className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                     >
-                        <ChevronLeft className="w-4 h-4" />
+                        <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <span className="text-sm text-slate-500 font-mono">
+                    <span className="text-sm text-slate-600 font-mono font-medium">
                         {pageNum} / {totalPages}
                     </span>
                     <button
@@ -146,11 +148,12 @@ const PdfViewer = ({ url }) => {
                         disabled={pageNum >= totalPages}
                         className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                     >
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
+                {/* 2. Zoom & Fit Controls (Stacks on mobile) */}
+                <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner w-full md:w-auto justify-center">
                     <button
                         onClick={() =>
                             setScale((s) =>
@@ -160,11 +163,11 @@ const PdfViewer = ({ url }) => {
                                 ),
                             )
                         }
-                        className="px-4 py-1.5 rounded-full font-bold text-slate-600 hover:bg-white hover:shadow-sm transition-all"
+                        className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
                     >
-                        <ZoomOut className="w-3.5 h-3.5" />
+                        <ZoomOut className="w-4 h-4" />
                     </button>
-                    <span className="text-xs font-mono font-bold text-slate-400 w-14 text-center">
+                    <span className="text-xs font-mono font-bold text-slate-400 w-12 text-center">
                         {Math.round((scale ?? autoScale) * 100)}%
                     </span>
                     <button
@@ -176,14 +179,13 @@ const PdfViewer = ({ url }) => {
                                 ),
                             )
                         }
-                        className="px-4 py-1.5 rounded-full font-bold text-slate-600 hover:bg-white hover:shadow-sm transition-all"
+                        className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
                     >
-                        <ZoomIn className="w-3.5 h-3.5" />
+                        <ZoomIn className="w-4 h-4" />
                     </button>
                     <button
                         onClick={() => setScale(autoScale)}
-                        className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-500 hover:bg-white hover:shadow-sm transition-all"
-                        title="Fit to width"
+                        className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-500 hover:bg-white transition-all"
                     >
                         Fit
                     </button>
