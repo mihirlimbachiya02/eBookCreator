@@ -90,7 +90,7 @@ const ViewBook = ({ book }) => {
                 onClose={() => setSidebarOpen(false)}
             />
 
-            <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#e2e8f0] m-4 rounded-xl border border-[#334155] shadow-2xl transition-all duration-300">
+            <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#e2e8f0] m-2 md:m-4 rounded-xl border border-[#334155] shadow-2xl transition-all duration-300">
                 <div className="w-full h-[3px] bg-slate-300">
                     <div
                         className="h-full bg-gradient-to-r from-indigo-600 to-violet-600 transition-all duration-300"
@@ -150,17 +150,20 @@ const ViewBook = ({ book }) => {
                     onScroll={handleScroll}
                     className="flex-1 overflow-y-auto p-4 md:p-10 scroll-smooth bg-[#cbd5e1]"
                 >
-                    <article className="w-fullmax-w-4xl mx-auto bg-[#f8fafc] p-6 md:p-16 shadow-lg border border-slate-300 rounded-lg">
-                        <h1 className="text-4xl font-serif font-bold text-slate-900 mb-16 leading-tight">
+                    <article className="w-full max-w-4xl mx-auto bg-[#f8fafc] p-6 md:p-16 shadow-lg border border-slate-300 rounded-lg box-border">
+                        {/* 4. Ensure the Title is responsive */}
+                        <h1 className="text-2xl md:text-4xl font-serif font-bold text-slate-900 mb-8 md:mb-16 leading-tight break-words">
                             {book.chapters?.[selectedChapterIndex]?.title ||
                                 "Untitled Chapter"}
                         </h1>
+
+                        {/* 5. Ensure the Content area handles long words */}
                         <div
-                            className="prose prose-slate prose-lg max-w-none leading-loose"
+                            className="prose prose-slate prose-lg max-w-none leading-relaxed break-words"
                             style={{
                                 fontSize: `${fontSize}px`,
                                 fontFamily: "Georgia, serif",
-                                lineHeight: "1.8",
+                                lineHeight: "1.6",
                             }}
                             dangerouslySetInnerHTML={{
                                 __html: formatContent(
