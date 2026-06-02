@@ -31,7 +31,11 @@ const PdfViewer = ({ url }) => {
 
     // 1. Load PDF
     useEffect(() => {
+        if (!url) return;
         let cancelled = false;
+        setPdf(null);
+        setLoading(true);
+        setError(null);
         const loadPdf = async () => {
             const token = localStorage.getItem("token");
             try {
@@ -52,10 +56,10 @@ const PdfViewer = ({ url }) => {
                 setLoading(false);
             }
         };
-        setLoading(true);
-        setError(null);
         loadPdf();
-        return () => { cancelled = true; };
+        return () => {
+            cancelled = true;
+        };
     }, [url]);
 
     // 2. Calculate fit scale once container + pdf are ready
