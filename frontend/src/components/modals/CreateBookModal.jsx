@@ -63,6 +63,7 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
         const savedDraft = localStorage.getItem("book-draft");
         if (!savedDraft) return;
 
+        let timer;
         try {
             const { title, topic, chaps, savedAt } = JSON.parse(savedDraft);
             const oneDayMs = 24 * 60 * 60 * 1000;
@@ -70,8 +71,7 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                 localStorage.removeItem("book-draft");
                 return;
             }
-            // Batch all state updates in a setTimeout to avoid cascading renders
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 setBookTitle(title || "");
                 setAiTopic(topic || "");
                 setChapters(chaps || []);
@@ -79,6 +79,7 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
         } catch {
             localStorage.removeItem("book-draft");
         }
+        return () => clearTimeout(timer);
     }, [isOpen]);
 
     // Auto-scroll handler when outline rows expand
