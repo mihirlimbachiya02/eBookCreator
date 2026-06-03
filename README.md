@@ -271,12 +271,7 @@ FRONTEND_URL=your_frontend_url_here
 
 ```env
 VITE_API_URL=your_backend_url_here
-
-#Google Drive import
-VITE_GOOGLE_CLIENT_ID=your_google_oauth_client_id
-VITE_GOOGLE_API_KEY=your_google_api_key
 ```
-
 ---
 
 ## 📖 API Routes
