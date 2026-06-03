@@ -271,6 +271,7 @@ FRONTEND_URL=your_frontend_url_here
 
 ```env
 VITE_API_URL=your_backend_url_here
+```
 ---
 
 ## 📖 API Routes
