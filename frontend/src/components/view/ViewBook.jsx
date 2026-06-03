@@ -175,6 +175,45 @@ const ViewBook = ({ book }) => {
                                 ),
                             }}
                         />
+
+                        {/* Prev / Next Navigation */}
+                        <div className="flex items-center justify-between mt-16 pt-8 border-t border-slate-200">
+                            <button
+                                onClick={() => {
+                                    setSelectedChapterIndex((i) => i - 1);
+                                    scrollRef.current?.scrollTo({
+                                        top: 0,
+                                        behavior: "smooth",
+                                    });
+                                }}
+                                disabled={selectedChapterIndex === 0}
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                            >
+                                ← Previous
+                            </button>
+
+                            <span className="text-xs font-mono text-slate-400">
+                                {selectedChapterIndex + 1} /{" "}
+                                {book.chapters?.length}
+                            </span>
+
+                            <button
+                                onClick={() => {
+                                    setSelectedChapterIndex((i) => i + 1);
+                                    scrollRef.current?.scrollTo({
+                                        top: 0,
+                                        behavior: "smooth",
+                                    });
+                                }}
+                                disabled={
+                                    selectedChapterIndex ===
+                                    (book.chapters?.length ?? 1) - 1
+                                }
+                                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+                            >
+                                Next →
+                            </button>
+                        </div>
                     </article>
                 </div>
             </main>
