@@ -20,7 +20,7 @@ export const protect = async (req, res, next) => {
                     .json({ message: "Not authorized, user no longer exists" });
             }
 
-            // Check token version matches - invalidates old tokens on logout
+            // Check token version matches
             if (
                 decoded.tokenVersion !== undefined &&
                 decoded.tokenVersion !== req.user.tokenVersion

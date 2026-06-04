@@ -574,7 +574,6 @@ export const exportAsDocument = async (req, res) => {
         const sections = [];
         const coverPage = [];
 
-        // 1. Cover page with full bleed scaling configuration matrix (DOCX Version)
         if (book.coverImage && !book.coverImage.includes("pravatar")) {
             try {
                 // Fetch the image buffer directly from Cloudinary URL
@@ -760,6 +759,8 @@ export const exportAsDocument = async (req, res) => {
     }
 };
 
+
+
 // @desc    Export a book as a PDF document
 export const exportAsPDF = async (req, res) => {
     try {
@@ -784,7 +785,6 @@ export const exportAsPDF = async (req, res) => {
         );
         doc.pipe(res);
 
-        // 1. Cover page with full bleed edge-to-edge layout configuration (PDF Version)
         if (book.coverImage && !book.coverImage.includes("pravatar")) {
             try {
                 // Fetch the image buffer from the Cloudinary URL

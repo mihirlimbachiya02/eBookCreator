@@ -22,6 +22,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // ─── Environment Check ────────────────────────────────────────────────────────
 if (
     !process.env.JWT_SECRET ||
@@ -37,7 +38,7 @@ if (
 }
 
 // ─── Security Middleware ──────────────────────────────────────────────────────
-// CSP disabled so Cloudinary images load correctly; all other helmet protections active
+// CSP disabled so Cloudinary images load correctly;
 app.use(
     helmet({
         contentSecurityPolicy: false,
@@ -45,7 +46,6 @@ app.use(
 );
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
-// Allows: production URL (from env), all Vercel preview deployments, localhost dev
 const allowedOrigins = [
     process.env.FRONTEND_URL,
     process.env.PREVIEW_URL,
@@ -56,7 +56,6 @@ const allowedOrigins = [
 app.use(
     cors({
         origin: function (origin, callback) {
-            // Allow server-to-server / curl requests (no Origin header)
             if (!origin) return callback(null, true);
 
             const allowed = allowedOrigins.some((o) =>

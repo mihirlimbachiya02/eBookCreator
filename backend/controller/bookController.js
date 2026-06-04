@@ -34,7 +34,6 @@ export const createBook = async (req, res) => {
         if (req.body.coverImage && req.body.coverImage.startsWith("http")) {
             coverImage = req.body.coverImage;
         } else if (req.file) {
-            // Handle file upload
             const safeTitle =
                 title ?
                     title.replace(/[^a-z0-9]/gi, "_").toLowerCase()

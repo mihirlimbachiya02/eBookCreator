@@ -10,8 +10,7 @@ import UploadedBook from "../models/UploadedBook.js";
 const ALLOWED = ["pdf", "html", "epub", "mobi", "zip"];
 
 
-
-// POST /api/uploaded-books/upload (device)
+// @desc    Upload a book file from user's device
 export const uploadBook = async (req, res) => {
     try {
         if (!req.file) {
@@ -54,7 +53,7 @@ export const uploadBook = async (req, res) => {
     }
 };
 
-// POST /api/uploaded-books/import-url
+// @desc    Import a book file from a URL
 export const importFromUrl = async (req, res) => {
     try {
         const { url, title } = req.body;
@@ -102,8 +101,7 @@ export const importFromUrl = async (req, res) => {
     }
 };
 
-// POST /api/uploaded-books/import-drive
-// POST /api/uploaded-books/import-drive
+// @desc    Import a book file from Google Drive
 export const importFromDrive = async (req, res) => {
     try {
         const { driveUrl, accessToken, title, mimeType } = req.body;  // ← driveUrl not fileId
@@ -120,7 +118,7 @@ export const importFromDrive = async (req, res) => {
 
         const ext = MIME_TO_EXT[mimeType] || "pdf";
 
-        const response = await axios.get(driveUrl, {  // ← use driveUrl directly
+        const response = await axios.get(driveUrl, {  
             responseType:     "arraybuffer",
             headers:          { Authorization: `Bearer ${accessToken}` },
             timeout:          60000,
@@ -141,7 +139,7 @@ export const importFromDrive = async (req, res) => {
             fileUrl:  result.secure_url,
             publicId: result.public_id,
             format:   ext,
-            source:   "google_drive",  // ← fixed from "drive" to match enum
+            source:   "google_drive", 
         });
 
         res.status(201).json(book);
@@ -151,7 +149,8 @@ export const importFromDrive = async (req, res) => {
     }
 };
 
-// GET /api/uploaded-books
+
+// @desc    Get all uploaded books for the user
 export const getUploadedBooks = async (req, res) => {
     try {
         const books = await UploadedBook.find({ user: req.user._id }).sort({
@@ -164,7 +163,7 @@ export const getUploadedBooks = async (req, res) => {
     }
 };
 
-// DELETE /api/uploaded-books/:id
+// @desc    Delete an uploaded book
 export const deleteUploadedBook = async (req, res) => {
     try {
         const book = await UploadedBook.findOne({
@@ -190,7 +189,7 @@ export const deleteUploadedBook = async (req, res) => {
     }
 };
 
-// GET /api/uploaded-books/proxy/:id
+// @desc    Proxy an uploaded book file
 export const proxyBookFile = async (req, res) => {
     try {
         const book = await UploadedBook.findOne({
@@ -212,7 +211,7 @@ export const proxyBookFile = async (req, res) => {
             "Access-Control-Allow-Origin",
             process.env.FRONTEND_URL || "http://localhost:5173",
         ); 
-        res.setHeader("Access-Control-Allow-Credentials", "true"); // ← allow credentials
+        res.setHeader("Access-Control-Allow-Credentials", "true"); 
         res.setHeader("Cache-Control", "private, max-age=3600");
 
         response.data.pipe(res);
@@ -222,7 +221,7 @@ export const proxyBookFile = async (req, res) => {
     }
 };
 
-// PUT /api/uploaded-books/:id
+// @desc    Update an uploaded book's metadata and its cover image
 export const updateUploadedBook = async (req, res) => {
     try {
         const book = await UploadedBook.findOne({
@@ -238,7 +237,7 @@ export const updateUploadedBook = async (req, res) => {
         if (source)     book.source     = source;
         if (coverImage !== undefined) book.coverImage = coverImage;
 
-        // Handle cover image file upload if sent as multipart
+        // Handle cover image file upload 
         if (req.file) {
             const result = await uploadToCloudinary(req.file.buffer, {
                 folder:        "ebook-creator/books",

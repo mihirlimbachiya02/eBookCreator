@@ -21,7 +21,7 @@ router.post("/import-url", importFromUrl);
 router.post("/import-drive", importFromDrive);
 router.get("/", getUploadedBooks);
 router.get("/proxy/:id", proxyBookFile);
-router.put("/:id", uploadCoverImage, updateUploadedBook); // ← new
+router.put("/:id", uploadCoverImage, updateUploadedBook);
 router.delete("/:id", deleteUploadedBook);
 
 export default router;

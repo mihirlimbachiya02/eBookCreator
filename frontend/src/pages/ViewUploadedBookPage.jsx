@@ -160,6 +160,7 @@ const PdfViewer = ({ url, bookId }) => {
                 setLoading(false);
             }
         };
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
         setError(null);
         setScale(null);

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 import fetch from "node-fetch";
 
-// Retry helper for transient Gemini API errors
+// Retry helper for Gemini API
 const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -30,7 +30,6 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 
 // @desc    Generate a book outline
-// Validation schema for outline generation
 const outlineSchema = z.object({
     topic: z.string().min(1).max(300).trim(),
     style: z.string().min(1).max(100).trim(),
@@ -131,7 +130,6 @@ Generate the outline now:`;
 
 
 // @desc    Generate content for a chapter
-// Validation schema for chapter content generation
 const chapterSchema = z.object({
     chapterTitle: z.string().min(1).max(300).trim(),
     chapterDescription: z.string().max(500).trim().optional(),
@@ -260,10 +258,7 @@ export const generateText = async (req, res) => {
 };
 
 
-
-
-// @desc    Generate AI cover image using Pollinations AI (free, no key needed)
-// @desc    Generate AI cover image using Pollinations AI (free, no key needed)
+// @desc    Generate AI cover image using Pollinations AI
 export const generateCoverImage = async (req, res) => {
     try {
         const { prompt, title } = req.body;
