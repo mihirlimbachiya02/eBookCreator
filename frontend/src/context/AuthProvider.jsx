@@ -8,23 +8,32 @@ const USER_KEY = "user:v1";
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    // Initialize from localStorage synchronously — no loading state needed
+    const [loading, setLoading] = useState(() => {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const userStr = localStorage.getItem(USER_KEY);
+        return !token || !userStr; // false if already have token = no loading flash
+    });
 
     const checkAuthStatus = async () => {
         const token = localStorage.getItem(TOKEN_KEY);
         const userStr = localStorage.getItem(USER_KEY);
+
         if (!token || !userStr) {
             setLoading(false);
             return;
         }
+
         try {
             const localUserData = JSON.parse(userStr);
             setUser(localUserData);
             setIsAuthenticated(true);
-            const response = await axiosInstance.get(
-                API_PATHS.AUTH.GET_PROFILE,
-            );
+            setLoading(false); // stop loading as soon as localStorage is read
+
+            // Verify in background — update user silently
+            const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
             if (response.data) {
                 setUser(response.data);
                 localStorage.setItem(USER_KEY, JSON.stringify(response.data));
@@ -36,7 +45,6 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem(USER_KEY);
             setUser(null);
             setIsAuthenticated(false);
-        } finally {
             setLoading(false);
         }
     };
@@ -71,10 +79,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        const id = setTimeout(() => {
-            checkAuthStatus();
-        }, 0);
-        return () => clearTimeout(id);
+        checkAuthStatus();
     }, []);
 
     const value = {
