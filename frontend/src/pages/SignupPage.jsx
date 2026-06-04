@@ -11,11 +11,10 @@ import { API_PATHS } from "../utils/apiPaths";
 import { validateEmail, validatePassword } from "../utils/helper";
 
 const SignupPage = () => {
-    // ✅ Added confirmPassword string parameter to initial state layout
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
+        name:            "",
+        email:           "",
+        password:        "",
         confirmPassword: "",
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -29,48 +28,46 @@ const SignupPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 🛡️ Guard Clause: Check passwords match before doing any network work
         if (formData.password !== formData.confirmPassword) {
             return toast.error("Passwords do not match!");
         }
 
-        const emailError = validateEmail(formData.email);
+        const emailError    = validateEmail(formData.email);
         const passwordError = validatePassword(formData.password);
-        if (emailError) return toast.error(emailError);
+        if (emailError)    return toast.error(emailError);
         if (passwordError) return toast.error(passwordError);
 
         setIsLoading(true);
-
         try {
-            // Adjust "name" to "username" if your backend model prefers username.
             const registrationPayload = {
-                name: formData.name,
-                email: formData.email,
+                name:     formData.name,
+                email:    formData.email,
                 password: formData.password,
             };
 
-            // Send the clean payload instead of raw formData
             const response = await axiosInstance.post(
                 API_PATHS.AUTH.REGISTER,
                 registrationPayload,
             );
-            const { token } = response.data;
 
-            // Fetch profile to get user details
+            const token        = response.data?.token;
+            const refreshToken = response.data?.refreshToken;
+
+            // Fetch profile with new access token
             const profileResponse = await axiosInstance.get(
                 API_PATHS.AUTH.GET_PROFILE,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                },
+                { headers: { Authorization: `Bearer ${token}` } },
             );
 
-            login(profileResponse.data, token);
+            // Pass refreshToken as third argument so AuthProvider stores it
+            login(profileResponse.data, token, refreshToken);
+
             toast.success("Account created successfully!");
             navigate("/dashboard");
         } catch (error) {
             toast.error(
                 error.response?.data?.message ||
-                    "Signup failed. Please try again.",
+                "Signup failed. Please try again.",
             );
         } finally {
             setIsLoading(false);
@@ -96,7 +93,6 @@ const SignupPage = () => {
             <div className="mt-8 sm:mx-auto w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 mx-4 sm:mx-0">
                     <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Full Name */}
                         <InputField
                             label="UserName"
                             name="name"
@@ -107,8 +103,6 @@ const SignupPage = () => {
                             onChange={handleChange}
                             required
                         />
-
-                        {/* Email Address */}
                         <InputField
                             label="Email"
                             name="email"
@@ -119,8 +113,6 @@ const SignupPage = () => {
                             onChange={handleChange}
                             required
                         />
-
-                        {/* Password Input */}
                         <InputField
                             label="Password"
                             name="password"
@@ -131,8 +123,6 @@ const SignupPage = () => {
                             onChange={handleChange}
                             required
                         />
-
-                        {/* ✅ Confirm Password Input Added */}
                         <InputField
                             label="Confirm Password"
                             name="confirmPassword"
@@ -143,7 +133,6 @@ const SignupPage = () => {
                             onChange={handleChange}
                             required
                         />
-
                         <div className="pt-2">
                             <Button
                                 type="submit"

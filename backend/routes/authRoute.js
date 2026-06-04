@@ -2,6 +2,7 @@ import express from "express";
 import {
     registerUser,
     loginUser,
+    refreshAccessToken,
     getProfile,
     updateUserProfile,
     logoutUser,
@@ -19,11 +20,12 @@ const router = express.Router();
 
 // Public routes
 router.post("/register", validate(registerSchema), registerUser);
-router.post("/login", validate(loginSchema), loginUser);
-router.post("/logout", protect, logoutUser);
+router.post("/login",    validate(loginSchema),    loginUser);
+router.post("/refresh",                            refreshAccessToken); // no auth needed — this IS the auth recovery
 
 // Protected routes
-router.get("/profile", protect, getProfile);
+router.post("/logout",   protect, logoutUser);
+router.get( "/profile",  protect, getProfile);
 router.put(
     "/profile",
     protect,

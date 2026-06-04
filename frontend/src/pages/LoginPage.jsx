@@ -10,8 +10,6 @@ import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 import { validateEmail, validatePassword } from "../utils/helper";
 
-
-
 const LoginPage = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [isLoading, setIsLoading] = useState(false);
@@ -22,60 +20,47 @@ const LoginPage = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const emailError = validateEmail(formData.email);
+        const emailError    = validateEmail(formData.email);
         const passwordError = validatePassword(formData.password);
-        if (emailError) return toast.error(emailError);
+        if (emailError)    return toast.error(emailError);
         if (passwordError) return toast.error(passwordError);
 
         setIsLoading(true);
-
         try {
-            // 1. Submit login credentials to receive the auth token
             const response = await axiosInstance.post(
                 API_PATHS.AUTH.LOGIN,
                 formData,
             );
 
-            const token = response.data?.token || response.data?.data?.token;
+            const token        = response.data?.token || response.data?.data?.token;
+            const refreshToken = response.data?.refreshToken;
 
             if (!token) {
-                throw new Error(
-                    "Authentication failed: No token returned from server.",
-                );
+                throw new Error("Authentication failed: No token returned from server.");
             }
 
-
-
-            // 2. Fetch profile immediately using the bearer token in headers to get user details
             const profileResponse = await axiosInstance.get(
                 API_PATHS.AUTH.GET_PROFILE,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                },
+                { headers: { Authorization: `Bearer ${token}` } },
             );
 
-            login(profileResponse.data, token);
+            // Pass refreshToken as third argument so AuthProvider stores it
+            login(profileResponse.data, token, refreshToken);
 
             toast.success("Login successful!");
             navigate("/dashboard");
         } catch (error) {
             toast.error(
                 error.response?.data?.message ||
-                    error.message ||
-                    "Login failed. Please try again.",
+                error.message ||
+                "Login failed. Please try again.",
             );
         } finally {
             setIsLoading(false);
         }
     };
-
-
-
-
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -85,7 +70,6 @@ const LoginPage = () => {
                         <BookOpen className="w-6 h-6 text-white" />
                     </div>
                 </div>
-
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 tracking-tight">
                     Welcome Back
                 </h2>
@@ -107,7 +91,6 @@ const LoginPage = () => {
                             onChange={handleChange}
                             required
                         />
-
                         <InputField
                             label="Password"
                             name="password"
@@ -118,7 +101,6 @@ const LoginPage = () => {
                             onChange={handleChange}
                             required
                         />
-
                         <div className="pt-2">
                             <Button
                                 type="submit"

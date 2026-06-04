@@ -3,23 +3,20 @@ import { AuthContext } from "./AuthContext";
 import axiosInstance from "../utils/axiosInstance.js";
 import { API_PATHS } from "../utils/apiPaths.js";
 
-const TOKEN_KEY = "token:v1";
-const USER_KEY = "user:v1";
+const TOKEN_KEY   = "token:v1";
+const USER_KEY    = "user:v1";
+const REFRESH_KEY = "refreshToken:v1";
+
+export { TOKEN_KEY, USER_KEY, REFRESH_KEY };
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    const [user,            setUser]            = useState(null);
+    const [loading,         setLoading]         = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // Initialize from localStorage synchronously — no loading state needed
-    const [loading, setLoading] = useState(() => {
-        const token = localStorage.getItem(TOKEN_KEY);
-        const userStr = localStorage.getItem(USER_KEY);
-        return !token || !userStr; // false if already have token = no loading flash
-    });
-
     const checkAuthStatus = async () => {
-        const token = localStorage.getItem(TOKEN_KEY);
-        const userStr = localStorage.getItem(USER_KEY);
+        const token      = localStorage.getItem(TOKEN_KEY);
+        const userStr    = localStorage.getItem(USER_KEY);
 
         if (!token || !userStr) {
             setLoading(false);
@@ -30,9 +27,7 @@ export const AuthProvider = ({ children }) => {
             const localUserData = JSON.parse(userStr);
             setUser(localUserData);
             setIsAuthenticated(true);
-            setLoading(false); // stop loading as soon as localStorage is read
 
-            // Verify in background — update user silently
             const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
             if (response.data) {
                 setUser(response.data);
@@ -41,17 +36,23 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             if (import.meta.env.DEV)
                 console.error("Auth check failed:", error.message);
-            localStorage.removeItem(TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
-            setUser(null);
-            setIsAuthenticated(false);
+            // axiosInstance interceptor already handled token refresh or redirect
+            // Only clear if we still have no token after interceptor ran
+            if (!localStorage.getItem(TOKEN_KEY)) {
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+        } finally {
             setLoading(false);
         }
     };
 
-    const login = (userData, token) => {
-        localStorage.setItem(TOKEN_KEY, token);
-        localStorage.setItem(USER_KEY, JSON.stringify(userData));
+    const login = (userData, token, refreshToken) => {
+        localStorage.setItem(TOKEN_KEY,   token);
+        localStorage.setItem(USER_KEY,    JSON.stringify(userData));
+        if (refreshToken) {
+            localStorage.setItem(REFRESH_KEY, refreshToken);
+        }
         setUser(userData);
         setIsAuthenticated(true);
     };
@@ -65,7 +66,7 @@ export const AuthProvider = ({ children }) => {
         } finally {
             localStorage.removeItem(TOKEN_KEY);
             localStorage.removeItem(USER_KEY);
-            localStorage.removeItem("refreshToken");
+            localStorage.removeItem(REFRESH_KEY);
             setUser(null);
             setIsAuthenticated(false);
             window.location.href = "/";
@@ -79,7 +80,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        checkAuthStatus();
+        const id = setTimeout(() => { checkAuthStatus(); }, 0);
+        return () => clearTimeout(id);
     }, []);
 
     const value = {

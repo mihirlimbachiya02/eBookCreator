@@ -35,20 +35,22 @@ const userSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        // Hashed refresh token — stored in DB so it can be invalidated on logout
+        refreshToken: {
+            type: String,
+            default: null,
+            select: false, // never returned in queries by default
+        },
     },
     { timestamps: true },
 );
 
-// async pre-save 
+// Hash password before save
 userSchema.pre("save", async function () {
-    if (!this.isModified("password") || !this.password) {
-        return;
-    }
-
+    if (!this.isModified("password") || !this.password) return;
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
 });
-
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
