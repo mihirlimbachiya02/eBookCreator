@@ -254,6 +254,8 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/yourdbname
 # Authentication
 JWT_SECRET=your_super_secret_jwt_key_here
 JWT_EXPIRES_IN=set_you_token_expire_here
+REFRESH_TOKEN_SECRET=your_refresh_token_secret_here_different_from_jwt_secret
+REFRESH_TOKEN_EXPIRES_IN=your_refresh_tokens_expire_time_here
 
 # Google Gemini AI
 GEMINI_API_KEY=your_gemini_api_key_here
