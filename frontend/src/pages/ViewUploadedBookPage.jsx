@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Menu, Maximize, Minimize, Download, FileText,
@@ -77,6 +77,8 @@ const PdfViewer = ({ url, bookId }) => {
     const canvasRef     = useRef(null);
     const renderTaskRef = useRef(null);
     const containerRef  = useRef(null);
+    const pdfRef        = useRef(null); // stable ref for ResizeObserver callback
+
     const [pdf,         setPdf]         = useState(null);
     const [pageNum,     setPageNum]     = useState(1);
     const [totalPages,  setTotalPages]  = useState(0);
@@ -87,6 +89,23 @@ const PdfViewer = ({ url, bookId }) => {
     const [progress,    setProgress]    = useState(0);
     const [outline,     setOutline]     = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(true);
+
+    // ── Fit scale calculator ──────────────────────────────────────────────────
+    // Uses rAF to guarantee clientWidth is read after browser has painted
+    const calcFitScale = useCallback((pdfDoc) => {
+        if (!pdfDoc) return;
+        requestAnimationFrame(() => {
+            if (!containerRef.current) return;
+            const width = containerRef.current.clientWidth;
+            if (width === 0) return;
+            pdfDoc.getPage(1).then((page) => {
+                const base = page.getViewport({ scale: 1 });
+                const fit  = +((width - 64) / base.width).toFixed(2);
+                setAutoScale(fit);
+                setScale(fit);
+            });
+        });
+    }, []);
 
     // 1. Load PDF
     useEffect(() => {
@@ -101,6 +120,8 @@ const PdfViewer = ({ url, bookId }) => {
                     httpHeaders: { Authorization: `Bearer ${token}` },
                 }).promise;
                 if (cancelled) return;
+
+                pdfRef.current = pdfDoc;
                 setPdf(pdfDoc);
                 setTotalPages(pdfDoc.numPages);
 
@@ -130,7 +151,7 @@ const PdfViewer = ({ url, bookId }) => {
                     setOutline(resolved.filter(Boolean));
                 }
 
-                setScale(null);
+                setScale(null); // triggers fit scale calculation
                 setLoading(false);
             } catch (err) {
                 if (cancelled) return;
@@ -141,6 +162,8 @@ const PdfViewer = ({ url, bookId }) => {
         };
         setLoading(true);
         setError(null);
+        setScale(null);
+        pdfRef.current = null;
         loadPdf();
         return () => { cancelled = true; };
     }, [url, bookId]);
@@ -152,19 +175,38 @@ const PdfViewer = ({ url, bookId }) => {
         }
     }, [pageNum, bookId]);
 
-    // 3. Calculate fit scale
+    // 3. ResizeObserver — fires once container has real dimensions after paint
+    //    Also handles window resize and sidebar open/close
     useEffect(() => {
-        if (!pdf || !containerRef.current || scale !== null) return;
-        pdf.getPage(1).then((page) => {
-            const containerWidth = containerRef.current.clientWidth - 64;
-            const baseViewport   = page.getViewport({ scale: 1 });
-            const fitScale       = +(containerWidth / baseViewport.width).toFixed(2);
-            setAutoScale(fitScale);
-            setScale(fitScale);
-        });
-    }, [pdf, scale]);
+        const container = containerRef.current;
+        if (!container) return;
 
-    // 4. Render page
+        const observer = new ResizeObserver(() => {
+            if (!pdfRef.current || !containerRef.current) return;
+            const width = containerRef.current.clientWidth;
+            if (width === 0) return;
+            pdfRef.current.getPage(1).then((page) => {
+                const base = page.getViewport({ scale: 1 });
+                const fit  = +((width - 64) / base.width).toFixed(2);
+                setAutoScale(fit);
+                // Only auto-apply fit on initial load (scale === null)
+                // Don't override manual zoom
+                setScale((prev) => (prev === null ? fit : prev));
+            });
+        });
+
+        observer.observe(container);
+        return () => observer.disconnect();
+    }, []);
+
+    // 4. Fallback: if pdf loaded but scale still null, calc fit directly
+    useEffect(() => {
+        if (pdf && scale === null) {
+            calcFitScale(pdf);
+        }
+    }, [pdf, scale, calcFitScale]);
+
+    // 5. Render page
     useEffect(() => {
         if (!pdf || !canvasRef.current || scale === null) return;
 
