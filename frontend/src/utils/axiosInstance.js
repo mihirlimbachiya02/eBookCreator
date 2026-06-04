@@ -33,8 +33,8 @@ axiosInstance.interceptors.response.use(
                     window.location.pathname === "/login" ||
                     window.location.pathname === "/signup";
                 if (!isOnAuthPage) {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
+                    localStorage.removeItem("token:v1");
+                    localStorage.removeItem("user:v1");
                     window.location.href = "/login";
                 }
             }
@@ -44,7 +44,6 @@ axiosInstance.interceptors.response.use(
         } else if (error.code === "ECONNABORTED") {
             console.error("Request timed out. Check your internet connection.");
         }
-
         return Promise.reject(error);
     },
 );
