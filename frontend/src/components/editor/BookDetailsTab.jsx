@@ -46,7 +46,7 @@ const BookDetailsTab = ({
     const coverImageUrl =
         book?.coverImage ?
             book.coverImage.startsWith("http") ?
-                book.coverImage
+                `${book.coverImage}?v=${book._id?.slice(-6) || "1"}`
             :   `${BASE_URL}${book.coverImage.startsWith("/") ? "" : "/"}${book.coverImage.replace(/\\/g, "/")}`
         :   null;
 
@@ -213,6 +213,9 @@ const BookDetailsTab = ({
                                         src={coverImageUrl}
                                         alt="Book Cover"
                                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.03]"
+                                        onError={(e) => {
+                                            e.target.style.display = "none";
+                                        }}
                                     />
                                 :   <div className="text-center p-4 flex flex-col items-center gap-2">
                                         <ImageIcon className="w-6 h-6 text-slate-300" />
