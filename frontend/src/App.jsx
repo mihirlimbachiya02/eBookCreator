@@ -1,8 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import { useAuth } from "./context/useAuth.js"; // Import your auth hook
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Analytics } from "@vercel/analytics/react";
-
 import ProtectedRoute from "./components/auth/ProtectedRoute.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -14,24 +12,15 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import ViewUploadedBookPage from "./pages/ViewUploadedBookPage.jsx";
 
 const App = () => {
-    const { loading } = useAuth(); // Consume loading state
-
-    // If AuthContext is still checking the token, show a loader
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
-            </div>
-        );
-    }
-
     return (
         <>
             <Routes>
+                {/* Public routes — render immediately, no auth wait */}
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
 
+                {/* Protected routes — ProtectedRoute handles auth check */}
                 <Route
                     path="/dashboard"
                     element={
@@ -40,7 +29,6 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/editor/:bookId"
                     element={
@@ -49,7 +37,6 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/view-book/:bookId"
                     element={
@@ -58,7 +45,6 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/profile"
                     element={
@@ -67,7 +53,6 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-
                 <Route
                     path="/view-uploaded-book/:bookId"
                     element={
@@ -76,7 +61,6 @@ const App = () => {
                         </ProtectedRoute>
                     }
                 />
-                
             </Routes>
             <SpeedInsights />
             <Analytics />
