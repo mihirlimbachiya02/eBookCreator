@@ -11,13 +11,18 @@ import {
     proxyBookFile,
     updateUploadedBook,
 } from "../controller/uploadedBookController.js";
+import { validate } from "../middlewares/validateMiddleware.js";
+import {
+    importUrlSchema,
+    uploadBookSchema,
+} from "../middlewares/validationSchemas.js";
 
 const router = express.Router();
 
 router.use(protect);
 
-router.post("/upload", uploadRawBook.single("book"), uploadBook);
-router.post("/import-url", importFromUrl);
+router.post("/upload", uploadRawBook.single("book"), validate(uploadBookSchema), uploadBook);
+router.post("/import-url", validate(importUrlSchema), importFromUrl);
 router.post("/import-drive", importFromDrive);
 router.get("/", getUploadedBooks);
 router.get("/proxy/:id", proxyBookFile);

@@ -9,21 +9,24 @@ const generateToken = (id, tokenVersion) => {
     });
 };
 
-
 // @desc    Register new user
 export const registerUser = async (req, res) => {
+    // req.body already validated + sanitized by validateMiddleware
     const { name, email, password } = req.body;
     try {
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "Please fill all fields" });
-        }
+        // Force email to string — prevents NoSQL injection via object payloads
+        const safeEmail = String(email).toLowerCase().trim();
 
-        const userExists = await User.findOne({ email });
+        const userExists = await User.findOne({ email: safeEmail });
         if (userExists) {
             return res.status(400).json({ message: "User already exists" });
         }
 
-        const user = await User.create({ name, email, password });
+        const user = await User.create({
+            name: String(name).trim(),
+            email: safeEmail,
+            password,
+        });
 
         if (user) {
             res.status(201).json({
@@ -39,14 +42,17 @@ export const registerUser = async (req, res) => {
     }
 };
 
-
-
 // @desc    Login user
 export const loginUser = async (req, res) => {
+    // req.body already validated by validateMiddleware
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email }).select("+password");
-        if (user && (await user.matchPassword(password))) {
+        // Force to string — prevents { "$gt": "" } NoSQL injection
+        const safeEmail = String(email).toLowerCase().trim();
+        const safePassword = String(password);
+
+        const user = await User.findOne({ email: safeEmail }).select("+password");
+        if (user && (await user.matchPassword(safePassword))) {
             res.json({
                 _id: user._id,
                 name: user.name,
@@ -54,6 +60,8 @@ export const loginUser = async (req, res) => {
                 token: generateToken(user._id, user.tokenVersion),
             });
         } else {
+            // Same message for both wrong email and wrong password
+            // Prevents user enumeration
             res.status(401).json({ message: "Invalid email or password" });
         }
     } catch (error) {
@@ -61,8 +69,6 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
-
-
 
 // @desc    Get current logged-in user
 export const getProfile = async (req, res) => {
@@ -86,16 +92,18 @@ export const getProfile = async (req, res) => {
     }
 };
 
-
-
-// @desc    Update user profile
+// @desc    Update user profile (name and profile pic only — no email change)
 export const updateUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        user.name = req.body.name || user.name;
-        user.email = req.body.email || user.email;
+        // Only allow name update — email change removed intentionally.
+        // Email change requires a separate verification flow to prevent
+        // account takeover via email swap.
+        if (req.body.name) {
+            user.name = String(req.body.name).trim();
+        }
 
         if (req.file) {
             const result = await uploadToCloudinary(req.file.buffer, {
@@ -104,6 +112,7 @@ export const updateUserProfile = async (req, res) => {
             });
             user.profilePic = result.secure_url;
         }
+
         await user.save();
 
         res.status(200).json({
@@ -118,11 +127,11 @@ export const updateUserProfile = async (req, res) => {
     }
 };
 
-// @desc    Logout user - invalidate all tokens
+// @desc    Logout user - invalidate all tokens via tokenVersion bump
 export const logoutUser = async (req, res) => {
     try {
         await User.findByIdAndUpdate(req.user._id, {
-            $inc: { tokenVersion: 1 }
+            $inc: { tokenVersion: 1 },
         });
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
