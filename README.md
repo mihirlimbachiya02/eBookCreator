@@ -104,7 +104,9 @@ eBookCreator/
 │   │   └── uploadedBookController.js  
 │   ├── middlewares/
 │   │   ├── authMiddleware.js
-│   │   └── uploadMiddleware.js
+│   │   ├── uploadMiddleware.js
+│   │   ├── validateMiddleware.js
+│   │   └── validationSchemas.js
 │   ├── models/
 │   │   ├── Book.js
 │   │   ├── UploadedBook.js        
