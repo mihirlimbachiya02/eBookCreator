@@ -515,7 +515,7 @@ const EditorPage = () => {
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
-                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-10 p-2"}`}
+                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-8 p-2"}`}
                 >
                     {/* The container div below handles the icon alignment.
         When isAiOpen is false (collapsed), justify-center moves it to the middle.
