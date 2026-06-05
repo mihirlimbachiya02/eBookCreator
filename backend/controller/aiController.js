@@ -4,7 +4,12 @@ import { z } from "zod";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 import fetch from "node-fetch";
 
-// Retry helper for Gemini API
+dotenv.config();
+
+// ── Gemini client ─────────────────────────────────────────────────────────────
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+// ── Retry helper for Gemini API ───────────────────────────────────────────────
 const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
         try {
@@ -13,7 +18,7 @@ const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
             const isRetryable = error.status === 503 || error.status === 429;
             if (isRetryable && attempt < retries) {
                 console.warn(
-                    `Gemini API attempt ${attempt} failed (${error.status}), retrying in ${delayMs}ms...`,
+                    `Gemini attempt ${attempt} failed (${error.status}), retrying in ${delayMs * attempt}ms...`,
                 );
                 await new Promise((res) => setTimeout(res, delayMs * attempt));
             } else {
@@ -23,23 +28,30 @@ const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
     }
 };
 
-dotenv.config();
-// Initialize the Gemini API client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// ── Shared Gemini error handler ───────────────────────────────────────────────
+const handleGeminiError = (error, res, context) => {
+    console.error(`Error in ${context}:`, error);
+    if (error.status === 503) {
+        return res.status(503).json({
+            message: "AI service is temporarily unavailable. Please try again.",
+        });
+    }
+    if (error.status === 429) {
+        return res.status(429).json({
+            message: "AI request limit reached. Please wait a moment.",
+        });
+    }
+    return res.status(500).json({ message: `Server error during ${context}` });
+};
 
-
-
-// @desc    Generate a book outline
+// ── Generate outline ──────────────────────────────────────────────────────────
 const outlineSchema = z.object({
-    topic: z.string().min(1).max(300).trim(),
-    style: z.string().min(1).max(100).trim(),
+    topic:       z.string().min(1).max(300).trim(),
+    style:       z.string().min(1).max(100).trim(),
     numChapters: z.coerce.number().int().min(1).max(20).optional().default(5),
     description: z.string().max(500).trim().optional(),
 });
 
-
-
-// @desc    Generate a book outline
 export const generateOutline = async (req, res) => {
     try {
         const parsed = outlineSchema.safeParse(req.body);
@@ -70,76 +82,48 @@ Example structure:
     {
         "title": "Chapter 1: Introduction to the Topic",
         "description": "A comprehensive overview introducing the main concepts. Sets the foundation for understanding the subject matter."
-    },
-    {
-        "title": "Chapter 2: Core Principles",
-        "description": "Explores the fundamental principles and theories. Provides detailed examples and real-world applications."
     }
 ]
 
 Generate the outline now:`;
 
         const response = await generateWithRetry(ai, {
-            model: process.env.AI_MODEL || "gemini-2.5-flash",
-            contents: prompt,
-            generationConfig: { maxOutputTokens: 4096 },
+            model:             process.env.AI_MODEL || "gemini-2.5-flash",
+            contents:          prompt,
+            generationConfig:  { maxOutputTokens: 4096 },
         });
 
-        const text = response.text;
+        const text       = response.text;
         const startIndex = text.indexOf("[");
-        const endIndex = text.lastIndexOf("]");
+        const endIndex   = text.lastIndexOf("]");
 
         if (startIndex === -1 || endIndex === -1) {
-            console.error("Could not find JSON array in AI response:", text);
+            console.error("No JSON array in AI response:", text);
             return res.status(500).json({
-                message: "Failed to parse AI response, no JSON array found.",
+                message: "Failed to parse AI response.",
             });
         }
 
-        const jsonString = text.substring(startIndex, endIndex + 1);
         try {
-            const outline = JSON.parse(jsonString);
+            const outline = JSON.parse(text.substring(startIndex, endIndex + 1));
             res.status(200).json({ outline });
-        } catch (e) {
-            console.error("Failed to parse AI response:", jsonString);
+        } catch {
             res.status(500).json({
-                message:
-                    "Failed to generate a valid outline. The AI response was not valid JSON.",
+                message: "AI returned invalid JSON. Please try again.",
             });
         }
     } catch (error) {
-        console.error("Error generating outline:", error);
-        if (error.status === 503) {
-            return res.status(503).json({
-                message:
-                    "AI service is temporarily unavailable. Please try again in a moment.",
-            });
-        }
-        if (error.status === 429) {
-            return res.status(429).json({
-                message:
-                    "AI request limit reached. Please wait a moment before trying again.",
-            });
-        }
-        res.status(500).json({
-            message: "Server error during AI outline generation",
-        });
+        handleGeminiError(error, res, "outline generation");
     }
 };
 
-
-
-// @desc    Generate content for a chapter
+// ── Generate chapter content ──────────────────────────────────────────────────
 const chapterSchema = z.object({
-    chapterTitle: z.string().min(1).max(300).trim(),
+    chapterTitle:       z.string().min(1).max(300).trim(),
     chapterDescription: z.string().max(500).trim().optional(),
-    style: z.string().min(1).max(100).trim(),
+    style:              z.string().min(1).max(100).trim(),
 });
 
-
-
-
-// @desc    Generate content for a chapter
 export const generateChapterContent = async (req, res) => {
     try {
         const parsed = chapterSchema.safeParse(req.body);
@@ -156,9 +140,9 @@ Writing Style: ${style}
 Target Length: Comprehensive and detailed (aim for 1500-2500 words)
 
 Requirements:
-1. Write in a ${style.toLowerCase()} tone throughout the chapter
+1. Write in a ${style.toLowerCase()} tone throughout
 2. Structure the content with clear sections and smooth transitions
-3. Include relevant examples, explanations, or anecdotes as appropriate for the style
+3. Include relevant examples, explanations, or anecdotes appropriate for the style
 4. Ensure the content flows logically from introduction to conclusion
 5. Make the content engaging and valuable to readers
 ${chapterDescription ? `6. Cover all points mentioned in the chapter description` : ""}
@@ -166,99 +150,65 @@ ${chapterDescription ? `6. Cover all points mentioned in the chapter description
 Format Guidelines:
 - Start with a compelling opening paragraph
 - Use clear paragraph breaks for readability
-- Include subheadings if appropriate for the content length
-- End with a strong conclusion or transition to the next chapter
+- Include subheadings if appropriate
+- End with a strong conclusion or transition
 - Write in plain text without markdown formatting
 
-Begin writing the chapter content now:`;
+Begin writing now:`;
 
         const response = await generateWithRetry(ai, {
-            model: process.env.AI_MODEL || "gemini-2.5-flash",
-            contents: prompt,
+            model:            process.env.AI_MODEL || "gemini-2.5-flash",
+            contents:         prompt,
             generationConfig: { maxOutputTokens: 4096 },
         });
 
         res.status(200).json({ content: response.text });
     } catch (error) {
-        console.error("Error generating chapter content:", error);
-        if (error.status === 503) {
-            return res.status(503).json({
-                message:
-                    "AI service is temporarily unavailable. Please try again in a moment.",
-            });
-        }
-        if (error.status === 429) {
-            return res.status(429).json({
-                message:
-                    "AI request limit reached. Please wait a moment before trying again.",
-            });
-        }
-        res.status(500).json({
-            message: "Server error during AI chapter content generation",
-        });
+        handleGeminiError(error, res, "chapter content generation");
     }
 };
 
-
-
-
-// @desc    Generate generic text based on a prompt
+// ── Generate generic text ─────────────────────────────────────────────────────
 const generateTextSchema = z.object({
-    chapterTitle: z.string().min(1).max(300).trim(),
+    chapterTitle:   z.string().min(1).max(300).trim(),
     currentContent: z.string().max(2000).trim().optional(),
-    instructions: z.string().min(1).max(500).trim(),
-    style: z.string().min(1).max(100).trim(),
+    instructions:   z.string().min(1).max(500).trim(),
+    style:          z.string().min(1).max(100).trim(),
 });
 
-// @desc    Generate generic text based on a prompt
 export const generateText = async (req, res) => {
     try {
         const parsed = generateTextSchema.safeParse(req.body);
         if (!parsed.success) {
             return res.status(400).json({ message: "Invalid input" });
         }
-        const { chapterTitle, currentContent, instructions, style } =
-            parsed.data;
+        const { chapterTitle, currentContent, instructions, style } = parsed.data;
 
-        const prompt = `You are a professional book editor and writer. 
-        Context: The book is written in a ${style} style.
-        Current Chapter Title: ${chapterTitle}
-        Existing Content: ${currentContent ? currentContent.substring(0, 500) : "None"}
-        
-        Instructions: ${instructions}
-        
-        Write the next section of the chapter following the established style. 
-        Return only the generated text without any conversational filler or markdown.`;
+        const prompt = `You are a professional book editor and writer.
+Context: The book is written in a ${style} style.
+Current Chapter Title: ${chapterTitle}
+Existing Content: ${currentContent ? currentContent.substring(0, 500) : "None"}
+
+Instructions: ${instructions}
+
+Write the next section of the chapter following the established style.
+Return only the generated text without any conversational filler or markdown.`;
 
         const response = await generateWithRetry(ai, {
-            model: process.env.AI_MODEL || "gemini-2.5-flash",
-            contents: prompt,
+            model:            process.env.AI_MODEL || "gemini-2.5-flash",
+            contents:         prompt,
             generationConfig: { maxOutputTokens: 2048 },
         });
 
         res.status(200).json({ content: response.text });
     } catch (error) {
-        console.error("Error generating text:", error);
-        if (error.status === 503) {
-            return res.status(503).json({
-                message:
-                    "AI service is temporarily unavailable. Please try again in a moment.",
-            });
-        }
-        if (error.status === 429) {
-            return res.status(429).json({
-                message:
-                    "AI request limit reached. Please wait a moment before trying again.",
-            });
-        }
-        res.status(500).json({
-            message: "Server error during AI text generation",
-        });
+        handleGeminiError(error, res, "text generation");
     }
 };
 
-
-// @desc    Generate AI cover image using Pollinations AI
+// ── Generate cover image ──────────────────────────────────────────────────────
+// Primary: Hugging Face FLUX.1-dev (requires HF_API_KEY env var)
+// Fallback: Pollinations flux-schnell (free, no key needed)
 export const generateCoverImage = async (req, res) => {
     try {
         const { prompt, title } = req.body;
@@ -271,31 +221,81 @@ export const generateCoverImage = async (req, res) => {
             ? `Book cover design: ${prompt.trim()}. Professional publishing quality, high resolution, visually striking, no text`
             : `Professional book cover for "${title}". Modern design, high quality, suitable for publishing, no text`;
 
-        const encodedPrompt  = encodeURIComponent(imagePrompt);
-        const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=832&height=1216&model=flux&nologo=true&seed=${Date.now()}`;
-
-        // Fetch with 90 second timeout
-        const controller = new AbortController();
-        const timeoutId  = setTimeout(() => controller.abort(), 90000);
-
-        let imageResponse;
-        try {
-            imageResponse = await fetch(pollinationsUrl, { signal: controller.signal });
-        } finally {
-            clearTimeout(timeoutId);
-        }
-
-        if (!imageResponse.ok) {
-            console.error("Pollinations error:", imageResponse.status);
-            return res.status(500).json({ message: "Failed to generate image" });
-        }
-
-        const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-
         const safeTitle = title
             ? title.replace(/[^a-z0-9]/gi, "_").toLowerCase()
             : "ai_cover";
 
+        let imageBuffer = null;
+
+        // ── Primary: Hugging Face ─────────────────────────────────────────────
+        if (process.env.HF_API_KEY) {
+            try {
+                const hfResponse = await fetch(
+                    "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-dev",
+                    {
+                        method:  "POST",
+                        headers: {
+                            Authorization:  `Bearer ${process.env.HF_API_KEY}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            inputs: imagePrompt,
+                            parameters: {
+                                width:               832,
+                                height:              1216,
+                                num_inference_steps: 28,
+                                guidance_scale:      3.5,
+                            },
+                        }),
+                        signal: AbortSignal.timeout(120000),
+                    }
+                );
+
+                if (hfResponse.ok) {
+                    imageBuffer = Buffer.from(await hfResponse.arrayBuffer());
+                    console.log("Cover generated via Hugging Face");
+                } else {
+                    const errText = await hfResponse.text();
+                    console.warn(`HF failed (${hfResponse.status}):`, errText);
+                }
+            } catch (hfError) {
+                console.warn("HF error, trying Pollinations:", hfError.message);
+            }
+        }
+
+        // ── Fallback: Pollinations flux-schnell (free) ────────────────────────
+        if (!imageBuffer) {
+            try {
+                const encodedPrompt   = encodeURIComponent(imagePrompt);
+                const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=832&height=1216&model=flux-schnell&nologo=true&seed=${Date.now()}`;
+
+                const pollResponse = await fetch(pollinationsUrl, {
+                    signal: AbortSignal.timeout(90000),
+                });
+
+                if (pollResponse.ok) {
+                    imageBuffer = Buffer.from(await pollResponse.arrayBuffer());
+                    console.log("Cover generated via Pollinations fallback");
+                } else {
+                    console.error("Pollinations failed:", pollResponse.status);
+                    return res.status(502).json({
+                        message: "Image generation failed. Please try again.",
+                    });
+                }
+            } catch (pollError) {
+                if (pollError.name === "AbortError" || pollError.name === "TimeoutError") {
+                    return res.status(504).json({
+                        message: "Image generation timed out. Please try again.",
+                    });
+                }
+                console.error("Pollinations error:", pollError.message);
+                return res.status(500).json({
+                    message: "Image generation failed. Please try again.",
+                });
+            }
+        }
+
+        // ── Upload result to Cloudinary ───────────────────────────────────────
         const cloudinaryResult = await uploadToCloudinary(imageBuffer, {
             folder:        "ebook-creator/books",
             public_id:     `ai_${safeTitle}_${Date.now()}`,
@@ -308,11 +308,9 @@ export const generateCoverImage = async (req, res) => {
             message:  "Cover image generated successfully",
         });
     } catch (error) {
-        if (error.name === "AbortError") {
-            console.error("Pollinations timed out");
-            return res.status(504).json({ message: "Image generation timed out. Please try again." });
-        }
         console.error("Cover generation error:", error.message);
-        res.status(500).json({ message: "Failed to generate cover image. Please try again." });
+        res.status(500).json({
+            message: "Failed to generate cover image. Please try again.",
+        });
     }
 };
