@@ -141,23 +141,26 @@ const DashboardPage = () => {
 
     return (
         <DashboardLayout>
-            <div className="w-full px-12 py-8">
+            {/* CHANGED: px-4 on mobile, px-12 on desktop */}
+            <div className="w-full px-4 md:px-12 py-8">
                 {/* ── AI Created Books ── */}
+                {/* CHANGED: flex-col on mobile, flex-row on desktop */}
                 <div
                     id="ai-books"
-                    className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100"
+                    className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-100"
                 >
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                        <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                             AI eBooks
                         </h1>
-                        <p className="text-[13px] text-slate-500 mt-1">
+                        <p className="text-[12px] md:text-[13px] text-slate-500 mt-1">
                             Create, edit, and manage all your AI-generated
                             eBooks.
                         </p>
                     </div>
+                    {/* CHANGED: w-full on mobile, w-auto on desktop */}
                     <Button
-                        className="whitespace-nowrap bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
+                        className="w-full md:w-auto justify-center bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
                         onClick={() => setIsCreateModalOpen(true)}
                         icon={Plus}
                     >
@@ -165,33 +168,28 @@ const DashboardPage = () => {
                     </Button>
                 </div>
 
+                {/* Grid display: changed gap-2 to gap-3 for better mobile touch spacing */}
                 {isLoading ?
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 justify-items-center">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 justify-items-center">
                         {Array.from({ length: 6 }).map((_, i) => (
                             <BookCardSkeleton key={i} />
                         ))}
                     </div>
                 : books.length === 0 ?
-                    <div className="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 max-w-xl mx-auto px-4">
-                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto mb-4">
-                            <Book className="h-6 w-6 text-slate-400" />
-                        </div>
+                    <div className="text-center py-12 md:py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 max-w-xl mx-auto px-4">
+                        <Book className="h-8 w-8 text-slate-400 mx-auto mb-4" />
                         <h3 className="text-base font-bold text-slate-900">
                             No eBooks Found
                         </h3>
-                        <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto">
-                            You haven't created any eBooks yet. Get started by
-                            creating your first one.
-                        </p>
                         <Button
-                            className="mt-5 bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md"
+                            className="mt-5 bg-violet-600 text-white"
                             onClick={() => setIsCreateModalOpen(true)}
                             icon={Plus}
                         >
-                            Create Your First eBook
+                            Create First eBook
                         </Button>
                     </div>
-                :   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center">
+                :   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 justify-items-center">
                         {books.map((book) => (
                             <BookCard
                                 key={book._id}
@@ -204,18 +202,19 @@ const DashboardPage = () => {
 
                 {/* ── Uploaded Books ── */}
                 <div id="uploaded-books" className="mt-10">
-                    <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100">
+                    {/* CHANGED: Same stack logic for Uploaded Books header */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-100">
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                            <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
                                 Uploaded Books
                             </h2>
-                            <p className="text-[13px] text-slate-500 mt-1">
+                            <p className="text-[12px] md:text-[13px] text-slate-500 mt-1">
                                 Books uploaded from your device, URL, or Google
                                 Drive.
                             </p>
                         </div>
                         <Button
-                            className="whitespace-nowrap bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
+                            className="w-full md:w-auto justify-center bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
                             onClick={() => setShowUploadModal(true)}
                             icon={Upload}
                         >
@@ -224,26 +223,20 @@ const DashboardPage = () => {
                     </div>
 
                     {uploadedBooks.length === 0 ?
-                        <div className="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 max-w-xl mx-auto px-4">
-                            <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto mb-4">
-                                <Upload className="h-6 w-6 text-slate-400" />
-                            </div>
+                        <div className="text-center py-12 md:py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 max-w-xl mx-auto px-4">
+                            <Upload className="h-8 w-8 text-slate-400 mx-auto mb-4" />
                             <h3 className="text-base font-bold text-slate-900">
                                 No Uploaded Books
                             </h3>
-                            <p className="text-sm text-slate-500 mt-1 max-w-xs mx-auto">
-                                Upload books from your device, a URL, or Google
-                                Drive.
-                            </p>
                             <Button
-                                className="mt-5 bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md"
+                                className="mt-5 bg-violet-600 text-white"
                                 onClick={() => setShowUploadModal(true)}
                                 icon={Upload}
                             >
-                                Upload Your First Book
+                                Upload First Book
                             </Button>
                         </div>
-                    :   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center">
+                    :   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 justify-items-center">
                             {uploadedBooks.map((book) => (
                                 <UploadedBookCard
                                     key={book._id}
