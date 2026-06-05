@@ -125,13 +125,21 @@ const ProfilePage = () => {
                             onChange={handleChange}
                             icon={User}
                         />
-                        <InputField
-                            label="Email Address"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            icon={Mail}
-                        />
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                Email Address
+                            </label>
+                            <div className="flex items-center gap-3 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-500">
+                                <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                                {formData.email}
+                                <span className="ml-auto text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                    Read only
+                                </span>
+                            </div>
+                            <p className="text-[11px] text-slate-400">
+                                Contact support to change your email address.
+                            </p>
+                        </div>
                         <div className="pt-4 flex justify-end">
                             <Button type="submit" disabled={isLoading}>
                                 {isLoading ? "Saving..." : "Save Changes"}
