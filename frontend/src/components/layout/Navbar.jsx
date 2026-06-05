@@ -64,7 +64,9 @@ const Navbar = () => {
                                             !profileDropdownOpen,
                                         );
                                     }}
-                                    avatar={user?.avatar || ""}
+                                    avatar={
+                                        user?.profilePic || user?.avatar || ""
+                                    }
                                     companyName={user?.name || ""}
                                     email={user?.email || ""}
                                     onLogout={logout}
