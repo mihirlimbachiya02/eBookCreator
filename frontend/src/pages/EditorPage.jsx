@@ -515,13 +515,13 @@ const EditorPage = () => {
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
-                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-8 p-2"}`}
+                    // Add the onClick handler here to the aside element
+                    onClick={() => !isAiOpen && setIsAiOpen(true)}
+                    // Added 'cursor-pointer' to give visual feedback that it's clickable when closed
+                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-10 p-2 cursor-pointer"}`}
                 >
-                    {/* The container div below handles the icon alignment.
-        When isAiOpen is false (collapsed), justify-center moves the icon to the horizontal center.
-    */}
                     <div
-                        className={`flex items-center ${isAiOpen ? "justify-between" : "justify-center"} pb-2 border-b border-slate-200 shrink-0`}
+                        className={`flex items-center pb-2 border-b border-slate-200 shrink-0 ${isAiOpen ? "justify-between" : "justify-center"}`}
                     >
                         {isAiOpen && (
                             <div className="flex items-center gap-2">
@@ -533,7 +533,10 @@ const EditorPage = () => {
                         )}
 
                         <button
-                            onClick={() => setIsAiOpen(!isAiOpen)}
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevents clicking the button from triggering the aside click
+                                setIsAiOpen(!isAiOpen);
+                            }}
                             className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
                             title={
                                 isAiOpen ? "Close AI Panel" : "Open AI Panel"
@@ -541,8 +544,7 @@ const EditorPage = () => {
                         >
                             {isAiOpen ?
                                 <X className="h-3.5 w-3.5" />
-                            :   /* This is the Sparkle icon shown when the panel is collapsed */
-                                <Sparkles className="h-4 w-4 text-violet-500" />
+                            :   <Sparkles className="h-4 w-4 text-violet-500" />
                             }
                         </button>
                     </div>
