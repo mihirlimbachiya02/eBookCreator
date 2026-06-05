@@ -192,19 +192,27 @@ const PdfViewer = ({ url, bookId }) => {
             if (!pdfRef.current || !containerRef.current) return;
             const width = containerRef.current.clientWidth;
             if (width === 0) return;
+
             pdfRef.current.getPage(1).then((page) => {
                 const base = page.getViewport({ scale: 1 });
                 const fit = +((width - 64) / base.width).toFixed(2);
+
+                // 1. Update the saved "Fit" value
                 setAutoScale(fit);
-                // Only auto-apply fit on initial load (scale === null)
-                // Don't override manual zoom
-                setScale((prev) => (prev === null ? fit : prev));
+
+                // 2. ONLY update the current scale if we were previously in "Fit" mode
+                // This prevents the PDF from jumping if the user manually zoomed in to 150%
+                setScale((prev) => {
+                    // If the user was using Fit mode, keep using Fit mode
+                    if (prev === autoScale) return fit;
+                    return prev;
+                });
             });
         });
 
         observer.observe(container);
         return () => observer.disconnect();
-    }, []);
+    }, [autoScale]);
 
     // 4. Fallback: if pdf loaded but scale still null, calc fit directly
     useEffect(() => {
