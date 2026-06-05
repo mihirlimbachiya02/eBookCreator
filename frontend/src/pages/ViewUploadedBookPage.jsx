@@ -294,82 +294,86 @@ const PdfViewer = ({ url, bookId }) => {
                 </div>
 
                 {/* Unified Responsive Controls */}
-                <div className="h-auto md:h-14 flex flex-col md:flex-row items-center justify-between border-b border-slate-300 bg-white shrink-0 px-4">
-                    {/* Row 1 / Left Section: Menu & Page Count */}
-                    <div className="flex items-center justify-between w-full md:w-auto py-2 md:py-0 border-b md:border-b-0 border-slate-100">
-                        <button
-                            onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
-                        >
-                            <Menu className="w-5 h-5" />
-                        </button>
-                        <span className="text-xs font-mono font-medium text-slate-500 md:ml-4">
-                            {pageNum} / {totalPages}
-                        </span>
-                    </div>
-
-                    {/* Row 2 / Center Section: Zoom & Nav (Single Row) */}
-                    <div className="flex items-center justify-center gap-4 py-2 md:py-0">
-                        <button
-                            onClick={() =>
-                                setPageNum((p) => Math.max(1, p - 1))
-                            }
-                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-full"
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </button>
-
-                        {/* The Zoom Pill */}
-                        <div className="flex items-center bg-[#f1f5f9] rounded-full border border-slate-200 px-4 py-1 shadow-inner gap-4">
+                {/* Unified Action Bar: Replaces the current cramped headers */}
+                <div className="flex flex-col border-b border-slate-300 bg-white shrink-0">
+                    <div className="flex items-center justify-between px-3 py-2 gap-2">
+                        {/* Left: Sidebar Toggle + Page Info */}
+                        <div className="flex items-center gap-2">
                             <button
-                                onClick={() =>
-                                    setScale((s) =>
-                                        Math.max(
-                                            0.3,
-                                            +((s ?? autoScale) - 0.15).toFixed(
-                                                2,
-                                            ),
-                                        ),
-                                    )
-                                }
-                                className="text-slate-600 font-bold text-lg"
+                                onClick={() => setSidebarOpen(!sidebarOpen)}
+                                className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                             >
-                                A-
+                                <Menu className="w-5 h-5" />
                             </button>
-                            <span className="text-xs font-bold text-slate-400 w-10 text-center">
-                                {Math.round((scale ?? autoScale) * 100)}%
+                            <span className="text-xs font-mono font-medium text-slate-500">
+                                {pageNum} / {totalPages}
                             </span>
-                            <button
-                                onClick={() =>
-                                    setScale((s) =>
-                                        Math.min(
-                                            3,
-                                            +((s ?? autoScale) + 0.15).toFixed(
-                                                2,
-                                            ),
-                                        ),
-                                    )
-                                }
-                                className="text-slate-600 font-bold text-lg"
-                            >
-                                A+
-                            </button>
-                            <button
-                                onClick={() => setScale(autoScale)}
-                                className="text-xs font-bold text-violet-600 pl-3 border-l border-slate-300"
-                            >
-                                Fit
-                            </button>
                         </div>
 
-                        <button
-                            onClick={() =>
-                                setPageNum((p) => Math.min(totalPages, p + 1))
-                            }
-                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-full"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
+                        {/* Right: Consolidated Zoom/Nav Pill */}
+                        <div className="flex items-center bg-[#f1f5f9] rounded-full border border-slate-200 px-3 py-1 shadow-inner gap-2">
+                            <button
+                                onClick={() =>
+                                    setPageNum((p) => Math.max(1, p - 1))
+                                }
+                                className="text-slate-500"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </button>
+
+                            <div className="flex items-center gap-2 border-l border-slate-300 pl-2">
+                                <button
+                                    onClick={() =>
+                                        setScale((s) =>
+                                            Math.max(
+                                                0.3,
+                                                +(
+                                                    (s ?? autoScale) - 0.15
+                                                ).toFixed(2),
+                                            ),
+                                        )
+                                    }
+                                    className="text-slate-600 font-bold text-lg"
+                                >
+                                    A-
+                                </button>
+                                <span className="text-[10px] font-bold text-slate-400 w-8 text-center">
+                                    {Math.round((scale ?? autoScale) * 100)}%
+                                </span>
+                                <button
+                                    onClick={() =>
+                                        setScale((s) =>
+                                            Math.min(
+                                                3,
+                                                +(
+                                                    (s ?? autoScale) + 0.15
+                                                ).toFixed(2),
+                                            ),
+                                        )
+                                    }
+                                    className="text-slate-600 font-bold text-lg"
+                                >
+                                    A+
+                                </button>
+                                <button
+                                    onClick={() => setScale(autoScale)}
+                                    className="text-[10px] font-bold text-violet-600 pl-2 border-l border-slate-300"
+                                >
+                                    Fit
+                                </button>
+                            </div>
+
+                            <button
+                                onClick={() =>
+                                    setPageNum((p) =>
+                                        Math.min(totalPages, p + 1),
+                                    )
+                                }
+                                className="text-slate-500"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
