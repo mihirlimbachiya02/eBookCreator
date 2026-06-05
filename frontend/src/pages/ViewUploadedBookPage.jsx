@@ -20,55 +20,63 @@ const getLastPageKey = (bookId) => `pdf-last-page:${bookId}`;
 // ── PDF Sidebar ───────────────────────────────────────────────────────────────
 const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
     return (
-        <aside
-            className={`bg-slate-900 border-r border-slate-700 h-full flex flex-col transition-all duration-300 shrink-0 ${
-                isOpen ? "w-64" : "w-0 overflow-hidden"
-            }`}
-        >
-            <div className="p-4 border-b border-slate-700 shrink-0">
-                <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-violet-400" />
-                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                        {outline.length > 0 ? "Chapters" : "Pages"}
-                    </span>
+        <>
+            <aside
+                className={`bg-slate-900 border-r border-slate-700 h-full flex flex-col transition-all duration-300 shrink-0 ${
+                    isOpen ? "w-64" : "w-0 overflow-hidden"
+                }`}
+            >
+                <div className="p-4 border-b border-slate-700 shrink-0">
+                    <div className="flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-violet-400" />
+                        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                            {outline.length > 0 ? "Chapters" : "Pages"}
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <div className="flex-1 overflow-y-auto py-2">
-                {outline.length > 0 ?
-                    outline.map((item, i) => (
-                        <button
-                            key={i}
-                            onClick={() => onJumpTo(item.page)}
-                            className={`w-full text-left px-4 py-2.5 text-xs transition-all ${
-                                currentPage === item.page ?
-                                    "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
-                                :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-                            }`}
-                        >
-                            <span className="font-medium line-clamp-2">{item.title}</span>
-                            <span className="text-slate-500 text-[10px] mt-0.5 block">Page {item.page}</span>
-                        </button>
-                    ))
-                :
-                    Array.from({ length: totalPages }, (_, i) => i + 1)
-                        .filter(p => p === 1 || p % 10 === 0 || p === totalPages)
-                        .map((page) => (
+                <div className="flex-1 overflow-y-auto py-2">
+                    {outline.length > 0 ?
+                        outline.map((item, i) => (
                             <button
-                                key={page}
-                                onClick={() => onJumpTo(page)}
-                                className={`w-full text-left px-4 py-2 text-xs transition-all ${
-                                    currentPage === page ?
+                                key={i}
+                                onClick={() => onJumpTo(item.page)}
+                                className={`w-full text-left px-4 py-2.5 text-xs transition-all ${
+                                    currentPage === item.page ?
                                         "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
                                     :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                                 }`}
                             >
-                                Page {page}
+                                <span className="font-medium line-clamp-2">
+                                    {item.title}
+                                </span>
+                                <span className="text-slate-500 text-[10px] mt-0.5 block">
+                                    Page {item.page}
+                                </span>
                             </button>
                         ))
-                }
-            </div>
-        </aside>
+                    :   Array.from({ length: totalPages }, (_, i) => i + 1)
+                            .filter(
+                                (p) =>
+                                    p === 1 || p % 10 === 0 || p === totalPages,
+                            )
+                            .map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => onJumpTo(page)}
+                                    className={`w-full text-left px-4 py-2 text-xs transition-all ${
+                                        currentPage === page ?
+                                            "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
+                                        :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                                    }`}
+                                >
+                                    Page {page}
+                                </button>
+                            ))
+                    }
+                </div>
+            </aside>
+        </>
     );
 };
 
@@ -252,14 +260,18 @@ const PdfViewer = ({ url, bookId }) => {
     );
 
     return (
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
             {/* Sidebar */}
             <PdfSidebar
                 isOpen={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
                 outline={outline}
                 totalPages={totalPages}
                 currentPage={pageNum}
-                onJumpTo={(page) => setPageNum(page)}
+                onJumpTo={(page) => {
+                    setPageNum(page);
+                    if (window.innerWidth < 768) setSidebarOpen(false);
+                }}
             />
 
             <div className="flex flex-col flex-1 overflow-hidden">
@@ -285,7 +297,9 @@ const PdfViewer = ({ url, bookId }) => {
                         {/* Page navigation */}
                         <div className="flex items-center gap-1">
                             <button
-                                onClick={() => setPageNum((p) => Math.max(1, p - 1))}
+                                onClick={() =>
+                                    setPageNum((p) => Math.max(1, p - 1))
+                                }
                                 disabled={pageNum <= 1}
                                 className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                             >
@@ -295,7 +309,11 @@ const PdfViewer = ({ url, bookId }) => {
                                 {pageNum} / {totalPages}
                             </span>
                             <button
-                                onClick={() => setPageNum((p) => Math.min(totalPages, p + 1))}
+                                onClick={() =>
+                                    setPageNum((p) =>
+                                        Math.min(totalPages, p + 1),
+                                    )
+                                }
                                 disabled={pageNum >= totalPages}
                                 className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                             >
@@ -307,7 +325,14 @@ const PdfViewer = ({ url, bookId }) => {
                     {/* Zoom Controls */}
                     <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner w-full md:w-auto justify-center">
                         <button
-                            onClick={() => setScale((s) => Math.max(0.3, +((s ?? autoScale) - 0.15).toFixed(2)))}
+                            onClick={() =>
+                                setScale((s) =>
+                                    Math.max(
+                                        0.3,
+                                        +((s ?? autoScale) - 0.15).toFixed(2),
+                                    ),
+                                )
+                            }
                             className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
                         >
                             <ZoomOut className="w-4 h-4" />
@@ -316,7 +341,14 @@ const PdfViewer = ({ url, bookId }) => {
                             {Math.round((scale ?? autoScale) * 100)}%
                         </span>
                         <button
-                            onClick={() => setScale((s) => Math.min(3, +((s ?? autoScale) + 0.15).toFixed(2)))}
+                            onClick={() =>
+                                setScale((s) =>
+                                    Math.min(
+                                        3,
+                                        +((s ?? autoScale) + 0.15).toFixed(2),
+                                    ),
+                                )
+                            }
                             className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
                         >
                             <ZoomIn className="w-4 h-4" />
@@ -334,11 +366,19 @@ const PdfViewer = ({ url, bookId }) => {
                 <div
                     ref={containerRef}
                     className="flex-1 overflow-auto bg-[#CBD5E1] py-8 px-4"
-                    style={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                    }}
                 >
                     <canvas
                         ref={canvasRef}
-                        style={{ display: "block", boxShadow: "0 4px 24px rgba(0,0,0,0.5)", flexShrink: 0 }}
+                        style={{
+                            display: "block",
+                            boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
+                            flexShrink: 0,
+                        }}
                     />
                 </div>
             </div>
