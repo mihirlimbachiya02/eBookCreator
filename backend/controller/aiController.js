@@ -231,24 +231,24 @@ export const generateCoverImage = async (req, res) => {
         if (process.env.HF_API_KEY) {
             try {
                 const hfResponse = await fetch(
-                    "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-dev",
+                    "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
                     {
-                        method:  "POST",
+                        method: "POST",
                         headers: {
-                            Authorization:  `Bearer ${process.env.HF_API_KEY}`,
+                            Authorization: `Bearer ${process.env.HF_API_KEY}`,
                             "Content-Type": "application/json",
                         },
                         body: JSON.stringify({
                             inputs: imagePrompt,
                             parameters: {
-                                width:               832,
-                                height:              1216,
+                                width: 832,
+                                height: 1216,
                                 num_inference_steps: 28,
-                                guidance_scale:      3.5,
+                                guidance_scale: 3.5,
                             },
                         }),
                         signal: AbortSignal.timeout(120000),
-                    }
+                    },
                 );
 
                 if (hfResponse.ok) {
@@ -267,7 +267,7 @@ export const generateCoverImage = async (req, res) => {
         if (!imageBuffer) {
             try {
                 const encodedPrompt   = encodeURIComponent(imagePrompt);
-                const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=832&height=1216&model=flux-schnell&nologo=true&seed=${Date.now()}`;
+                const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=832&height=1216&model=turbo&nologo=true&seed=${Date.now()}`;
 
                 const pollResponse = await fetch(pollinationsUrl, {
                     signal: AbortSignal.timeout(90000),
