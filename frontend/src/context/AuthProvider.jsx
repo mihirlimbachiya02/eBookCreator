@@ -28,7 +28,9 @@ export const AuthProvider = ({ children }) => {
             setUser(localUserData);
             setIsAuthenticated(true);
 
-            const response = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
+            const response = await axiosInstance.get(
+                API_PATHS.AUTH.GET_PROFILE,
+            );
             if (response.data) {
                 setUser(response.data);
                 localStorage.setItem(USER_KEY, JSON.stringify(response.data));
@@ -36,8 +38,12 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             if (import.meta.env.DEV)
                 console.error("Auth check failed:", error.message);
-            // axiosInstance interceptor already handled token refresh or redirect
-            // Only clear if we still have no token after interceptor ran
+
+            if (error.response?.status === 401) {
+                // Token expired — keep user logged in, interceptor will refresh on next request
+                setLoading(false);
+                return;
+            }
             if (!localStorage.getItem(TOKEN_KEY)) {
                 setUser(null);
                 setIsAuthenticated(false);
