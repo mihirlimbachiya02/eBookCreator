@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Menu, Maximize, Minimize, Download, FileText,
-    ChevronLeft, ChevronRight, ZoomIn, ZoomOut, BookOpen, ArrowLeft
+    ChevronLeft, ChevronRight, BookOpen, ArrowLeft
 } from "lucide-react";
 import { fetchUploadedBooks } from "../utils/uploadedBooksApi";
 import * as pdfjsLib from "pdfjs-dist";
@@ -287,7 +287,7 @@ const PdfViewer = ({ url, bookId }) => {
 
                 {/* Unified Responsive Controls */}
                 <div className="h-auto flex flex-col border-b border-slate-300 bg-white shrink-0">
-                    {/* Row 1: Sidebar Toggle & Page Number */}
+                    {/* Row 1: Menu & Page Status */}
                     <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -300,18 +300,19 @@ const PdfViewer = ({ url, bookId }) => {
                         </span>
                     </div>
 
-                    {/* Row 2: Nav & Zoom (Centered) */}
-                    <div className="flex items-center justify-center gap-2 px-2 py-2 bg-slate-50">
+                    {/* Row 2: Navigation & Zoom (Styled as a Pill) */}
+                    <div className="flex items-center justify-center gap-2 px-2 py-3 bg-slate-50">
                         <button
                             onClick={() =>
                                 setPageNum((p) => Math.max(1, p - 1))
                             }
-                            className="p-2 text-slate-600"
+                            className="p-2 text-slate-600 hover:bg-slate-200 rounded-full"
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </button>
 
-                        <div className="flex items-center bg-white rounded-full border border-slate-200 px-3 py-1 shadow-sm gap-2">
+                        {/* NEW: Zoom Pill Style */}
+                        <div className="flex items-center bg-[#f1f5f9] rounded-full border border-slate-200 px-4 py-1 shadow-inner gap-4">
                             <button
                                 onClick={() =>
                                     setScale((s) =>
@@ -323,10 +324,11 @@ const PdfViewer = ({ url, bookId }) => {
                                         ),
                                     )
                                 }
+                                className="text-slate-600 font-bold text-lg"
                             >
-                                <ZoomOut className="w-4 h-4 text-slate-600" />
+                                A-
                             </button>
-                            <span className="text-[11px] font-bold text-slate-400 w-10 text-center">
+                            <span className="text-sm font-bold text-slate-400 w-8 text-center">
                                 {Math.round((scale ?? autoScale) * 100)}%
                             </span>
                             <button
@@ -340,12 +342,13 @@ const PdfViewer = ({ url, bookId }) => {
                                         ),
                                     )
                                 }
+                                className="text-slate-600 font-bold text-lg"
                             >
-                                <ZoomIn className="w-4 h-4 text-slate-600" />
+                                A+
                             </button>
                             <button
                                 onClick={() => setScale(autoScale)}
-                                className="text-[10px] font-bold text-violet-600 pl-2 border-l border-slate-200"
+                                className="text-xs font-bold text-violet-600 pl-3 border-l border-slate-300"
                             >
                                 Fit
                             </button>
@@ -355,7 +358,7 @@ const PdfViewer = ({ url, bookId }) => {
                             onClick={() =>
                                 setPageNum((p) => Math.min(totalPages, p + 1))
                             }
-                            className="p-2 text-slate-600"
+                            className="p-2 text-slate-600 hover:bg-slate-200 rounded-full"
                         >
                             <ChevronRight className="w-4 h-4" />
                         </button>
