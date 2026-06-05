@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, Maximize, Minimize } from "lucide-react";
+import { Menu, Maximize, Minimize, ArrowLeft } from "lucide-react";
 import ViewChapterSidebar from "./ViewChapterSidebar";
 import DOMPurify from "dompurify";
 
@@ -115,6 +115,12 @@ const ViewBook = ({ book }) => {
                         >
                             <Menu size={20} />
                         </button>
+                        <button
+                            onClick={() => window.history.back()}
+                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
+                        >
+                            <ArrowLeft size={20} />
+                        </button>
                         <h2 className="text-sm font-semibold text-slate-500 truncate">
                             {book.title?.toUpperCase() || "UNTITLED"}
                         </h2>
@@ -125,12 +131,16 @@ const ViewBook = ({ book }) => {
                             onClick={toggleFullscreen}
                             className="p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 rounded-full transition-all"
                         >
-                            {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                            {isFullscreen ?
+                                <Minimize size={20} />
+                            :   <Maximize size={20} />}
                         </button>
 
                         <div className="flex items-center bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner">
                             <button
-                                onClick={() => setFontSize(Math.max(14, fontSize - 2))}
+                                onClick={() =>
+                                    setFontSize(Math.max(14, fontSize - 2))
+                                }
                                 className="px-3 py-1 rounded-full font-bold text-slate-600 hover:bg-white text-sm"
                             >
                                 A-
@@ -139,7 +149,9 @@ const ViewBook = ({ book }) => {
                                 {fontSize}
                             </span>
                             <button
-                                onClick={() => setFontSize(Math.min(28, fontSize + 2))}
+                                onClick={() =>
+                                    setFontSize(Math.min(28, fontSize + 2))
+                                }
                                 className="px-3 py-1 rounded-full font-bold text-slate-600 hover:bg-white text-sm"
                             >
                                 A+
@@ -156,7 +168,8 @@ const ViewBook = ({ book }) => {
                 >
                     <article className="w-full max-w-4xl mx-auto bg-[#f8fafc] p-6 md:p-16 shadow-lg border border-slate-300 rounded-lg box-border">
                         <h1 className="text-2xl md:text-4xl font-serif font-bold text-slate-900 mb-8 md:mb-16 leading-tight break-words">
-                            {book.chapters?.[selectedChapterIndex]?.title || "Untitled Chapter"}
+                            {book.chapters?.[selectedChapterIndex]?.title ||
+                                "Untitled Chapter"}
                         </h1>
 
                         <div
@@ -168,7 +181,8 @@ const ViewBook = ({ book }) => {
                             }}
                             dangerouslySetInnerHTML={{
                                 __html: formatContent(
-                                    book.chapters?.[selectedChapterIndex]?.content,
+                                    book.chapters?.[selectedChapterIndex]
+                                        ?.content,
                                 ),
                             }}
                         />
@@ -176,7 +190,9 @@ const ViewBook = ({ book }) => {
                         {/* Prev / Next Navigation */}
                         <div className="flex items-center justify-between mt-16 pt-8 border-t border-slate-200">
                             <button
-                                onClick={() => setSelectedChapterIndex((i) => i - 1)}
+                                onClick={() =>
+                                    setSelectedChapterIndex((i) => i - 1)
+                                }
                                 disabled={selectedChapterIndex === 0}
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                             >
@@ -184,12 +200,18 @@ const ViewBook = ({ book }) => {
                             </button>
 
                             <span className="text-xs font-mono text-slate-400">
-                                {selectedChapterIndex + 1} / {book.chapters?.length}
+                                {selectedChapterIndex + 1} /{" "}
+                                {book.chapters?.length}
                             </span>
 
                             <button
-                                onClick={() => setSelectedChapterIndex((i) => i + 1)}
-                                disabled={selectedChapterIndex === (book.chapters?.length ?? 1) - 1}
+                                onClick={() =>
+                                    setSelectedChapterIndex((i) => i + 1)
+                                }
+                                disabled={
+                                    selectedChapterIndex ===
+                                    (book.chapters?.length ?? 1) - 1
+                                }
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                             >
                                 Next →
