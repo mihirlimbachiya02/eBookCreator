@@ -365,14 +365,14 @@ const PdfViewer = ({ url, bookId }) => {
                 {/* Canvas */}
                 <div
                     ref={containerRef}
-                    className="flex-1 overflow-auto bg-[#CBD5E1] py-8 px-4 flex justify-center items-start"
+                    className="flex-1 overflow-auto bg-[#CBD5E1] py-4 px-2 md:py-8 md:px-4 flex justify-center items-start"
                 >
                     <canvas
                         ref={canvasRef}
+                        className="max-w-full" // Added this to prevent overflow
                         style={{
                             display: "block",
                             boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
-                            flexShrink: 0,
                         }}
                     />
                 </div>
@@ -461,7 +461,7 @@ const ViewUploadedBookPage = () => {
 
     return (
         <div className="flex h-screen bg-[#0f172a] font-sans overflow-hidden">
-            <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#e2e8f0] m-4 rounded-xl border border-[#334155] shadow-2xl transition-all duration-300">
+            <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#e2e8f0] md:m-4 md:rounded-xl border border-[#334155] shadow-2xl">
                 {/* Header */}
                 <header className="h-16 flex items-center justify-between px-4 md:px-6 border-b border-slate-300 bg-white shrink-0">
                     <div className="flex items-center gap-2">
