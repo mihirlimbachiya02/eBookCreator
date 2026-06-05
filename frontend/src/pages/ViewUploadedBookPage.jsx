@@ -20,82 +20,74 @@ const getLastPageKey = (bookId) => `pdf-last-page:${bookId}`;
 // ── PDF Sidebar ───────────────────────────────────────────────────────────────
 const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
     return (
-        <>
-            <aside
-                className={`bg-slate-900 border-r border-slate-700 h-full flex flex-col transition-all duration-300 shrink-0 ${
-                    isOpen ? "w-64" : "w-0 overflow-hidden"
-                }`}
-            >
-                <div className="p-4 border-b border-slate-700 shrink-0">
-                    <div className="flex items-center gap-2">
-                        <BookOpen className="w-4 h-4 text-violet-400" />
-                        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                            {outline.length > 0 ? "Chapters" : "Pages"}
-                        </span>
-                    </div>
+        <aside
+            className={`bg-slate-900 border-r border-slate-700 h-full flex flex-col transition-all duration-300 shrink-0 ${
+                isOpen ? "w-64" : "w-0 overflow-hidden"
+            }`}
+        >
+            <div className="p-4 border-b border-slate-700 shrink-0">
+                <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-violet-400" />
+                    <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        {outline.length > 0 ? "Chapters" : "Pages"}
+                    </span>
                 </div>
+            </div>
 
-                <div className="flex-1 overflow-y-auto py-2">
-                    {outline.length > 0 ?
-                        outline.map((item, i) => (
+            <div className="flex-1 overflow-y-auto py-2">
+                {outline.length > 0 ?
+                    outline.map((item, i) => (
+                        <button
+                            key={i}
+                            onClick={() => onJumpTo(item.page)}
+                            className={`w-full text-left px-4 py-2.5 text-xs transition-all ${
+                                currentPage === item.page ?
+                                    "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
+                                :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+                            }`}
+                        >
+                            <span className="font-medium line-clamp-2">{item.title}</span>
+                            <span className="text-slate-500 text-[10px] mt-0.5 block">Page {item.page}</span>
+                        </button>
+                    ))
+                :
+                    Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter(p => p === 1 || p % 10 === 0 || p === totalPages)
+                        .map((page) => (
                             <button
-                                key={i}
-                                onClick={() => onJumpTo(item.page)}
-                                className={`w-full text-left px-4 py-2.5 text-xs transition-all ${
-                                    currentPage === item.page ?
+                                key={page}
+                                onClick={() => onJumpTo(page)}
+                                className={`w-full text-left px-4 py-2 text-xs transition-all ${
+                                    currentPage === page ?
                                         "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
                                     :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                                 }`}
                             >
-                                <span className="font-medium line-clamp-2">
-                                    {item.title}
-                                </span>
-                                <span className="text-slate-500 text-[10px] mt-0.5 block">
-                                    Page {item.page}
-                                </span>
+                                Page {page}
                             </button>
                         ))
-                    :   Array.from({ length: totalPages }, (_, i) => i + 1)
-                            .filter(
-                                (p) =>
-                                    p === 1 || p % 10 === 0 || p === totalPages,
-                            )
-                            .map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => onJumpTo(page)}
-                                    className={`w-full text-left px-4 py-2 text-xs transition-all ${
-                                        currentPage === page ?
-                                            "bg-violet-600/20 text-violet-300 border-l-2 border-violet-500"
-                                        :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
-                                    }`}
-                                >
-                                    Page {page}
-                                </button>
-                            ))
-                    }
-                </div>
-            </aside>
-        </>
+                }
+            </div>
+        </aside>
     );
 };
 
 // ── PDF Viewer ────────────────────────────────────────────────────────────────
 const PdfViewer = ({ url, bookId }) => {
-    const canvasRef     = useRef(null);
+    const canvasRef = useRef(null);
     const renderTaskRef = useRef(null);
-    const containerRef  = useRef(null);
-    const pdfRef        = useRef(null); // stable ref for ResizeObserver callback
+    const containerRef = useRef(null);
+    const pdfRef = useRef(null); // stable ref for ResizeObserver callback
 
-    const [pdf,         setPdf]         = useState(null);
-    const [pageNum,     setPageNum]     = useState(1);
-    const [totalPages,  setTotalPages]  = useState(0);
-    const [scale,       setScale]       = useState(null);
-    const [autoScale,   setAutoScale]   = useState(1);
-    const [loading,     setLoading]     = useState(true);
-    const [error,       setError]       = useState(null);
-    const [progress,    setProgress]    = useState(0);
-    const [outline,     setOutline]     = useState([]);
+    const [pdf, setPdf] = useState(null);
+    const [pageNum, setPageNum] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [scale, setScale] = useState(null);
+    const [autoScale, setAutoScale] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [progress, setProgress] = useState(0);
+    const [outline, setOutline] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     // ── Fit scale calculator ──────────────────────────────────────────────────
@@ -108,7 +100,7 @@ const PdfViewer = ({ url, bookId }) => {
             if (width === 0) return;
             pdfDoc.getPage(1).then((page) => {
                 const base = page.getViewport({ scale: 1 });
-                const fit  = +((width - 64) / base.width).toFixed(2);
+                const fit = +((width - 64) / base.width).toFixed(2);
                 setAutoScale(fit);
                 setScale(fit);
             });
@@ -149,8 +141,12 @@ const PdfViewer = ({ url, bookId }) => {
                                         item.dest
                                     :   await pdfDoc.getDestination(item.dest);
                                 const ref = dest?.[0];
-                                const pageIndex = await pdfDoc.getPageIndex(ref);
-                                return { title: item.title, page: pageIndex + 1 };
+                                const pageIndex =
+                                    await pdfDoc.getPageIndex(ref);
+                                return {
+                                    title: item.title,
+                                    page: pageIndex + 1,
+                                };
                             } catch {
                                 return null;
                             }
@@ -174,7 +170,9 @@ const PdfViewer = ({ url, bookId }) => {
         setScale(null);
         pdfRef.current = null;
         loadPdf();
-        return () => { cancelled = true; };
+        return () => {
+            cancelled = true;
+        };
     }, [url, bookId]);
 
     // 2. Save last page to localStorage
@@ -196,7 +194,7 @@ const PdfViewer = ({ url, bookId }) => {
             if (width === 0) return;
             pdfRef.current.getPage(1).then((page) => {
                 const base = page.getViewport({ scale: 1 });
-                const fit  = +((width - 64) / base.width).toFixed(2);
+                const fit = +((width - 64) / base.width).toFixed(2);
                 setAutoScale(fit);
                 // Only auto-apply fit on initial load (scale === null)
                 // Don't override manual zoom
@@ -225,18 +223,21 @@ const PdfViewer = ({ url, bookId }) => {
         pdf.getPage(pageNum).then((page) => {
             if (renderCancelled) return;
             const viewport = page.getViewport({ scale });
-            const canvas   = canvasRef.current;
+            const canvas = canvasRef.current;
             if (!canvas) return;
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.height = viewport.height;
-            canvas.width  = viewport.width;
+            canvas.width = viewport.width;
             const task = page.render({ canvasContext: ctx, viewport });
             renderTaskRef.current = task;
             task.promise
-                .then(() => setProgress(Math.round((pageNum / totalPages) * 100)))
+                .then(() =>
+                    setProgress(Math.round((pageNum / totalPages) * 100)),
+                )
                 .catch((e) => {
-                    if (e?.name !== "RenderingCancelledException") console.error(e);
+                    if (e?.name !== "RenderingCancelledException")
+                        console.error(e);
                 });
         });
 
@@ -246,22 +247,23 @@ const PdfViewer = ({ url, bookId }) => {
         };
     }, [pdf, pageNum, scale, totalPages]);
 
-    if (loading) return (
-        <div className="flex items-center justify-center flex-1 bg-[#CBD5E1]">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-400" />
-        </div>
-    );
+    if (loading)
+        return (
+            <div className="flex items-center justify-center flex-1 bg-[#CBD5E1]">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-400" />
+            </div>
+        );
 
-    if (error) return (
-        <div className="flex flex-col items-center justify-center flex-1 bg-[#CBD5E1] text-center p-8">
-            <FileText className="w-12 h-12 text-slate-400 mb-3" />
-            <p className="text-slate-300 text-sm">{error}</p>
-        </div>
-    );
+    if (error)
+        return (
+            <div className="flex flex-col items-center justify-center flex-1 bg-[#CBD5E1] text-center p-8">
+                <FileText className="w-12 h-12 text-slate-400 mb-3" />
+                <p className="text-slate-300 text-sm">{error}</p>
+            </div>
+        );
 
     return (
         <div className="flex flex-1 overflow-hidden relative">
-            {/* Sidebar */}
             <PdfSidebar
                 isOpen={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
@@ -283,81 +285,79 @@ const PdfViewer = ({ url, bookId }) => {
                     />
                 </div>
 
-                {/* Controls */}
-                <div className="h-auto md:h-16 flex flex-wrap items-center justify-between px-4 py-3 border-b border-slate-300 bg-white shrink-0 gap-y-3">
-                    <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-start">
-                        {/* Sidebar toggle */}
+                {/* Unified Responsive Controls */}
+                <div className="h-auto flex flex-col border-b border-slate-300 bg-white shrink-0">
+                    {/* Row 1: Sidebar Toggle & Page Number */}
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-slate-100">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
                             className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                         >
                             <Menu className="w-5 h-5" />
                         </button>
+                        <span className="text-xs font-mono font-medium text-slate-500">
+                            {pageNum} / {totalPages}
+                        </span>
+                    </div>
 
-                        {/* Page navigation */}
-                        <div className="flex items-center gap-1">
+                    {/* Row 2: Nav & Zoom (Centered) */}
+                    <div className="flex items-center justify-center gap-2 px-2 py-2 bg-slate-50">
+                        <button
+                            onClick={() =>
+                                setPageNum((p) => Math.max(1, p - 1))
+                            }
+                            className="p-2 text-slate-600"
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+
+                        <div className="flex items-center bg-white rounded-full border border-slate-200 px-3 py-1 shadow-sm gap-2">
                             <button
                                 onClick={() =>
-                                    setPageNum((p) => Math.max(1, p - 1))
+                                    setScale((s) =>
+                                        Math.max(
+                                            0.3,
+                                            +((s ?? autoScale) - 0.15).toFixed(
+                                                2,
+                                            ),
+                                        ),
+                                    )
                                 }
-                                disabled={pageNum <= 1}
-                                className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                             >
-                                <ChevronLeft className="w-5 h-5" />
+                                <ZoomOut className="w-4 h-4 text-slate-600" />
                             </button>
-                            <span className="text-sm text-slate-600 font-mono font-medium px-2">
-                                {pageNum} / {totalPages}
+                            <span className="text-[11px] font-bold text-slate-400 w-10 text-center">
+                                {Math.round((scale ?? autoScale) * 100)}%
                             </span>
                             <button
                                 onClick={() =>
-                                    setPageNum((p) =>
-                                        Math.min(totalPages, p + 1),
+                                    setScale((s) =>
+                                        Math.min(
+                                            3,
+                                            +((s ?? autoScale) + 0.15).toFixed(
+                                                2,
+                                            ),
+                                        ),
                                     )
                                 }
-                                disabled={pageNum >= totalPages}
-                                className="p-2 text-slate-500 hover:bg-slate-100 rounded-md disabled:opacity-30 transition-colors"
                             >
-                                <ChevronRight className="w-5 h-5" />
+                                <ZoomIn className="w-4 h-4 text-slate-600" />
+                            </button>
+                            <button
+                                onClick={() => setScale(autoScale)}
+                                className="text-[10px] font-bold text-violet-600 pl-2 border-l border-slate-200"
+                            >
+                                Fit
                             </button>
                         </div>
-                    </div>
 
-                    {/* Zoom Controls */}
-                    <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full border border-slate-200 shadow-inner w-full md:w-auto justify-center">
                         <button
                             onClick={() =>
-                                setScale((s) =>
-                                    Math.max(
-                                        0.3,
-                                        +((s ?? autoScale) - 0.15).toFixed(2),
-                                    ),
-                                )
+                                setPageNum((p) => Math.min(totalPages, p + 1))
                             }
-                            className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
+                            className="p-2 text-slate-600"
                         >
-                            <ZoomOut className="w-4 h-4" />
-                        </button>
-                        <span className="text-xs font-mono font-bold text-slate-400 w-12 text-center">
-                            {Math.round((scale ?? autoScale) * 100)}%
-                        </span>
-                        <button
-                            onClick={() =>
-                                setScale((s) =>
-                                    Math.min(
-                                        3,
-                                        +((s ?? autoScale) + 0.15).toFixed(2),
-                                    ),
-                                )
-                            }
-                            className="px-3 py-1.5 rounded-full text-slate-600 hover:bg-white transition-all"
-                        >
-                            <ZoomIn className="w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={() => setScale(autoScale)}
-                            className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-500 hover:bg-white transition-all"
-                        >
-                            Fit
+                            <ChevronRight className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
@@ -365,12 +365,7 @@ const PdfViewer = ({ url, bookId }) => {
                 {/* Canvas */}
                 <div
                     ref={containerRef}
-                    className="flex-1 overflow-auto bg-[#CBD5E1] py-8 px-4"
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "flex-start",
-                    }}
+                    className="flex-1 overflow-auto bg-[#CBD5E1] py-8 px-4 flex justify-center items-start"
                 >
                     <canvas
                         ref={canvasRef}
@@ -468,37 +463,37 @@ const ViewUploadedBookPage = () => {
         <div className="flex h-screen bg-[#0f172a] font-sans overflow-hidden">
             <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#e2e8f0] m-4 rounded-xl border border-[#334155] shadow-2xl transition-all duration-300">
                 {/* Header */}
-                <header className="h-16 flex items-center justify-between px-6 border-b border-slate-300 bg-white shrink-0">
-                    <div className="flex items-center gap-4">
+                <header className="h-16 flex items-center justify-between px-4 md:px-6 border-b border-slate-300 bg-white shrink-0">
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={() => navigate("/dashboard")}
                             className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </button>
-                        <h2 className="text-sm font-semibold text-slate-500 truncate max-w-[200px]">
-                            {book.title?.toUpperCase()}
+                        <h2 className="text-xs md:text-sm font-semibold text-slate-500 truncate max-w-[120px] md:max-w-[200px]">
+                            {book?.title?.toUpperCase()}
                         </h2>
-                        <span className="text-xs font-bold uppercase px-2 py-0.5 rounded-full bg-violet-100 text-violet-600">
-                            {book.format}
-                        </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1 md:gap-3">
                         <a
-                            href={book.fileUrl}
+                            href={book?.fileUrl}
                             download
                             target="_blank"
                             rel="noreferrer"
-                            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors"
+                            className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-slate-100 px-2 md:px-3 py-1.5 rounded-lg transition-colors"
                         >
-                            <Download className="w-4 h-4" /> Download
+                            <Download className="w-5 h-5" />
+                            <span className="hidden md:inline">Download</span>
                         </a>
                         <button
                             onClick={toggleFullscreen}
-                            className="p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 rounded-full transition-all"
+                            className="p-2 text-slate-500 hover:bg-slate-100 rounded-full"
                         >
-                            {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                            {isFullscreen ?
+                                <Minimize size={20} />
+                            :   <Maximize size={20} />}
                         </button>
                     </div>
                 </header>
@@ -507,9 +502,7 @@ const ViewUploadedBookPage = () => {
                 <div className="flex flex-1 overflow-hidden">
                     {isNonViewable ?
                         <NonViewable book={book} />
-                    :
-                        <PdfViewer url={proxyUrl} bookId={book._id} />
-                    }
+                    :   <PdfViewer url={proxyUrl} bookId={book._id} />}
                 </div>
             </main>
         </div>
