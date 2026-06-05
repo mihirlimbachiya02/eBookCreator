@@ -15,18 +15,19 @@ import { validate } from "../middlewares/validateMiddleware.js";
 import {
     importUrlSchema,
     uploadBookSchema,
+    importDriveSchema,
 } from "../middlewares/validationSchemas.js";
 
 const router = express.Router();
 
 router.use(protect);
 
-router.post("/upload", uploadRawBook.single("book"), validate(uploadBookSchema), uploadBook);
-router.post("/import-url", validate(importUrlSchema), importFromUrl);
-router.post("/import-drive", importFromDrive);
-router.get("/", getUploadedBooks);
-router.get("/proxy/:id", proxyBookFile);
-router.put("/:id", uploadCoverImage, updateUploadedBook);
-router.delete("/:id", deleteUploadedBook);
+router.post("/upload",       uploadRawBook.single("book"), validate(uploadBookSchema), uploadBook);
+router.post("/import-url",   validate(importUrlSchema),   importFromUrl);
+router.post("/import-drive", validate(importDriveSchema), importFromDrive);  // ← NOW VALIDATED
+router.get("/",              getUploadedBooks);
+router.get("/proxy/:id",     proxyBookFile);
+router.put("/:id",           uploadCoverImage,            updateUploadedBook);
+router.delete("/:id",        deleteUploadedBook);
 
 export default router;

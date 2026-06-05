@@ -6,12 +6,12 @@ dotenv.config();
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
+    api_key:    process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
-    secure: true,
+    secure:     true,
 });
 
-// Image upload helper (used for covers and profile pics)
+// ── Image upload helper (covers and profile pics) ─────────────────────────────
 export const uploadToCloudinary = (buffer, options = {}) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -23,15 +23,15 @@ export const uploadToCloudinary = (buffer, options = {}) => {
     });
 };
 
-// Raw file upload helper (used for uploaded books)
+// ── Raw file upload helper (uploaded books) ───────────────────────────────────
 export const uploadRawToCloudinary = (buffer, options = {}) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader
             .upload_stream(
                 {
                     resource_type: "raw",
-                    access_mode: "public",
-                    type: "upload",
+                    access_mode:   "public",
+                    type:          "upload",
                     ...options,
                 },
                 (error, result) => {
@@ -43,39 +43,52 @@ export const uploadRawToCloudinary = (buffer, options = {}) => {
     });
 };
 
-// Image upload middleware (covers, profile pics)
+// ── Image upload middleware (covers, profile pics) ────────────────────────────
+const IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
+const IMAGE_EXTS  = ["jpg", "jpeg", "png", "webp"];
+
 export const uploadImageMiddleware = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits:  { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        const allowed = ["image/jpeg", "image/png", "image/webp"];
-        if (!allowed.includes(file.mimetype)) {
-            return cb(
-                new Error("Only JPG, PNG, and WebP images are allowed"),
-                false,
-            );
+        const ext = file.originalname.split(".").pop().toLowerCase();
+        if (!IMAGE_MIMES.includes(file.mimetype)) {
+            return cb(new Error("Only JPG, PNG, and WebP images are allowed"), false);
+        }
+        if (!IMAGE_EXTS.includes(ext)) {
+            return cb(new Error("File extension does not match image type"), false);
         }
         cb(null, true);
     },
 });
 
-// Raw book file upload middleware
+// ── Raw book file upload middleware ───────────────────────────────────────────
+const BOOK_MIMES = [
+    "application/pdf",
+    "application/epub+zip",
+    "application/zip",
+    "text/html",
+    "application/x-mobipocket-ebook",
+    "application/octet-stream", // fallback — some browsers send this for all files
+];
+const BOOK_EXTS = ["pdf", "epub", "zip", "html", "mobi"];
+
 export const uploadRawBook = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 50 * 1024 * 1024 },
+    limits:  { fileSize: 50 * 1024 * 1024 }, // 50MB
     fileFilter: (req, file, cb) => {
-        const allowed = [
-            "application/pdf",
-            "application/epub+zip",
-            "application/zip",
-            "text/html",
-            "application/x-mobipocket-ebook",
-        ];
         const ext = file.originalname.split(".").pop().toLowerCase();
-        const allowedExts = ["pdf", "epub", "zip", "html", "mobi"];
-        if (!allowedExts.includes(ext)) {
+
+        // Extension is the primary check — MIME can be unreliable for books
+        if (!BOOK_EXTS.includes(ext)) {
             return cb(new Error(`Format .${ext} not supported`), false);
         }
+
+        // Secondary MIME check — allow octet-stream as fallback
+        if (!BOOK_MIMES.includes(file.mimetype)) {
+            return cb(new Error(`MIME type ${file.mimetype} not allowed`), false);
+        }
+
         cb(null, true);
     },
 });

@@ -6,7 +6,6 @@ import multer from "multer";
 import mongoose from "mongoose";
 import helmet from "helmet";
 
-
 import { fileURLToPath } from "url";
 import rateLimit from "express-rate-limit";
 import uploadedBookRoutes from "./routes/uploadedBookRoutes.js";
@@ -22,10 +21,10 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 // ─── Environment Check ────────────────────────────────────────────────────────
 if (
     !process.env.JWT_SECRET ||
+    !process.env.REFRESH_TOKEN_SECRET ||
     !process.env.MONGO_URI ||
     !process.env.GEMINI_API_KEY ||
     !process.env.CLOUD_NAME ||
@@ -38,10 +37,9 @@ if (
 }
 
 // ─── Security Middleware ──────────────────────────────────────────────────────
-// CSP disabled so Cloudinary images load correctly;
 app.use(
     helmet({
-        contentSecurityPolicy: false,
+        contentSecurityPolicy: false, // disabled so Cloudinary images load
     }),
 );
 
@@ -57,11 +55,9 @@ app.use(
     cors({
         origin: function (origin, callback) {
             if (!origin) return callback(null, true);
-
             const allowed = allowedOrigins.some((o) =>
                 typeof o === "string" ? o === origin : o.test(origin),
             );
-
             if (allowed) {
                 callback(null, true);
             } else {
@@ -79,14 +75,22 @@ app.use(
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
-
+// ─── Trust Proxy (required for rate limiter on Render) ────────────────────────
+app.set("trust proxy", 1);
 
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
-app.set("trust proxy", 1);
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5,
     message: { message: "Too many attempts, please try again later" },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+const refreshLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20,
+    message: { message: "Too many refresh attempts, please try again later" },
     standardHeaders: true,
     legacyHeaders: false,
 });
@@ -120,22 +124,23 @@ connectDB();
 mongoose.set("returnDocument", "after");
 
 // ─── Rate Limiting per Route ──────────────────────────────────────────────────
-app.use("/api/auth/login", authLimiter);
-app.use("/api/auth/register", authLimiter);
-app.use("/api/ai/generate-cover", imageLimiter);
-app.use("/api/ai", aiLimiter);
-app.use("/api", generalLimiter);
+app.use("/api/auth/login",            authLimiter);
+app.use("/api/auth/register",         authLimiter);
+app.use("/api/auth/refresh",          refreshLimiter);  // ← NEW
+app.use("/api/ai/generate-cover",     imageLimiter);
+app.use("/api/ai",                    aiLimiter);
+app.use("/api",                       generalLimiter);
 
-/// ─── Health Check Endpoint ─────────────────────────────────────────────────
+// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", message: "Server is awake" });
 });
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
-app.use("/api/auth", authRoutes);
-app.use("/api/books", bookRoutes);
-app.use("/api/ai", aiRoutes);
-app.use("/api/export", exportRoutes);
+app.use("/api/auth",           authRoutes);
+app.use("/api/books",          bookRoutes);
+app.use("/api/ai",             aiRoutes);
+app.use("/api/export",         exportRoutes);
 app.use("/api/uploaded-books", uploadedBookRoutes);
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
