@@ -30,10 +30,12 @@ const DashboardLayout = ({ children }) => {
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 <header className="bg-white border-b border-gray-200 h-16 w-full sticky top-0 z-30 relative">
                     <div className="w-full h-full px-12 flex items-center justify-between">
-
                         {/* Left: Brand */}
                         <div className="flex items-center">
-                            <Link className="flex items-center space-x-3" to="/dashboard">
+                            <Link
+                                className="flex items-center space-x-3"
+                                to="/dashboard"
+                            >
                                 <div className="h-8 w-8 bg-gradient-to-br from-violet-400 to-violet-600 rounded-lg flex items-center justify-center text-white">
                                     <Album className="h-5 w-5 text-white" />
                                 </div>
@@ -56,7 +58,9 @@ const DashboardLayout = ({ children }) => {
                                 </a>
                                 <a
                                     href="#uploaded-books"
-                                    onClick={(e) => scrollTo(e, "uploaded-books")}
+                                    onClick={(e) =>
+                                        scrollTo(e, "uploaded-books")
+                                    }
                                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-violet-600 hover:bg-violet-50 transition-all"
                                 >
                                     <Upload className="w-4 h-4" />
@@ -71,9 +75,11 @@ const DashboardLayout = ({ children }) => {
                                 isOpen={profileDropdownOpen}
                                 onToggle={(e) => {
                                     e.stopPropagation();
-                                    setProfileDropdownOpen(!profileDropdownOpen);
+                                    setProfileDropdownOpen(
+                                        !profileDropdownOpen,
+                                    );
                                 }}
-                                avatar={user?.avatar || ""}
+                                avatar={user?.profilePic || user?.avatar || ""}
                                 companyName={user?.name || ""}
                                 email={user?.email || ""}
                                 onLogout={logout}
