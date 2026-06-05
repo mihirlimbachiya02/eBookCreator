@@ -518,7 +518,7 @@ const EditorPage = () => {
                     className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-8 p-2"}`}
                 >
                     {/* The container div below handles the icon alignment.
-        When isAiOpen is false (collapsed), justify-center moves it to the middle.
+        When isAiOpen is false (collapsed), justify-center moves the icon to the horizontal center.
     */}
                     <div
                         className={`flex items-center ${isAiOpen ? "justify-between" : "justify-center"} pb-2 border-b border-slate-200 shrink-0`}
@@ -541,11 +541,12 @@ const EditorPage = () => {
                         >
                             {isAiOpen ?
                                 <X className="h-3.5 w-3.5" />
-                            :   /* This is the icon shown when collapsed */
+                            :   /* This is the Sparkle icon shown when the panel is collapsed */
                                 <Sparkles className="h-4 w-4 text-violet-500" />
                             }
                         </button>
                     </div>
+
                     {isAiOpen && (
                         <>
                             <div className="space-y-3 shrink-0">
