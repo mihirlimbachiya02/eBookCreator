@@ -406,90 +406,60 @@ const EditorPage = () => {
     return (
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
-            <header className="h-14 border-b border-slate-150 bg-slate-900 px-4 flex items-center justify-between select-none shrink-0 z-20">
-                <div className="flex items-center gap-3 min-w-0">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            handleSaveChanges(book, false);
-                            navigate("/dashboard");
-                        }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
-                    >
-                        <Menu className="h-4 w-4" />
-                    </button>
-
-                    {/* DYNAMIC NAVIGATION TAB SWITCHERS */}
-                    <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1 mx-2">
+            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-3 py-2 md:px-4 flex flex-col md:flex-row items-center justify-between gap-2 shrink-0 z-20">
+                {/* Left Side: Buttons & Title */}
+                <div className="flex w-full md:w-auto items-center justify-between gap-3">
+                    <div className="flex items-center gap-1">
                         <button
-                            type="button"
-                            onClick={() => setActiveTab("chapter")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                                activeTab === "chapter" ?
-                                    "bg-slate-700 text-white shadow-sm"
-                                :   "text-slate-400 hover:text-slate-200"
-                            }`}
+                            onClick={() => {
+                                handleSaveChanges(book, false);
+                                navigate("/dashboard");
+                            }}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                         >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            Editor
+                            <ArrowLeft className="h-4 w-4" />
                         </button>
                         <button
-                            type="button"
-                            onClick={() => setActiveTab("details")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                                activeTab === "details" ?
-                                    "bg-slate-700 text-white shadow-sm"
-                                :   "text-slate-400 hover:text-slate-200"
-                            }`}
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
                         >
-                            <NotebookText className="w-3.5 h-3.5" />
-                            Book Details
+                            <Menu className="h-4 w-4" />
                         </button>
                     </div>
-
-                    <div className="min-w-0 hidden sm:block">
-                        <h2 className="text-sm font-bold text-white tracking-tight truncate">
-                            {book.title}
-                        </h2>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-bold text-slate-500 tracking-wide uppercase truncate max-w-[120px]">
-                                by {book.author || "Mihir"}
-                            </span>
-                            <div className="w-1 h-1 bg-slate-700 rounded-full shrink-0" />
-                            <div className="flex items-center gap-1 text-[10px] text-slate-400 select-none">
-                                {isSaving ?
-                                    <span className="text-violet-400 animate-pulse flex items-center gap-1">
-                                        ⏱️ Syncing...
-                                    </span>
-                                :   <span className="text-emerald-400 flex items-center gap-1">
-                                        <CheckCircle className="h-2.5 w-2.5" />{" "}
-                                        Saved
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                    </div>
+                    <h2 className="text-xs font-bold text-white truncate md:hidden">
+                        {book.title}
+                    </h2>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                {/* Center: Tab Switchers */}
+                <div className="flex w-full md:w-auto bg-slate-800 p-1 rounded-xl gap-1">
                     <button
-                        type="button"
+                        onClick={() => setActiveTab("chapter")}
+                        className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 h-8 text-[10px] md:text-xs font-bold rounded-lg transition-all ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                    >
+                        <BookOpen className="w-3.5 h-3.5" />{" "}
+                        <span className="hidden md:inline">Editor</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("details")}
+                        className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 h-8 text-[10px] md:text-xs font-bold rounded-lg transition-all ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                    >
+                        <NotebookText className="w-3.5 h-3.5" />{" "}
+                        <span className="hidden md:inline">Book Details</span>
+                    </button>
+                </div>
+
+                {/* Right: Save & Export */}
+                <div className="hidden md:flex items-center gap-2">
+                    <button
                         onClick={() => handleSaveChanges(book, true)}
-                        className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md rounded-xl transition-all cursor-pointer flex items-center gap-1"
+                        className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs rounded-lg transition-all"
                     >
                         Save Changes
                     </button>
-
                     <Dropdown
                         trigger={
-                            <button className="bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:bg-slate-750 font-bold text-xs h-8 px-3 rounded-xl shadow-sm flex items-center gap-1 cursor-pointer">
+                            <button className="bg-slate-800 text-slate-200 font-bold text-xs h-8 px-3 rounded-lg flex items-center gap-1">
                                 Export <ChevronDown className="h-3 w-3" />
                             </button>
                         }
