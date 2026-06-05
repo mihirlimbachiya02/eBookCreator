@@ -21,8 +21,6 @@ import ChapterSidebar from "../components/editor/ChapterSidebar.jsx";
 import ChapterEditorTab from "../components/editor/ChapterEditorTab.jsx";
 import BookDetailsTab from "../components/editor/BookDetailsTab.jsx";
 
-
-
 const EditorPage = () => {
     const { bookId } = useParams();
     const navigate = useNavigate();
@@ -47,8 +45,6 @@ const EditorPage = () => {
     const fileInputRef = useRef(null);
     const saveTimeoutRef = useRef(null);
 
-
-
     // Initial Data Cargo Fetch
     useEffect(() => {
         const fetchBook = async () => {
@@ -68,8 +64,6 @@ const EditorPage = () => {
         };
         if (bookId) fetchBook();
     }, [bookId, navigate]);
-
-
 
     // Dynamic Chapter Upstream Synchronization Proxy
     const handleChapterUpdate = (updatePayload) => {
@@ -102,8 +96,6 @@ const EditorPage = () => {
         }
     };
 
-
-
     // Generic Metadata Form Update Upstream Handler
     const handleBookDetailsUpdate = (e) => {
         const { name, value } = e.target;
@@ -114,17 +106,13 @@ const EditorPage = () => {
         });
     };
 
-
-
     const triggerAutoSave = (currentBookState = book) => {
-        if (isSaving) return; 
+        if (isSaving) return;
         if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
         saveTimeoutRef.current = setTimeout(() => {
             handleSaveChanges(currentBookState, false);
         }, 2500);
     };
-
-
 
     const handleSaveChanges = async (bookToSave = book, showToast = true) => {
         if (!bookToSave || !bookId) return;
@@ -134,7 +122,7 @@ const EditorPage = () => {
             title: bookToSave.title,
             author: bookToSave.author,
             subtitle: bookToSave.subtitle || "",
-            chapters: bookToSave.chapters, 
+            chapters: bookToSave.chapters,
         };
 
         setIsSaving(true);
@@ -155,8 +143,6 @@ const EditorPage = () => {
         }
     };
 
-    
-
     const handleAddChapter = () => {
         setBook((prev) => {
             if (!prev) return prev;
@@ -175,8 +161,6 @@ const EditorPage = () => {
         });
         toast.success("New chapter template initialized!");
     };
-
-
 
     const handleDeleteChapter = (index) => {
         if (book?.chapters?.length <= 1) {
@@ -198,8 +182,6 @@ const EditorPage = () => {
         toast.success("Chapter block removed.");
     };
 
-
-
     const handleReorderChapters = (oldIndex, newIndex) => {
         setBook((prev) => {
             if (!prev) return prev;
@@ -211,8 +193,6 @@ const EditorPage = () => {
             return updated;
         });
     };
-
-
 
     const handleCoverImageUpload = async (formData) => {
         // formData is already created in BookDetailsTab.jsx
@@ -240,8 +220,6 @@ const EditorPage = () => {
         }
     };
 
-
-
     const handleAICoverSave = async (coverImageUrl) => {
         if (!bookId || !coverImageUrl) return;
         setIsUploading(true);
@@ -261,8 +239,6 @@ const EditorPage = () => {
             setIsUploading(false);
         }
     };
-
-
 
     const handleGenerateOutline = async () => {
         setIsGenerating(true);
@@ -293,8 +269,6 @@ const EditorPage = () => {
             setIsGenerating(false);
         }
     };
-
-
 
     const handleGenerateChapterContent = async (index) => {
         if (!book || !book.chapters?.[index]) return;
@@ -327,8 +301,6 @@ const EditorPage = () => {
         }
     };
 
-
-
     const handleExportPDF = async () => {
         toast.loading("Generating PDF...", { id: "export" });
         try {
@@ -351,8 +323,6 @@ const EditorPage = () => {
             toast.error("Failed to generate PDF.", { id: "export" });
         }
     };
-
-
 
     const handleExportDoc = async () => {
         toast.loading("Generating document...", { id: "export" });
@@ -379,10 +349,6 @@ const EditorPage = () => {
         }
     };
 
-
-
-
-
     if (isLoading || !book) {
         return (
             <div className="flex h-screen items-center justify-center bg-slate-50">
@@ -396,70 +362,95 @@ const EditorPage = () => {
         );
     }
 
-
     const currentActiveChapter = book.chapters?.[selectedChapterIndex] || null;
-
-
-
-
 
     return (
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
-            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-3 py-2 md:px-4 flex flex-col md:flex-row items-center justify-between gap-2 shrink-0 z-20">
-                {/* Left Side: Buttons & Title */}
-                <div className="flex w-full md:w-auto items-center justify-between gap-3">
-                    <div className="flex items-center gap-1">
+            <header className="h-14 border-b border-slate-150 bg-slate-900 px-4 flex items-center justify-between select-none shrink-0 z-20">
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleSaveChanges(book, false);
+                            navigate("/dashboard");
+                        }}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                    >
+                        <Menu className="h-4 w-4" />
+                    </button>
+
+                    {/* DYNAMIC NAVIGATION TAB SWITCHERS */}
+                    <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1 mx-2">
                         <button
-                            onClick={() => {
-                                handleSaveChanges(book, false);
-                                navigate("/dashboard");
-                            }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                            type="button"
+                            onClick={() => setActiveTab("chapter")}
+                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                                activeTab === "chapter" ?
+                                    "bg-slate-700 text-white shadow-sm"
+                                :   "text-slate-400 hover:text-slate-200"
+                            }`}
                         >
-                            <ArrowLeft className="h-4 w-4" />
+                            <BookOpen className="w-3.5 h-3.5" />
+                            Editor
                         </button>
                         <button
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
+                            type="button"
+                            onClick={() => setActiveTab("details")}
+                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                                activeTab === "details" ?
+                                    "bg-slate-700 text-white shadow-sm"
+                                :   "text-slate-400 hover:text-slate-200"
+                            }`}
                         >
-                            <Menu className="h-4 w-4" />
+                            <NotebookText className="w-3.5 h-3.5" />
+                            Book Details
                         </button>
                     </div>
-                    <h2 className="text-xs font-bold text-white truncate md:hidden">
-                        {book.title}
-                    </h2>
+
+                    <div className="min-w-0 hidden sm:block">
+                        <h2 className="text-sm font-bold text-white tracking-tight truncate">
+                            {book.title}
+                        </h2>
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-bold text-slate-500 tracking-wide uppercase truncate max-w-[120px]">
+                                by {book.author || "Mihir"}
+                            </span>
+                            <div className="w-1 h-1 bg-slate-700 rounded-full shrink-0" />
+                            <div className="flex items-center gap-1 text-[10px] text-slate-400 select-none">
+                                {isSaving ?
+                                    <span className="text-violet-400 animate-pulse flex items-center gap-1">
+                                        ⏱️ Syncing...
+                                    </span>
+                                :   <span className="text-emerald-400 flex items-center gap-1">
+                                        <CheckCircle className="h-2.5 w-2.5" />{" "}
+                                        Saved
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Center: Tab Switchers */}
-                <div className="flex w-full md:w-auto bg-slate-800 p-1 rounded-xl gap-1">
+                <div className="flex items-center gap-2 shrink-0">
                     <button
-                        onClick={() => setActiveTab("chapter")}
-                        className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 h-8 text-[10px] md:text-xs font-bold rounded-lg transition-all ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
-                    >
-                        <BookOpen className="w-3.5 h-3.5" />{" "}
-                        <span className="hidden md:inline">Editor</span>
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("details")}
-                        className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-3 h-8 text-[10px] md:text-xs font-bold rounded-lg transition-all ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
-                    >
-                        <NotebookText className="w-3.5 h-3.5" />{" "}
-                        <span className="hidden md:inline">Book Details</span>
-                    </button>
-                </div>
-
-                {/* Right: Save & Export */}
-                <div className="hidden md:flex items-center gap-2">
-                    <button
+                        type="button"
                         onClick={() => handleSaveChanges(book, true)}
-                        className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs rounded-lg transition-all"
+                        className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md rounded-xl transition-all cursor-pointer flex items-center gap-1"
                     >
                         Save Changes
                     </button>
+
                     <Dropdown
                         trigger={
-                            <button className="bg-slate-800 text-slate-200 font-bold text-xs h-8 px-3 rounded-lg flex items-center gap-1">
+                            <button className="bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:bg-slate-750 font-bold text-xs h-8 px-3 rounded-xl shadow-sm flex items-center gap-1 cursor-pointer">
                                 Export <ChevronDown className="h-3 w-3" />
                             </button>
                         }
@@ -699,6 +690,6 @@ const EditorPage = () => {
             )}
         </div>
     );
-};;
+};
 
 export default EditorPage;
