@@ -11,6 +11,7 @@ import {
     HelpCircle,
     NotebookText,
     BookOpen,
+    X,
 } from "lucide-react";
 
 import axiosInstance from "../utils/axiosInstance";
@@ -41,6 +42,7 @@ const EditorPage = () => {
     const [aiStyle, setAiStyle] = useState("Informative");
     const [isGenerating, setIsGenerating] = useState(false);
     const [aiPrompt, setAiPrompt] = useState("");
+    const [isAiOpen, setIsAiOpen] = useState(true);
 
     const fileInputRef = useRef(null);
     const saveTimeoutRef = useRef(null);
@@ -551,80 +553,103 @@ const EditorPage = () => {
                 </main>
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
-                <aside className="w-80 border-l border-slate-200 bg-slate-50 p-4 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 shrink-0">
-                        <Sparkles className="h-4 w-4 text-violet-600 animate-pulse" />
-                        <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">
-                            AI Assistant
-                        </h4>
-                    </div>
-
-                    <div className="space-y-3 shrink-0">
+                <aside
+                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-10 p-2"}`}
+                >
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-200 shrink-0">
+                        {isAiOpen && (
+                            <div className="flex items-center gap-2">
+                                <Sparkles className="h-4 w-4 text-violet-600 animate-pulse" />
+                                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">
+                                    AI Assistant
+                                </h4>
+                            </div>
+                        )}
                         <button
-                            onClick={() => setIsOutlineModalOpen(true)}
-                            className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                        >
-                            Generate Outline Structure
-                        </button>
-                        <button
-                            onClick={() =>
-                                handleGenerateChapterContent(
-                                    selectedChapterIndex,
-                                )
+                            onClick={() => setIsAiOpen(!isAiOpen)}
+                            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer ml-auto"
+                            title={
+                                isAiOpen ? "Close AI Panel" : "Open AI Panel"
                             }
-                            disabled={
-                                isGenerating ||
-                                (activeTab === "chapter" &&
-                                    !currentActiveChapter)
-                            }
-                            className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all text-left flex items-center justify-between cursor-pointer group disabled:opacity-40"
                         >
-                            <span>
-                                {activeTab === "details" ?
-                                    "🪄 Polish Book Metadata"
-                                :   "🪄 Auto-Write Chapter"}
-                            </span>
-                            <Sparkles className="h-3.5 w-3.5 text-slate-400 group-hover:text-violet-500" />
+                            {isAiOpen ?
+                                <X className="h-3.5 w-3.5" />
+                            :   <Sparkles className="h-3.5 w-3.5 text-violet-500" />
+                            }
                         </button>
                     </div>
+                    {isAiOpen && (
+                        <>
+                            <div className="space-y-3 shrink-0">
+                                <button
+                                    onClick={() => setIsOutlineModalOpen(true)}
+                                    className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                                >
+                                    Generate Outline Structure
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        handleGenerateChapterContent(
+                                            selectedChapterIndex,
+                                        )
+                                    }
+                                    disabled={
+                                        isGenerating ||
+                                        (activeTab === "chapter" &&
+                                            !currentActiveChapter)
+                                    }
+                                    className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all text-left flex items-center justify-between cursor-pointer group disabled:opacity-40"
+                                >
+                                    <span>
+                                        {activeTab === "details" ?
+                                            "🪄 Polish Book Metadata"
+                                        :   "🪄 Auto-Write Chapter"}
+                                    </span>
+                                    <Sparkles className="h-3.5 w-3.5 text-slate-400 group-hover:text-violet-500" />
+                                </button>
+                            </div>
 
-                    <div className="flex-grow flex flex-col min-h-0 pt-2">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-                            Custom Directives
-                        </label>
-                        <textarea
-                            value={aiPrompt}
-                            onChange={(e) => setAiPrompt(e.target.value)}
-                            placeholder={
-                                activeTab === "details" ?
-                                    "e.g., Suggest a captivating tagline..."
-                                :   "e.g., Include case scenarios..."
-                            }
-                            rows={6}
-                            className="w-full px-3 py-2.5 text-xs border border-slate-200 focus:border-violet-500 rounded-xl bg-white focus:outline-none resize-none text-slate-700 leading-relaxed"
-                        />
+                            <div className="flex-grow flex flex-col min-h-0 pt-2">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                                    Custom Directives
+                                </label>
+                                <textarea
+                                    value={aiPrompt}
+                                    onChange={(e) =>
+                                        setAiPrompt(e.target.value)
+                                    }
+                                    placeholder={
+                                        activeTab === "details" ?
+                                            "e.g., Suggest a captivating tagline..."
+                                        :   "e.g., Include case scenarios..."
+                                    }
+                                    rows={6}
+                                    className="w-full px-3 py-2.5 text-xs border border-slate-200 focus:border-violet-500 rounded-xl bg-white focus:outline-none resize-none text-slate-700 leading-relaxed"
+                                />
 
-                        <button
-                            onClick={() =>
-                                handleGenerateChapterContent(
-                                    selectedChapterIndex,
-                                )
-                            }
-                            disabled={
-                                isGenerating ||
-                                (activeTab === "chapter" &&
-                                    !currentActiveChapter)
-                            }
-                            className="mt-3 w-full h-10 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs shadow-md rounded-xl flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 transition-all hover:scale-[1.02]"
-                        >
-                            <Sparkles
-                                className={`h-3.5 w-3.5 ${isGenerating ? "animate-spin" : "animate-pulse"}`}
-                            />
-                            {isGenerating ?
-                                "Processing..."
-                            :   "Generate with AI"}
-                        </button>
-                    </div>
+                                <button
+                                    onClick={() =>
+                                        handleGenerateChapterContent(
+                                            selectedChapterIndex,
+                                        )
+                                    }
+                                    disabled={
+                                        isGenerating ||
+                                        (activeTab === "chapter" &&
+                                            !currentActiveChapter)
+                                    }
+                                    className="mt-3 w-full h-10 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs shadow-md rounded-xl flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 transition-all hover:scale-[1.02]"
+                                >
+                                    <Sparkles
+                                        className={`h-3.5 w-3.5 ${isGenerating ? "animate-spin" : "animate-pulse"}`}
+                                    />
+                                    {isGenerating ?
+                                        "Processing..."
+                                    :   "Generate with AI"}
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </aside>
             </div>
 
