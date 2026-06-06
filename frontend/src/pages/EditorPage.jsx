@@ -367,7 +367,6 @@ const EditorPage = () => {
     return (
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
-            {/* WORKSPACE TOP HEADER BAR */}
             <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-col md:flex-row items-center justify-between shrink-0 z-20">
                 {/* ROW 1: Navigation + Metadata (Always visible) */}
                 <div className="flex w-full items-center justify-between gap-3">
@@ -409,8 +408,22 @@ const EditorPage = () => {
                         </div>
                     </div>
 
-                    {/* Save/Export moved to Row 2 on mobile, kept in Row 1 on Desktop */}
-                    <div className="hidden md:flex items-center gap-2">
+                    {/* DESKTOP ROW 1: Editor/Detail Tabs & Buttons (visible on md+) */}
+                    <div className="hidden md:flex items-center gap-4">
+                        <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
+                            <button
+                                onClick={() => setActiveTab("chapter")}
+                                className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                            >
+                                <BookOpen className="w-3.5 h-3.5" /> Editor
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("details")}
+                                className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                            >
+                                <NotebookText className="w-3.5 h-3.5" /> Details
+                            </button>
+                        </div>
                         <button
                             onClick={() => handleSaveChanges(book, true)}
                             className="px-3 h-8 bg-violet-600 text-white font-bold text-xs rounded-xl"
@@ -450,7 +463,6 @@ const EditorPage = () => {
                             <NotebookText className="w-3.5 h-3.5" /> Details
                         </button>
                     </div>
-
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => handleSaveChanges(book, true)}
