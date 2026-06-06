@@ -9,10 +9,11 @@ const ChapterEditorTab = ({
     book,
     selectedChapterIndex = 0,
     onChapterChange = () => {},
+    isAiOpen,
+    setIsAiOpen,
 }) => {
     const [isPreviewMode, setIsPreviewMode] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
-    const [isAiOpen, setIsAiOpen] = useState(false);
 
     const currentChapter = book?.chapters?.[selectedChapterIndex];
 
@@ -24,7 +25,7 @@ const ChapterEditorTab = ({
         const handleToolbarUpdate = () => {
             const boldBtn = toolbar.querySelector(".bold");
             if (boldBtn) {
-                // active states 
+                // active states
             }
         };
 
