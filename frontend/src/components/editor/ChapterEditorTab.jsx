@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { Type, Maximize2, Eye, EyeOff } from "lucide-react";
+import { Type, Maximize2, Eye, EyeOff, Sparkles } from "lucide-react";
 import {Button, InputField } from "../ui/index.js";
 import DOMPurify from "dompurify";
 import SimpleMDEEditor from "./SimpleMDEEditor.jsx";
@@ -12,6 +12,7 @@ const ChapterEditorTab = ({
 }) => {
     const [isPreviewMode, setIsPreviewMode] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isAiOpen, setIsAiOpen] = useState(false);
 
     const currentChapter = book?.chapters?.[selectedChapterIndex];
 
@@ -127,6 +128,12 @@ const ChapterEditorTab = ({
 
                 {/* Buttons: Edit Mode & Full Screen */}
                 <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setIsAiOpen(!isAiOpen)} // Ensure setIsAiOpen is passed as a prop
+                        className="md:hidden p-2 bg-violet-100 text-violet-700 rounded-lg"
+                    >
+                        <Sparkles className="h-4 w-4" />
+                    </button>
                     <button
                         type="button"
                         onClick={() => setIsPreviewMode(!isPreviewMode)}

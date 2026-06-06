@@ -542,44 +542,37 @@ const EditorPage = () => {
                 </main>
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
+                {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
-                    // Add the onClick handler here to the aside element
                     onClick={() => !isAiOpen && setIsAiOpen(true)}
-                    // Added 'cursor-pointer' to give visual feedback that it's clickable when closed
-                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-10 transition-all duration-300 ${isAiOpen ? "w-80 p-4" : "w-10 p-2 cursor-pointer"}`}
+                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-50 transition-all duration-300 
+    ${
+        isAiOpen ?
+            "w-80 p-4 fixed inset-y-0 right-0 shadow-2xl md:shadow-none md:static md:w-80 md:p-4"
+        :   "w-0 p-0 md:w-10 md:p-2 cursor-pointer"
+    }`}
                 >
-                    <div
-                        className={`flex items-center pb-2 border-b border-slate-200 shrink-0 ${isAiOpen ? "justify-between" : "justify-center"}`}
-                    >
-                        {isAiOpen && (
-                            <div className="flex items-center gap-2">
-                                <Sparkles className="h-4 w-4 text-violet-600 animate-pulse" />
-                                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">
-                                    AI Assistant
-                                </h4>
-                            </div>
-                        )}
-
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevents clicking the button from triggering the aside click
-                                setIsAiOpen(!isAiOpen);
-                            }}
-                            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
-                            title={
-                                isAiOpen ? "Close AI Panel" : "Open AI Panel"
-                            }
-                        >
-                            {isAiOpen ?
-                                <X className="h-3.5 w-3.5" />
-                            :   <Sparkles className="h-4 w-4 text-violet-500" />
-                            }
-                        </button>
-                    </div>
-
                     {isAiOpen && (
-                        <>
-                            <div className="space-y-3 shrink-0">
+                        <div className="flex flex-col h-full">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-200 shrink-0">
+                                <div className="flex items-center gap-2">
+                                    <Sparkles className="h-4 w-4 text-violet-600 animate-pulse" />
+                                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-wide">
+                                        AI Assistant
+                                    </h4>
+                                </div>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsAiOpen(false);
+                                    }}
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200"
+                                >
+                                    <X className="h-3.5 w-3.5" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-3 shrink-0 mt-4">
                                 <button
                                     onClick={() => setIsOutlineModalOpen(true)}
                                     className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
@@ -625,7 +618,6 @@ const EditorPage = () => {
                                     rows={6}
                                     className="w-full px-3 py-2.5 text-xs border border-slate-200 focus:border-violet-500 rounded-xl bg-white focus:outline-none resize-none text-slate-700 leading-relaxed"
                                 />
-
                                 <button
                                     onClick={() =>
                                         handleGenerateChapterContent(
@@ -647,7 +639,7 @@ const EditorPage = () => {
                                     :   "Generate with AI"}
                                 </button>
                             </div>
-                        </>
+                        </div>
                     )}
                 </aside>
             </div>
