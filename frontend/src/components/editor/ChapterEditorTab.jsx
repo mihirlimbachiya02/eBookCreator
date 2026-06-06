@@ -9,7 +9,6 @@ const ChapterEditorTab = ({
     book,
     selectedChapterIndex = 0,
     onChapterChange = () => {},
-    isAiOpen,
     setIsAiOpen,
 }) => {
     const [isPreviewMode, setIsPreviewMode] = useState(false);
