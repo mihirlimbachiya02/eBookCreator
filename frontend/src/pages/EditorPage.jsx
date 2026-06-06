@@ -367,68 +367,66 @@ const EditorPage = () => {
     return (
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
-            <header className="h-14 border-b border-slate-150 bg-slate-900 px-4 flex items-center justify-between select-none shrink-0 z-20">
-                {/* LEFT: Nav + Tabs */}
-                <div className="flex items-center gap-3 min-w-0">
+            <header className="h-14 border-b border-slate-150 bg-slate-900 px-4 flex items-center justify-between shrink-0 z-20">
+                {/* LEFT SIDE: Everything combined */}
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                     <button
                         type="button"
                         onClick={() => {
                             handleSaveChanges(book, false);
                             navigate("/dashboard");
                         }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </button>
                     <button
                         type="button"
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
+                        className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
                     >
                         <Menu className="h-4 w-4" />
                     </button>
 
-                    {/* Tab Switchers - Kept intact */}
+                    {/* 1. Tab Switchers */}
                     <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1 mx-2">
                         <button
-                            type="button"
                             onClick={() => setActiveTab("chapter")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
                             <BookOpen className="w-3.5 h-3.5" />{" "}
                             <span className="hidden md:inline">Editor</span>
                         </button>
                         <button
-                            type="button"
                             onClick={() => setActiveTab("details")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
+                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
                             <NotebookText className="w-3.5 h-3.5" />{" "}
                             <span className="hidden md:inline">Details</span>
                         </button>
                     </div>
-                </div>
 
-                {/* CENTER: Book Metadata (Hidden on very small screens to prevent overlap) */}
-                <div className="hidden lg:block min-w-0 flex-1 mx-4 text-center">
-                    <h2 className="text-sm font-bold text-white tracking-tight truncate">
-                        {book.title}
-                    </h2>
-                    <div className="flex items-center justify-center gap-2 mt-0.5">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase truncate">
-                            by {book.author || "Mihir"}
-                        </span>
-                        <div className="w-1 h-1 bg-slate-700 rounded-full" />
-                        <div className="text-[10px] text-slate-400">
-                            {isSaving ?
-                                <span className="text-violet-400">
-                                    ⏱️ Syncing...
-                                </span>
-                            :   <span className="text-emerald-400 flex items-center gap-1">
-                                    <CheckCircle className="h-2.5 w-2.5" />{" "}
-                                    Saved
-                                </span>
-                            }
+                    {/* 2. Metadata: Placed directly after tabs, visible on desktop */}
+                    <div className="hidden md:flex flex-col min-w-0 ml-2">
+                        <h2 className="text-sm font-bold text-white tracking-tight truncate">
+                            {book.title}
+                        </h2>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase truncate">
+                                by {book.author || "Mihir"}
+                            </span>
+                            <div className="w-1 h-1 bg-slate-700 rounded-full" />
+                            <div className="text-[10px] text-slate-400">
+                                {isSaving ?
+                                    <span className="text-violet-400">
+                                        ⏱️ Syncing...
+                                    </span>
+                                :   <span className="text-emerald-400 flex items-center gap-1">
+                                        <CheckCircle className="h-2.5 w-2.5" />{" "}
+                                        Saved
+                                    </span>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
