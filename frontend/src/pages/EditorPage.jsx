@@ -31,7 +31,7 @@ const EditorPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("chapter");
 
     // AI Modal / Control Panel States
@@ -40,7 +40,7 @@ const EditorPage = () => {
     const [aiStyle, setAiStyle] = useState("Informative");
     const [isGenerating, setIsGenerating] = useState(false);
     const [aiPrompt, setAiPrompt] = useState("");
-    const [isAiOpen, setIsAiOpen] = useState(true);
+    const [isAiOpen, setIsAiOpen] = useState(false);
 
     const fileInputRef = useRef(null);
     const saveTimeoutRef = useRef(null);
