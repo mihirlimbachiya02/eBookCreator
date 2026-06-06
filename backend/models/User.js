@@ -35,11 +35,22 @@ const userSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
-        // Hashed refresh token — stored in DB so it can be invalidated on logout
+        // Hashed refresh token
         refreshToken: {
             type: String,
             default: null,
-            select: false, // never returned in queries by default
+            select: false,
+        },
+        // Password reset fields
+        passwordResetToken: {
+            type: String,
+            default: null,
+            select: false,
+        },
+        passwordResetExpires: {
+            type: Date,
+            default: null,
+            select: false,
         },
     },
     { timestamps: true },

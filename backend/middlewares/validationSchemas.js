@@ -23,7 +23,19 @@ export const updateProfileSchema = z.object({
         .max(50)
         .regex(/^[a-zA-Z\s'-]+$/, "Name contains invalid characters")
         .optional(),
-    // Email change intentionally excluded — requires separate verification flow
+});
+
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("Invalid email").max(100),
+});
+
+export const resetPasswordSchema = z.object({
+    password: z.string().min(6, "Password must be at least 6 characters").max(100),
+});
+
+export const changePasswordSchema = z.object({
+    currentPassword: z.string().min(1, "Current password required").max(100),
+    newPassword:     z.string().min(6, "New password must be at least 6 characters").max(100),
 });
 
 // ── Books ─────────────────────────────────────────────────────────────────────
@@ -56,7 +68,6 @@ export const updateBookSchema = z.object({
         .optional(),
 });
 
-// Cover image URL — only allow Cloudinary or known safe domains
 const ALLOWED_COVER_DOMAINS = [
     "res.cloudinary.com",
     "images.unsplash.com",
@@ -96,7 +107,7 @@ export const importUrlSchema = z.object({
                     /^10\./,
                     /^172\.(1[6-9]|2[0-9]|3[01])\./,
                     /^192\.168\./,
-                    /^169\.254\./, // AWS metadata endpoint
+                    /^169\.254\./,
                     /^::1$/,
                     /^0\./,
                     /^0$/,
@@ -113,7 +124,6 @@ export const uploadBookSchema = z.object({
     title: z.string().max(200).optional(),
 });
 
-// ← NEW: importFromDrive validation
 export const importDriveSchema = z.object({
     driveUrl:    z.string().url("Invalid Drive URL").optional(),
     accessToken: z.string().max(500).optional(),

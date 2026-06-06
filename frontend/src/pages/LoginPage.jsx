@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, BookOpen } from "lucide-react";
 import toast from "react-hot-toast";
-
 import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
 import { useAuth } from "../context/useAuth";
@@ -29,33 +28,23 @@ const LoginPage = () => {
 
         setIsLoading(true);
         try {
-            const response = await axiosInstance.post(
-                API_PATHS.AUTH.LOGIN,
-                formData,
-            );
-
+            const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, formData);
             const token        = response.data?.token || response.data?.data?.token;
             const refreshToken = response.data?.refreshToken;
 
-            if (!token) {
-                throw new Error("Authentication failed: No token returned from server.");
-            }
+            if (!token) throw new Error("Authentication failed: No token returned.");
 
             const profileResponse = await axiosInstance.get(
                 API_PATHS.AUTH.GET_PROFILE,
                 { headers: { Authorization: `Bearer ${token}` } },
             );
 
-            // Pass refreshToken as third argument so AuthProvider stores it
             login(profileResponse.data, token, refreshToken);
-
             toast.success("Login successful!");
             navigate("/dashboard");
         } catch (error) {
             toast.error(
-                error.response?.data?.message ||
-                error.message ||
-                "Login failed. Please try again.",
+                error.response?.data?.message || error.message || "Login failed. Please try again.",
             );
         } finally {
             setIsLoading(false);
@@ -101,6 +90,17 @@ const LoginPage = () => {
                             onChange={handleChange}
                             required
                         />
+
+                        {/* Forgot Password Link */}
+                        <div className="flex justify-end -mt-2">
+                            <Link
+                                to="/forgot-password"
+                                className="text-sm font-medium text-violet-600 hover:text-violet-500 transition-colors"
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
+
                         <div className="pt-2">
                             <Button
                                 type="submit"
