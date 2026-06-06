@@ -4,13 +4,13 @@ import toast from "react-hot-toast";
 
 import {
     Sparkles,
-    Menu,
+    //Menu,
     ChevronDown,
-    ArrowLeft,
+    //ArrowLeft,
     CheckCircle,
     HelpCircle,
-    NotebookText,
-    BookOpen,
+    //NotebookText,
+    //BookOpen,
     X,
 } from "lucide-react";
 
@@ -31,8 +31,8 @@ const EditorPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [activeTab, setActiveTab] = useState("chapter");
+    const [isSidebarOpen, /*setIsSidebarOpen*/] = useState(true);
+    const [activeTab, /*setActiveTab*/] = useState("chapter");
 
     // AI Modal / Control Panel States
     const [isOutlineModalOpen, setIsOutlineModalOpen] = useState(false);
@@ -368,93 +368,37 @@ const EditorPage = () => {
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
             <header className="h-14 border-b border-slate-150 bg-slate-900 px-4 flex items-center justify-between select-none shrink-0 z-20">
-                <div className="flex items-center gap-3 min-w-0">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            handleSaveChanges(book, false);
-                            navigate("/dashboard");
-                        }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
-                    >
-                        <Menu className="h-4 w-4" />
-                    </button>
-
-                    {/* DYNAMIC NAVIGATION TAB SWITCHERS */}
-                    <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1 mx-2">
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("chapter")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                                activeTab === "chapter" ?
-                                    "bg-slate-700 text-white shadow-sm"
-                                :   "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            <BookOpen className="w-3.5 h-3.5" />
-                            Editor
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab("details")}
-                            className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                                activeTab === "details" ?
-                                    "bg-slate-700 text-white shadow-sm"
-                                :   "text-slate-400 hover:text-slate-200"
-                            }`}
-                        >
-                            <NotebookText className="w-3.5 h-3.5" />
-                            Book Details
-                        </button>
-                    </div>
-
-                    <div className="min-w-0 hidden sm:block">
-                        <h2 className="text-sm font-bold text-white tracking-tight truncate">
-                            {book.title}
-                        </h2>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-bold text-slate-500 tracking-wide uppercase truncate max-w-[120px]">
-                                by {book.author || "Mihir"}
-                            </span>
-                            <div className="w-1 h-1 bg-slate-700 rounded-full shrink-0" />
-                            <div className="flex items-center gap-1 text-[10px] text-slate-400 select-none">
-                                {isSaving ?
-                                    <span className="text-violet-400 animate-pulse flex items-center gap-1">
-                                        ⏱️ Syncing...
-                                    </span>
-                                :   <span className="text-emerald-400 flex items-center gap-1">
-                                        <CheckCircle className="h-2.5 w-2.5" />{" "}
-                                        Saved
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                {/* Replace your current Right Side Actions div with this: */}
                 <div className="flex items-center gap-2 shrink-0">
+                    {/* Desktop: Full Save Button / Mobile: Save Icon */}
                     <button
                         type="button"
                         onClick={() => handleSaveChanges(book, true)}
                         className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md rounded-xl transition-all cursor-pointer flex items-center gap-1"
                     >
-                        Save Changes
+                        {/* Only show text on desktop (hidden on mobile) */}
+                        <span className="hidden md:inline">Save Changes</span>
+                        {/* Only show icon on mobile (hidden on desktop) */}
+                        <CheckCircle className="md:hidden h-3.5 w-3.5" />
                     </button>
 
                     <Dropdown
                         trigger={
                             <button className="bg-slate-800 text-slate-200 hover:text-white border border-slate-700 hover:bg-slate-750 font-bold text-xs h-8 px-3 rounded-xl shadow-sm flex items-center gap-1 cursor-pointer">
-                                Export <ChevronDown className="h-3 w-3" />
+                                {/* Only show "Export" text on desktop */}
+                                <span className="hidden md:inline">Export</span>
+                                <ChevronDown className="h-3 w-3" />
                             </button>
                         }
                     >
+                        {/* Mobile-only option: Save */}
+                        <div className="md:hidden">
+                            <DropdownItem
+                                onClick={() => handleSaveChanges(book, true)}
+                            >
+                                Save Changes
+                            </DropdownItem>
+                        </div>
                         <DropdownItem onClick={handleExportPDF}>
                             Export PDF (.pdf)
                         </DropdownItem>
