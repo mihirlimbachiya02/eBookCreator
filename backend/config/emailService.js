@@ -44,7 +44,7 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
               </p>
               <div style="text-align:center;margin:32px 0;">
                 <a href="${resetUrl}"
-                   style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block;">
+                    style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block;">
                   Reset Password
                 </a>
               </div>
