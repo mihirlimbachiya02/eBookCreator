@@ -531,6 +531,8 @@ const EditorPage = () => {
                             book={book}
                             selectedChapterIndex={selectedChapterIndex}
                             onChapterChange={handleChapterUpdate}
+                            isAiOpen={isAiOpen}
+                            setIsAiOpen={setIsAiOpen}
                         />
                     :   <div className="flex-grow flex flex-col items-center justify-center text-center p-8 bg-slate-50 select-none h-full">
                             <HelpCircle className="h-8 w-8 text-slate-300 animate-bounce" />
@@ -549,7 +551,11 @@ const EditorPage = () => {
             "w-80 p-4 fixed inset-y-0 right-0 shadow-2xl md:shadow-none md:static md:w-80"
         :   "w-0 overflow-hidden md:w-10 md:p-2 cursor-pointer" // Correctly hides on mobile
     }`}
-                    onClick={() => !isAiOpen && setIsAiOpen(true)}
+                    onClick={() =>
+                        !isAiOpen &&
+                        window.innerWidth >= 768 &&
+                        setIsAiOpen(true)
+                    }
                 >
                     {/* Only show the Sparkle icon when the panel is CLOSED */}
                     {!isAiOpen && (

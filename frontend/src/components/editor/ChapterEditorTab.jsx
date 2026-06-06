@@ -121,20 +121,26 @@ const ChapterEditorTab = ({
             className={`${isFullscreen ? "fixed inset-0 z-50 bg-white p-6" : "flex-1"} flex flex-col h-full`}
         >
             {/* Header Control Bar */}
+            {/* Header Control Bar */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
-                {/* Title and Buttons now in the same row */}
                 <h1 className="text-md font-bold text-slate-800">
                     Chapter Editor
                 </h1>
 
-                {/* Buttons: Edit Mode & Full Screen */}
                 <div className="flex items-center gap-2">
+                    {/* MOBILE ONLY AI TRIGGER */}
                     <button
-                        onClick={() => setIsAiOpen(!isAiOpen)} // Ensure setIsAiOpen is passed as a prop
-                        className="md:hidden p-2 bg-violet-100 text-violet-700 rounded-lg"
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Prevents bubbling
+                            setIsAiOpen(true); // Updates parent state
+                        }}
+                        className="md:hidden p-2 bg-violet-100 text-violet-700 rounded-lg border border-violet-100"
                     >
                         <Sparkles className="h-4 w-4" />
                     </button>
+
+                    {/* Edit Mode Toggle */}
                     <button
                         type="button"
                         onClick={() => setIsPreviewMode(!isPreviewMode)}
@@ -144,23 +150,15 @@ const ChapterEditorTab = ({
                             :   "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                         }`}
                     >
-                        {!isPreviewMode ?
-                            <>
-                                <Eye className="w-4 h-4" />
-                                {/* Hide text on mobile if it gets too crowded, or keep it if it fits */}
-                                <span className="hidden sm:inline">
-                                    Edit Mode
-                                </span>
-                            </>
-                        :   <>
-                                <EyeOff className="w-4 h-4" />
-                                <span className="hidden sm:inline">
-                                    Preview
-                                </span>
-                            </>
-                        }
+                        {isPreviewMode ?
+                            <EyeOff className="w-4 h-4" />
+                        :   <Eye className="w-4 h-4" />}
+                        <span className="hidden sm:inline">
+                            {isPreviewMode ? "Preview" : "Edit Mode"}
+                        </span>
                     </button>
 
+                    {/* Fullscreen Button */}
                     <Button
                         variant="secondary"
                         onClick={() => setIsFullscreen(!isFullscreen)}
