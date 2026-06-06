@@ -542,8 +542,6 @@ const EditorPage = () => {
                 </main>
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
-                {/* RIGHT SIDE AI ASSIST PANEL */}
-                {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
                     onClick={() => !isAiOpen && setIsAiOpen(true)}
                     className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-50 transition-all duration-300 
@@ -553,9 +551,9 @@ const EditorPage = () => {
         :   "w-10 p-2 cursor-pointer items-center"
     }`}
                 >
-                    {/* CLOSED STATE: Sparkle Icon (Visible on desktop and mobile when closed) */}
+                    {/* CLOSED STATE: Sparkle Icon (Visible on desktop) */}
                     {!isAiOpen && (
-                        <div className="flex justify-center pt-2">
+                        <div className="hidden md:flex justify-center pt-2">
                             <Sparkles className="h-5 w-5 text-violet-600 animate-pulse" />
                         </div>
                     )}
