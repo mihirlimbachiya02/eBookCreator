@@ -368,29 +368,29 @@ const EditorPage = () => {
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
             {/* WORKSPACE TOP HEADER BAR */}
-            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-col md:flex-row items-center justify-between shrink-0 z-20">
-                {/* ROW 1: Navigation and Tabs (Always visible) */}
-                <div className="flex w-full md:w-auto items-center justify-between gap-3 min-w-0">
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => {
-                                handleSaveChanges(book, false);
-                                navigate("/dashboard");
-                            }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                        </button>
-                        <button
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
-                        >
-                            <Menu className="h-4 w-4" />
-                        </button>
-                    </div>
+            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-wrap items-center justify-between shrink-0 z-20">
+                {/* LEFT SIDE: Nav + Tabs (These stay in the top row) */}
+                <div className="flex items-center gap-3 min-w-0">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleSaveChanges(book, false);
+                            navigate("/dashboard");
+                        }}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
+                    >
+                        <Menu className="h-4 w-4" />
+                    </button>
 
-                    {/* Tab Switchers */}
-                    <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1">
+                    {/* Editor & Detail Tabs */}
+                    <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
                         <button
                             onClick={() => setActiveTab("chapter")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400"}`}
@@ -408,67 +408,56 @@ const EditorPage = () => {
                     </div>
                 </div>
 
-                {/* ROW 2 (or Desktop Side): Metadata & Actions */}
-                <div className="flex w-full md:w-auto items-center justify-between md:justify-end mt-3 md:mt-0 gap-4">
-                    {/* Book Metadata - Shown on Desktop only (md:flex) */}
-                    <div className="hidden md:flex flex-col min-w-0 text-right">
-                        <h2 className="text-sm font-bold text-white truncate">
-                            {book.title}
-                        </h2>
-                        <div className="flex items-center justify-end gap-2 text-[10px] text-slate-400">
-                            <span>by {book.author || "Mihir"}</span>
-                            <span className="text-slate-700">•</span>
-                            {isSaving ?
-                                <span className="text-violet-400">
-                                    Syncing...
-                                </span>
-                            :   <span className="text-emerald-400 flex items-center gap-1">
-                                    <CheckCircle className="h-2.5 w-2.5" />{" "}
-                                    Saved
-                                </span>
-                            }
-                        </div>
-                    </div>
-
-                    {/* Action Buttons - Always visible */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => handleSaveChanges(book, true)}
-                            className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs rounded-xl flex items-center"
-                        >
-                            <span className="hidden md:inline">
-                                Save Changes
+                {/* MIDDLE: Metadata (Moves next to tabs on desktop, visible on mobile) */}
+                <div className="flex-1 min-w-0 px-4 text-center md:text-left order-3 md:order-2 mt-2 md:mt-0">
+                    <h2 className="text-sm font-bold text-white truncate">
+                        {book.title}
+                    </h2>
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] text-slate-400">
+                        <span className="truncate">
+                            by {book.author || "Mihir"}
+                        </span>
+                        <span className="text-slate-700">•</span>
+                        {isSaving ?
+                            <span className="text-violet-400">Syncing...</span>
+                        :   <span className="text-emerald-400 flex items-center gap-1">
+                                <CheckCircle className="h-2.5 w-2.5" /> Saved
                             </span>
-                            <CheckCircle className="md:hidden h-4 w-4" />
-                        </button>
-
-                        <Dropdown
-                            trigger={
-                                <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
-                                    <span className="hidden md:inline">
-                                        Export
-                                    </span>
-                                    <ChevronDown className="h-3 w-3" />
-                                </button>
-                            }
-                        >
-                            <div className="md:hidden">
-                                <DropdownItem
-                                    onClick={() =>
-                                        handleSaveChanges(book, true)
-                                    }
-                                >
-                                    Save Changes
-                                </DropdownItem>
-                            </div>
-                            <DropdownItem onClick={handleExportPDF}>
-                                Export PDF
-                            </DropdownItem>
-                            <DropdownItem onClick={handleExportDoc}>
-                                Export Doc
-                            </DropdownItem>
-                        </Dropdown>
+                        }
                     </div>
+                </div>
+
+                {/* RIGHT: Actions */}
+                <div className="flex items-center gap-2 order-2 md:order-3">
+                    <button
+                        onClick={() => handleSaveChanges(book, true)}
+                        className="px-3 h-8 bg-violet-600 text-white font-bold text-xs rounded-xl flex items-center"
+                    >
+                        <span className="hidden md:inline">Save Changes</span>
+                        <CheckCircle className="md:hidden h-4 w-4" />
+                    </button>
+                    <Dropdown
+                        trigger={
+                            <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
+                                <span className="hidden md:inline">Export</span>
+                                <ChevronDown className="h-3 w-3" />
+                            </button>
+                        }
+                    >
+                        <div className="md:hidden">
+                            <DropdownItem
+                                onClick={() => handleSaveChanges(book, true)}
+                            >
+                                Save Changes
+                            </DropdownItem>
+                        </div>
+                        <DropdownItem onClick={handleExportPDF}>
+                            Export PDF
+                        </DropdownItem>
+                        <DropdownItem onClick={handleExportDoc}>
+                            Export Doc
+                        </DropdownItem>
+                    </Dropdown>
                 </div>
             </header>
 
