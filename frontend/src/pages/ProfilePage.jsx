@@ -8,14 +8,44 @@ import { useAuth } from "../context/useAuth";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS, BASE_URL } from "../utils/apiPaths";
 
+// ── Defined OUTSIDE all components — prevents remount on every keystroke ───────
+const PasswordInput = ({ label, name, value, show, onToggle, onChange }) => (
+    <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
+            {label}
+        </label>
+        <div className="relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                <Lock className="w-4 h-4 text-slate-400" />
+            </div>
+            <input
+                type={show ? "text" : "password"}
+                name={name}
+                value={value}
+                onChange={onChange}
+                required
+                className="w-full pl-10 pr-10 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
+                placeholder="••••••••"
+            />
+            <button
+                type="button"
+                onClick={onToggle}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+                {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+        </div>
+    </div>
+);
+
 // ── Change Password Section ───────────────────────────────────────────────────
 const ChangePasswordSection = () => {
-    const [formData, setFormData]   = useState({
+    const [formData, setFormData] = useState({
         currentPassword: "",
         newPassword:     "",
         confirmPassword: "",
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading,   setIsLoading]   = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew,     setShowNew]     = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -48,35 +78,6 @@ const ChangePasswordSection = () => {
         }
     };
 
-    const PasswordInput = ({ label, name, value, show, onToggle }) => (
-        <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                {label}
-            </label>
-            <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                    <Lock className="w-4 h-4 text-slate-400" />
-                </div>
-                <input
-                    type={show ? "text" : "password"}
-                    name={name}
-                    value={value}
-                    onChange={handleChange}
-                    required
-                    className="w-full pl-10 pr-10 py-2.5 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
-                    placeholder="••••••••"
-                />
-                <button
-                    type="button"
-                    onClick={onToggle}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                >
-                    {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-            </div>
-        </div>
-    );
-
     return (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
             <div className="px-8 pt-6 pb-2 border-b border-slate-100">
@@ -91,21 +92,24 @@ const ChangePasswordSection = () => {
                     name="currentPassword"
                     value={formData.currentPassword}
                     show={showCurrent}
-                    onToggle={() => setShowCurrent(!showCurrent)}
+                    onToggle={() => setShowCurrent((s) => !s)}
+                    onChange={handleChange}
                 />
                 <PasswordInput
                     label="New Password"
                     name="newPassword"
                     value={formData.newPassword}
                     show={showNew}
-                    onToggle={() => setShowNew(!showNew)}
+                    onToggle={() => setShowNew((s) => !s)}
+                    onChange={handleChange}
                 />
                 <PasswordInput
                     label="Confirm New Password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     show={showConfirm}
-                    onToggle={() => setShowConfirm(!showConfirm)}
+                    onToggle={() => setShowConfirm((s) => !s)}
+                    onChange={handleChange}
                 />
                 <div className="pt-2 flex justify-end">
                     <Button type="submit" disabled={isLoading}>
@@ -122,7 +126,7 @@ const ProfilePage = () => {
     const { user, updateUser, loading: authLoading } = useAuth();
     const fileInputRef = useRef(null);
 
-    const [formData, setFormData] = useState({
+    const [formData,   setFormData]   = useState({
         name:  user?.name  || "",
         email: user?.email || "",
         file:  null,
@@ -176,9 +180,7 @@ const ProfilePage = () => {
     if (authLoading)
         return (
             <DashboardLayout>
-                <div className="flex justify-center h-full items-center">
-                    Loading...
-                </div>
+                <div className="flex justify-center h-full items-center">Loading...</div>
             </DashboardLayout>
         );
 
