@@ -1,65 +1,76 @@
-# Environment variables - NEVER commit these
+# ── Environment variables — NEVER commit these ────────────────────────────────
 .env
 .env.local
 .env.development
 .env.production
 .env.test
+.env.*.local
 
-# Dependencies
+# ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
 
-# Logs
+# ── Logs ──────────────────────────────────────────────────────────────────────
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Runtime data
+# ── Runtime data ──────────────────────────────────────────────────────────────
 pids/
 *.pid
 *.seed
 *.pid.lock
 
-# Build output
+# ── Build output ──────────────────────────────────────────────────────────────
 dist/
 build/
 
-# Temporary uploaded files - never commit
+# ── Uploaded files — never commit user data ───────────────────────────────────
 uploads/
 uploads/**
 uploads/books/
 uploads/profiles/
 uploads/profile-pics/
 
-# OS files
+# ── OS files ──────────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?
 ._*
 Thumbs.db
 desktop.ini
 
-# IDE files
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Coverage reports
+# ── Coverage ──────────────────────────────────────────────────────────────────
 coverage/
 .nyc_output/
 
-# Debug
+# ── Debug ─────────────────────────────────────────────────────────────────────
 .node_repl_history
 
-# Postman exports - may contain tokens
+# ── Postman exports — may contain tokens ─────────────────────────────────────
 *.postman_collection.json
 *.postman_environment.json
 
-# PM2 ecosystem file (may contain env vars)
+# ── PM2 — may contain env vars ────────────────────────────────────────────────
 ecosystem.config.js
 
-# Cloudinary cache
+# ── Cloudinary ────────────────────────────────────────────────────────────────
 .cloudinary/
 .cloudinary-cache/
+
+# ── Debug scripts — never commit ─────────────────────────────────────────────
+fixCovers.mjs
+checkCovers.mjs
+checkSpecific.mjs
+*.debug.mjs
+*.debug.js
+
+# ── Package lock ──────────────────────────────────────────────────────────────
+package-lock.json

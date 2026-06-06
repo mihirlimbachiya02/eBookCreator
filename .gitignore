@@ -1,64 +1,78 @@
-# Environment variables
+# ── Environment variables — NEVER commit these ────────────────────────────────
 .env
 .env.local
 .env.*.local
 .env.development
 .env.production
 .env.test
+frontend/.env
+backend/.env
 
-# Dependencies
+# ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
 **/node_modules/
 
-# Build outputs
+# ── Build outputs ─────────────────────────────────────────────────────────────
 dist/
 build/
 **/dist/
 **/build/
 
-# Logs
+# ── Logs ──────────────────────────────────────────────────────────────────────
 *.log
 logs/
 **/logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
-# OS files
+# ── OS files ──────────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?
 **/.DS_Store
 ._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
 desktop.ini
 
-# IDE
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Uploads - local temp files never commit these
+# ── Uploads — local temp files, never commit ──────────────────────────────────
 backend/uploads/
 backend/uploads/**
 temp/
 tmp/
 
-# Documentation files - internal only
-documentations/
-
-# Coverage
+# ── Coverage ──────────────────────────────────────────────────────────────────
 coverage/
 **/coverage/
+.nyc_output/
 
-# Postman exports - may contain tokens
+# ── Postman exports — may contain tokens ─────────────────────────────────────
 *.postman_collection.json
 *.postman_environment.json
 
-# Cloudinary temp
+# ── Cloudinary temp ───────────────────────────────────────────────────────────
 .cloudinary/
+.cloudinary-cache/
 
-# Package lock 
-package-lock.jsonfrontend/.env
-frontend/.env
+# ── Package locks — keep frontend/backend ones, ignore root ──────────────────
+/package-lock.json
+/yarn.lock
+
+# ── Documentation — internal only ────────────────────────────────────────────
+documentations/
+
+# ── Debug scripts — never commit these ───────────────────────────────────────
+backend/fixCovers.mjs
+backend/checkCovers.mjs
+backend/checkSpecific.mjs
+*.debug.mjs
+*.debug.js

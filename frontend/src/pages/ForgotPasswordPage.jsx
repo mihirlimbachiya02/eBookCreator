@@ -46,28 +46,31 @@ const ForgotPasswordPage = () => {
 
             <div className="mt-8 sm:mx-auto w-full sm:max-w-md">
                 <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100 mx-4 sm:mx-0">
-                    {submitted ? (
+                    {submitted ?
                         <div className="text-center">
                             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Mail className="w-8 h-8 text-green-600" />
                             </div>
-                            <h3 className="text-lg font-bold text-gray-900 mb-2">Check your inbox</h3>
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">
+                                Check your inbox
+                            </h3>
                             <p className="text-sm text-gray-600 mb-6">
-                                If <strong>{email}</strong> is registered, you'll receive a
-                                password reset link within a few minutes. The link expires in 15 minutes.
+                                If <strong>{email}</strong> is registered,
+                                you'll receive a password reset link within a
+                                few minutes. The link expires in 15 minutes.
                             </p>
                             <p className="text-xs text-gray-400">
                                 Didn't receive it? Check your spam folder.
                             </p>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                    :   <form onSubmit={handleSubmit} className="space-y-5">
                             <InputField
                                 label="Email"
                                 name="email"
                                 type="email"
                                 placeholder="Enter your email address"
                                 icon={Mail}
+                                autoComplete="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -82,7 +85,7 @@ const ForgotPasswordPage = () => {
                                 </Button>
                             </div>
                         </form>
-                    )}
+                    }
 
                     <div className="mt-6 text-center">
                         <Link

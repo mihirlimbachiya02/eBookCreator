@@ -1,24 +1,25 @@
-# Environment variables - NEVER commit these
+# ── Environment variables — NEVER commit these ────────────────────────────────
 .env
 .env.local
 .env.development
 .env.production
 .env.test
 .env.*.local
+*.local
 
-# Dependencies
+# ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
 
-# Build output - never commit this
+# ── Build output — Vercel builds this, never commit ──────────────────────────
 dist/
 dist-ssr/
 build/
 
-# Vite cache
+# ── Vite cache ────────────────────────────────────────────────────────────────
 .vite/
 **/.vite/
 
-# Logs
+# ── Logs ──────────────────────────────────────────────────────────────────────
 logs/
 *.log
 npm-debug.log*
@@ -27,10 +28,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Local dev
-*.local
-
-# OS files
+# ── OS files ──────────────────────────────────────────────────────────────────
 .DS_Store
 .DS_Store?
 ._*
@@ -40,29 +38,32 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# IDE files
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# Coverage
+# ── Coverage ──────────────────────────────────────────────────────────────────
 coverage/
 
-# Storybook
-storybook-static/
-
-# Cache
+# ── Cache ─────────────────────────────────────────────────────────────────────
 .cache/
 .parcel-cache/
 .eslintcache
 
-# TypeScript build info
+# ── TypeScript ────────────────────────────────────────────────────────────────
 *.tsbuildinfo
 
-# Test snapshots
+# ── Test snapshots ────────────────────────────────────────────────────────────
 **/__snapshots__/
 
-# pdfjs-dist worker (auto-generated)
+# ── Storybook ────────────────────────────────────────────────────────────────
+storybook-static/
+
+# ── pdfjs-dist worker — auto-generated, don't commit ─────────────────────────
 public/pdf.worker.*
+
+# ── Package lock ──────────────────────────────────────────────────────────────
+package-lock.json
