@@ -543,15 +543,24 @@ const EditorPage = () => {
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
                 {/* RIGHT SIDE AI ASSIST PANEL */}
+                {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
                     onClick={() => !isAiOpen && setIsAiOpen(true)}
                     className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-50 transition-all duration-300 
     ${
         isAiOpen ?
             "w-80 p-4 fixed inset-y-0 right-0 shadow-2xl md:shadow-none md:static md:w-80 md:p-4"
-        :   "w-0 p-0 md:w-10 md:p-2 cursor-pointer"
+        :   "w-10 p-2 cursor-pointer items-center"
     }`}
                 >
+                    {/* CLOSED STATE: Sparkle Icon (Visible on desktop and mobile when closed) */}
+                    {!isAiOpen && (
+                        <div className="flex justify-center pt-2">
+                            <Sparkles className="h-5 w-5 text-violet-600 animate-pulse" />
+                        </div>
+                    )}
+
+                    {/* OPEN STATE: Full Panel Content */}
                     {isAiOpen && (
                         <div className="flex flex-col h-full">
                             <div className="flex items-center justify-between pb-2 border-b border-slate-200 shrink-0">
@@ -566,7 +575,7 @@ const EditorPage = () => {
                                         e.stopPropagation();
                                         setIsAiOpen(false);
                                     }}
-                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200"
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
                                 >
                                     <X className="h-3.5 w-3.5" />
                                 </button>
