@@ -1,22 +1,22 @@
-import nodemailer from "nodemailer";
+import FormData from "form-data";
+import Mailgun from "mailgun.js";
 
-const transporter = nodemailer.createTransport({
-    host:   "smtp-relay.brevo.com",
-    port:   587,
-    secure: false,
-    auth: {
-        user: process.env.BREVO_SMTP_USER,
-        pass: process.env.BREVO_SMTP_PASS,
-    },
+const mailgun = new Mailgun(FormData);
+const mg = mailgun.client({
+    username: "api",
+    key:      process.env.MAILGUN_API_KEY,
+    url:      "https://api.mailgun.net",
 });
+
+const DOMAIN = process.env.MAILGUN_DOMAIN;
 
 // ── Send password reset email ─────────────────────────────────────────────────
 export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    const result = await transporter.sendMail({
-        from:    '"eBook Creator" <noreply@ebookcreator.com>',
-        to:      toEmail,
+    const result = await mg.messages.create(DOMAIN, {
+        from:    "eBook Creator <mailgun@sandbox321136f41d354718acd873b96494b666.mailgun.org>",
+        to:      [toEmail],
         subject: "Reset Your Password — eBook Creator",
         html: `
 <!DOCTYPE html>
@@ -30,13 +30,11 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
     <tr>
       <td align="center">
         <table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden;">
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:32px;text-align:center;">
               <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:700;">Reset Your Password</h1>
             </td>
           </tr>
-          <!-- Body -->
           <tr>
             <td style="padding:32px;">
               <p style="color:#374151;font-size:15px;margin:0 0 16px;">Hi ${userName},</p>
@@ -61,7 +59,6 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
               </p>
             </td>
           </tr>
-          <!-- Footer -->
           <tr>
             <td style="background:#f8fafc;padding:20px 32px;text-align:center;border-top:1px solid #e2e8f0;">
               <p style="color:#9ca3af;font-size:12px;margin:0;">© 2025 eBook Creator. All rights reserved.</p>
@@ -75,6 +72,6 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
 </html>`,
     });
 
-    console.log("Email sent:", result.messageId);
+    console.log("Email sent via Mailgun:", result.id);
     return result;
 };
