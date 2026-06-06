@@ -1,21 +1,14 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// ── Transporter ───────────────────────────────────────────────────────────────
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Gmail App Password
-    },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ── Send password reset email ─────────────────────────────────────────────────
 export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    const mailOptions = {
-        from: `"eBook Creator" <${process.env.EMAIL_USER}>`,
-        to:   toEmail,
+    await resend.emails.send({
+        from:    "eBook Creator <onboarding@resend.dev>",
+        to:      toEmail,
         subject: "Reset Your Password — eBook Creator",
         html: `
 <!DOCTYPE html>
@@ -32,9 +25,6 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#7c3aed,#4f46e5);padding:32px;text-align:center;">
-              <div style="width:48px;height:48px;background:rgba(255,255,255,0.2);border-radius:12px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
-                <span style="font-size:24px;">📖</span>
-              </div>
               <h1 style="color:#ffffff;margin:0;font-size:22px;font-weight:700;">Reset Your Password</h1>
             </td>
           </tr>
@@ -53,7 +43,7 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
                 </a>
               </div>
               <p style="color:#6b7280;font-size:13px;margin:24px 0 0;line-height:1.6;">
-                This link expires in <strong>15 minutes</strong>. If you didn't request a password reset, 
+                This link expires in <strong>15 minutes</strong>. If you didn't request a password reset,
                 you can safely ignore this email — your password won't change.
               </p>
               <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
@@ -74,9 +64,6 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
     </tr>
   </table>
 </body>
-</html>
-        `,
-    };
-
-    await transporter.sendMail(mailOptions);
+</html>`,
+    });
 };
