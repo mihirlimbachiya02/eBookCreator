@@ -368,96 +368,116 @@ const EditorPage = () => {
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
             {/* WORKSPACE TOP HEADER BAR */}
-            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-wrap items-center justify-between shrink-0 z-20">
-                {/* LEFT SIDE: Nav + Tabs (These stay in the top row) */}
-                <div className="flex items-center gap-3 min-w-0">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            handleSaveChanges(book, false);
-                            navigate("/dashboard");
-                        }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
-                    >
-                        <Menu className="h-4 w-4" />
-                    </button>
+            <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-col md:flex-row items-center justify-between shrink-0 z-20">
+                {/* ROW 1: Navigation + Metadata (Always visible) */}
+                <div className="flex w-full items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <button
+                            onClick={() => {
+                                handleSaveChanges(book, false);
+                                navigate("/dashboard");
+                            }}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                        </button>
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className={`p-1.5 rounded-lg ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
+                        >
+                            <Menu className="h-4 w-4" />
+                        </button>
 
-                    {/* Editor & Detail Tabs */}
+                        {/* Metadata shown on desktop, Title only on mobile */}
+                        <div className="min-w-0">
+                            <h2 className="text-sm font-bold text-white truncate">
+                                {book.title}
+                            </h2>
+                            <div className="hidden md:flex items-center gap-2 text-[10px] text-slate-400">
+                                <span>by {book.author || "Mihir"}</span>
+                                <span className="text-slate-700">•</span>
+                                {isSaving ?
+                                    <span className="text-violet-400">
+                                        Syncing...
+                                    </span>
+                                :   <span className="text-emerald-400 flex items-center gap-1">
+                                        <CheckCircle className="h-2.5 w-2.5" />{" "}
+                                        Saved
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Save/Export moved to Row 2 on mobile, kept in Row 1 on Desktop */}
+                    <div className="hidden md:flex items-center gap-2">
+                        <button
+                            onClick={() => handleSaveChanges(book, true)}
+                            className="px-3 h-8 bg-violet-600 text-white font-bold text-xs rounded-xl"
+                        >
+                            Save Changes
+                        </button>
+                        <Dropdown
+                            trigger={
+                                <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
+                                    Export <ChevronDown className="h-3 w-3" />
+                                </button>
+                            }
+                        >
+                            <DropdownItem onClick={handleExportPDF}>
+                                Export PDF
+                            </DropdownItem>
+                            <DropdownItem onClick={handleExportDoc}>
+                                Export Doc
+                            </DropdownItem>
+                        </Dropdown>
+                    </div>
+                </div>
+
+                {/* ROW 2: Mobile Only Tabs + Actions */}
+                <div className="flex md:hidden w-full items-center justify-between mt-3 pt-3 border-t border-slate-800">
                     <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
                         <button
                             onClick={() => setActiveTab("chapter")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
-                            <BookOpen className="w-3.5 h-3.5" />{" "}
-                            <span className="hidden md:inline">Editor</span>
+                            <BookOpen className="w-3.5 h-3.5" /> Editor
                         </button>
                         <button
                             onClick={() => setActiveTab("details")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
-                            <NotebookText className="w-3.5 h-3.5" />{" "}
-                            <span className="hidden md:inline">Details</span>
+                            <NotebookText className="w-3.5 h-3.5" /> Details
                         </button>
                     </div>
-                </div>
 
-                {/* MIDDLE: Metadata (Moves next to tabs on desktop, visible on mobile) */}
-                <div className="flex-1 min-w-0 px-4 text-center md:text-left order-3 md:order-2 mt-2 md:mt-0">
-                    <h2 className="text-sm font-bold text-white truncate">
-                        {book.title}
-                    </h2>
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] text-slate-400">
-                        <span className="truncate">
-                            by {book.author || "Mihir"}
-                        </span>
-                        <span className="text-slate-700">•</span>
-                        {isSaving ?
-                            <span className="text-violet-400">Syncing...</span>
-                        :   <span className="text-emerald-400 flex items-center gap-1">
-                                <CheckCircle className="h-2.5 w-2.5" /> Saved
-                            </span>
-                        }
-                    </div>
-                </div>
-
-                {/* RIGHT: Actions */}
-                <div className="flex items-center gap-2 order-2 md:order-3">
-                    <button
-                        onClick={() => handleSaveChanges(book, true)}
-                        className="px-3 h-8 bg-violet-600 text-white font-bold text-xs rounded-xl flex items-center"
-                    >
-                        <span className="hidden md:inline">Save Changes</span>
-                        <CheckCircle className="md:hidden h-4 w-4" />
-                    </button>
-                    <Dropdown
-                        trigger={
-                            <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
-                                <span className="hidden md:inline">Export</span>
-                                <ChevronDown className="h-3 w-3" />
-                            </button>
-                        }
-                    >
-                        <div className="md:hidden">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => handleSaveChanges(book, true)}
+                            className="p-2 text-violet-400 hover:bg-slate-800 rounded-lg"
+                        >
+                            <CheckCircle className="h-5 w-5" />
+                        </button>
+                        <Dropdown
+                            trigger={
+                                <button className="p-2 text-slate-200 hover:bg-slate-800 rounded-lg">
+                                    <ChevronDown className="h-5 w-5" />
+                                </button>
+                            }
+                        >
                             <DropdownItem
                                 onClick={() => handleSaveChanges(book, true)}
                             >
                                 Save Changes
                             </DropdownItem>
-                        </div>
-                        <DropdownItem onClick={handleExportPDF}>
-                            Export PDF
-                        </DropdownItem>
-                        <DropdownItem onClick={handleExportDoc}>
-                            Export Doc
-                        </DropdownItem>
-                    </Dropdown>
+                            <DropdownItem onClick={handleExportPDF}>
+                                Export PDF
+                            </DropdownItem>
+                            <DropdownItem onClick={handleExportDoc}>
+                                Export Doc
+                            </DropdownItem>
+                        </Dropdown>
+                    </div>
                 </div>
             </header>
 
