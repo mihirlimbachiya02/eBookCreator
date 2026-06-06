@@ -543,24 +543,25 @@ const EditorPage = () => {
 
                 {/* RIGHT SIDE AI ASSIST PANEL */}
                 <aside
-                    onClick={() => !isAiOpen && setIsAiOpen(true)}
-                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-50 transition-all duration-300 
+                    className={`border-l border-slate-200 bg-slate-50 flex flex-col gap-4 overflow-y-auto shrink-0 select-none z-50 transition-all duration-300
     ${
         isAiOpen ?
-            "w-80 p-4 fixed inset-y-0 right-0 shadow-2xl md:shadow-none md:static md:w-80 md:p-4"
-        :   "w-10 p-2 cursor-pointer items-center"
+            "w-80 p-4 fixed inset-y-0 right-0 shadow-2xl md:shadow-none md:static md:w-80"
+        :   "w-0 overflow-hidden md:w-10 md:p-2 cursor-pointer" // Correctly hides on mobile
     }`}
+                    onClick={() => !isAiOpen && setIsAiOpen(true)}
                 >
-                    {/* CLOSED STATE: Sparkle Icon (Visible on desktop) */}
+                    {/* Only show the Sparkle icon when the panel is CLOSED */}
                     {!isAiOpen && (
                         <div className="hidden md:flex justify-center pt-2">
                             <Sparkles className="h-5 w-5 text-violet-600 animate-pulse" />
                         </div>
                     )}
 
-                    {/* OPEN STATE: Full Panel Content */}
+                    {/* Only show content when OPEN */}
                     {isAiOpen && (
-                        <div className="flex flex-col h-full">
+                        <div className="flex flex-col h-full w-full">
+                            {/* AI Panel Header */}
                             <div className="flex items-center justify-between pb-2 border-b border-slate-200 shrink-0">
                                 <div className="flex items-center gap-2">
                                     <Sparkles className="h-4 w-4 text-violet-600 animate-pulse" />
@@ -573,7 +574,7 @@ const EditorPage = () => {
                                         e.stopPropagation();
                                         setIsAiOpen(false);
                                     }}
-                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors"
+                                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200"
                                 >
                                     <X className="h-3.5 w-3.5" />
                                 </button>
