@@ -407,11 +407,14 @@ const EditorPage = () => {
                     </div>
 
                     {/* 2. Metadata: Placed directly after tabs, visible on desktop */}
-                    <div className="hidden md:flex flex-col min-w-0 ml-2">
-                        <h2 className="text-sm font-bold text-white tracking-tight truncate">
+                    <div className="flex flex-col min-w-0 ml-2">
+                        {/* Title is now visible on all screens */}
+                        <h2 className="text-xs font-bold text-white tracking-tight truncate max-w-[120px] md:max-w-[200px]">
                             {book.title}
                         </h2>
-                        <div className="flex items-center gap-2">
+
+                        {/* Author and Sync status stay hidden on mobile, show on md (desktop) */}
+                        <div className="hidden md:flex items-center gap-2 mt-0.5">
                             <span className="text-[10px] font-bold text-slate-500 uppercase truncate">
                                 by {book.author || "Mihir"}
                             </span>
