@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { Lock, BookOpen } from "lucide-react";
 import toast from "react-hot-toast";
+import axios from "axios";
 import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
-import axiosInstance from "../utils/axiosInstance";
 
 const ResetPasswordPage = () => {
     const [searchParams]                  = useSearchParams();
@@ -20,8 +20,13 @@ const ResetPasswordPage = () => {
             <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
                 <div className="text-center">
                     <h2 className="text-xl font-bold text-gray-900 mb-2">Invalid Reset Link</h2>
-                    <p className="text-sm text-gray-600 mb-4">This password reset link is invalid or has expired.</p>
-                    <Link to="/forgot-password" className="text-violet-600 font-medium hover:text-violet-500">
+                    <p className="text-sm text-gray-600 mb-4">
+                        This password reset link is invalid or has expired.
+                    </p>
+                    <Link
+                        to="/forgot-password"
+                        className="text-violet-600 font-medium hover:text-violet-500"
+                    >
                         Request a new reset link
                     </Link>
                 </div>
@@ -39,7 +44,14 @@ const ResetPasswordPage = () => {
 
         setIsLoading(true);
         try {
-            await axiosInstance.post(`/api/auth/reset-password/${token}`, { password });
+            // Use plain axios — NOT axiosInstance
+            // axiosInstance's 401 interceptor would redirect to /login
+            // for unauthenticated requests, breaking this public endpoint
+            await axios.post(
+                `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
+                { password },
+                { headers: { "Content-Type": "application/json" } },
+            );
             toast.success("Password reset successfully!");
             navigate("/login");
         } catch (error) {
