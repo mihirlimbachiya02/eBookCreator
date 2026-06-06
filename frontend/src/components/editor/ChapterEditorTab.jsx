@@ -156,7 +156,7 @@ const ChapterEditorTab = ({
                     <Button
                         variant="secondary"
                         onClick={() => setIsFullscreen(!isFullscreen)}
-                        className="p-2 h-9 w-9 flex items-center justify-center"
+                        className="p-2 h-9 flex items-center justify-center"
                     >
                         <Maximize2 className="w-4 h-4" />
                     </Button>
