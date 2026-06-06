@@ -119,40 +119,44 @@ const ChapterEditorTab = ({
             className={`${isFullscreen ? "fixed inset-0 z-50 bg-white p-6" : "flex-1"} flex flex-col h-full`}
         >
             {/* Header Control Bar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-4 mb-4 gap-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                {/* Title and Buttons now in the same row */}
                 <h1 className="text-md font-bold text-slate-800">
                     Chapter Editor
                 </h1>
+
+                {/* Buttons: Edit Mode & Full Screen */}
                 <div className="flex items-center gap-2">
                     <button
                         type="button"
                         onClick={() => setIsPreviewMode(!isPreviewMode)}
-                        className={`p-2 rounded-xl transition-all border cursor-pointer flex items-center justify-center gap-1.5 text-sm font-medium h-9 px-3 ${
+                        className={`p-2 rounded-xl transition-all border cursor-pointer flex items-center justify-center gap-1.5 text-xs font-bold h-9 px-3 ${
                             !isPreviewMode ?
-                                "bg-violet-50 border-violet-200 text-violet-700 font-semibold"
+                                "bg-violet-50 border-violet-200 text-violet-700"
                             :   "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
                         }`}
                     >
                         {!isPreviewMode ?
                             <>
-                                <Eye className="w-4 h-4 text-violet-600" />{" "}
-                                <span className="text-xs font-bold">
+                                <Eye className="w-4 h-4" />
+                                {/* Hide text on mobile if it gets too crowded, or keep it if it fits */}
+                                <span className="hidden sm:inline">
                                     Edit Mode
                                 </span>
                             </>
                         :   <>
-                                <EyeOff className="w-4 h-4 text-slate-400" />{" "}
-                                <span className="text-xs font-bold">
-                                    Preview Mode
+                                <EyeOff className="w-4 h-4" />
+                                <span className="hidden sm:inline">
+                                    Preview
                                 </span>
                             </>
                         }
                     </button>
-                    <div className="w-px h-6 bg-slate-200 mx-1" />
+
                     <Button
                         variant="secondary"
                         onClick={() => setIsFullscreen(!isFullscreen)}
-                        className="p-2"
+                        className="p-2 h-9 w-9 flex items-center justify-center"
                     >
                         <Maximize2 className="w-4 h-4" />
                     </Button>
