@@ -1,13 +1,21 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    host:   "smtp-relay.brevo.com",
+    port:   587,
+    secure: false,
+    auth: {
+        user: process.env.BREVO_SMTP_USER,
+        pass: process.env.BREVO_SMTP_PASS,
+    },
+});
 
 // ── Send password reset email ─────────────────────────────────────────────────
 export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    await resend.emails.send({
-        from:    "eBook Creator <onboarding@resend.dev>",
+    const result = await transporter.sendMail({
+        from:    '"eBook Creator" <noreply@ebookcreator.com>',
         to:      toEmail,
         subject: "Reset Your Password — eBook Creator",
         html: `
@@ -66,4 +74,7 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
 </body>
 </html>`,
     });
+
+    console.log("Email sent:", result.messageId);
+    return result;
 };
