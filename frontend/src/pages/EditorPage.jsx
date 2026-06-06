@@ -367,68 +367,100 @@ const EditorPage = () => {
     return (
         <div className="h-screen bg-white flex flex-col font-sans overflow-hidden">
             {/* WORKSPACE TOP HEADER BAR */}
+            {/* WORKSPACE TOP HEADER BAR */}
             <header className="h-auto md:h-14 border-b border-slate-150 bg-slate-900 px-4 py-2 flex flex-col md:flex-row items-center justify-between shrink-0 z-20">
-                {/* ROW 1: Nav, Menu, and Metadata */}
-                <div className="flex w-full items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
+                {/* ROW 1: Navigation and Tabs (Always visible) */}
+                <div className="flex w-full md:w-auto items-center justify-between gap-3 min-w-0">
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={() => {
                                 handleSaveChanges(book, false);
                                 navigate("/dashboard");
                             }}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4" />
                         </button>
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                            className={`p-1.5 rounded-lg transition-colors ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"}`}
                         >
                             <Menu className="h-4 w-4" />
                         </button>
-
-                        {/* Book Metadata visible on desktop, truncated on mobile */}
-                        <div className="min-w-0">
-                            <h2 className="text-sm font-bold text-white truncate max-w-[150px]">
-                                {book.title}
-                            </h2>
-                        </div>
                     </div>
-                </div>
 
-                {/* ROW 2: Tabs + Actions (Visible on Mobile only, hidden on desktop to keep original layout) */}
-                <div className="flex w-full md:hidden items-center justify-between mt-3 pt-3 border-t border-slate-800 gap-2">
                     {/* Tab Switchers */}
-                    <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
+                    <div className="flex items-center bg-slate-800 p-1 rounded-xl gap-1">
                         <button
                             onClick={() => setActiveTab("chapter")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
-                            <BookOpen className="w-3.5 h-3.5" /> Editor
+                            <BookOpen className="w-3.5 h-3.5" />{" "}
+                            <span className="hidden md:inline">Editor</span>
                         </button>
                         <button
                             onClick={() => setActiveTab("details")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
-                            <NotebookText className="w-3.5 h-3.5" /> Details
+                            <NotebookText className="w-3.5 h-3.5" />{" "}
+                            <span className="hidden md:inline">Details</span>
                         </button>
                     </div>
+                </div>
 
-                    {/* Save & Export */}
+                {/* ROW 2 (or Desktop Side): Metadata & Actions */}
+                <div className="flex w-full md:w-auto items-center justify-between md:justify-end mt-3 md:mt-0 gap-4">
+                    {/* Book Metadata - Shown on Desktop only (md:flex) */}
+                    <div className="hidden md:flex flex-col min-w-0 text-right">
+                        <h2 className="text-sm font-bold text-white truncate">
+                            {book.title}
+                        </h2>
+                        <div className="flex items-center justify-end gap-2 text-[10px] text-slate-400">
+                            <span>by {book.author || "Mihir"}</span>
+                            <span className="text-slate-700">•</span>
+                            {isSaving ?
+                                <span className="text-violet-400">
+                                    Syncing...
+                                </span>
+                            :   <span className="text-emerald-400 flex items-center gap-1">
+                                    <CheckCircle className="h-2.5 w-2.5" />{" "}
+                                    Saved
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    {/* Action Buttons - Always visible */}
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => handleSaveChanges(book, true)}
-                            className="p-2 text-violet-400 hover:bg-slate-800 rounded-lg"
+                            className="px-3 h-8 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs rounded-xl flex items-center"
                         >
-                            <CheckCircle className="h-5 w-5" />
+                            <span className="hidden md:inline">
+                                Save Changes
+                            </span>
+                            <CheckCircle className="md:hidden h-4 w-4" />
                         </button>
+
                         <Dropdown
                             trigger={
-                                <button className="p-2 text-slate-200 hover:bg-slate-800 rounded-lg">
-                                    <ChevronDown className="h-5 w-5" />
+                                <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
+                                    <span className="hidden md:inline">
+                                        Export
+                                    </span>
+                                    <ChevronDown className="h-3 w-3" />
                                 </button>
                             }
                         >
+                            <div className="md:hidden">
+                                <DropdownItem
+                                    onClick={() =>
+                                        handleSaveChanges(book, true)
+                                    }
+                                >
+                                    Save Changes
+                                </DropdownItem>
+                            </div>
                             <DropdownItem onClick={handleExportPDF}>
                                 Export PDF
                             </DropdownItem>
