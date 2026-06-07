@@ -297,10 +297,11 @@ export const generateCoverImage = async (req, res) => {
 
         // ── Upload result to Cloudinary ───────────────────────────────────────
         const cloudinaryResult = await uploadToCloudinary(imageBuffer, {
-            folder:        "ebook-creator/books",
-            public_id:     `ai_${safeTitle}_${Date.now()}`,
-            overwrite:     false,
+            folder: "ebook-creator/books",
+            public_id: `ai_${safeTitle}_${Date.now()}`,
+            overwrite: false,
             resource_type: "image",
+            tags: [`user_${req.user._id}`],
         });
 
         res.status(200).json({

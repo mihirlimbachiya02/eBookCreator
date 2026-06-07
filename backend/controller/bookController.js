@@ -1,8 +1,5 @@
 import Book from "../models/Book.js";
-import { uploadToCloudinary } from "../config/cloudinary.js";
-
-
-
+import { uploadToCloudinary, cloudinary } from "../config/cloudinary.js";
 
 // @desc    Create a new book
 export const createBook = async (req, res) => {
@@ -44,6 +41,7 @@ export const createBook = async (req, res) => {
                 public_id: `${safeTitle}_${Date.now()}`,
                 overwrite: false,
                 resource_type: "image",
+                tags: [`user_${req.user._id}`],
             });
             coverImage = result.secure_url;
         }
@@ -65,10 +63,6 @@ export const createBook = async (req, res) => {
     }
 };
 
-
-
-
-
 // @desc    Get all books for a user
 export const getBooks = async (req, res) => {
     try {
@@ -81,10 +75,6 @@ export const getBooks = async (req, res) => {
         res.status(500).json({ message: "Server error fetching books." });
     }
 };
-
-
-
-
 
 // @desc    Get a single book by ID
 export const getBookById = async (req, res) => {
@@ -99,10 +89,6 @@ export const getBookById = async (req, res) => {
         res.status(500).json({ message: "Server error." });
     }
 };
-
-
-
-
 
 // @desc    Update book text data
 export const updateBook = async (req, res) => {
@@ -136,10 +122,6 @@ export const updateBook = async (req, res) => {
         res.status(500).json({ message: "Update failed due to server error." });
     }
 };
-
-
-
-
 
 // @desc    Update book cover image
 export const updateBookCover = async (req, res) => {
@@ -175,6 +157,7 @@ export const updateBookCover = async (req, res) => {
             folder: "ebook-creator/books",
             public_id: `${safeTitle}_${id}`,
             overwrite: true,
+            tags: [`user_${req.user._id}`],
         });
 
         book.coverImage = result.secure_url;
@@ -186,10 +169,6 @@ export const updateBookCover = async (req, res) => {
         res.status(500).json({ message: "Cover update failed." });
     }
 };
-
-
-
-
 
 // @desc    Delete a book
 export const deleteBook = async (req, res) => {
@@ -206,22 +185,45 @@ export const deleteBook = async (req, res) => {
     }
 };
 
-
 // @desc    Get all cover images from Cloudinary for current user's books
 export const getCloudinaryCovers = async (req, res) => {
     try {
+        const userId = req.user._id.toString();
+
+        // 1. Fetch tagged images directly from Cloudinary (new uploads)
+        const cloudinaryResult = await cloudinary.search
+            .expression(`folder:ebook-creator/books AND tags:user_${userId}`)
+            .sort_by("created_at", "desc")
+            .max_results(100)
+            .execute();
+
+        const cloudinaryCovers = cloudinaryResult.resources.map((r) => ({
+            url: r.secure_url,
+            name: r.public_id.split("/").pop(),
+            publicId: r.public_id,
+        }));
+
+        // 2. Fetch from MongoDB as fallback (old uploads without tags)
         const books = await Book.find(
             { userId: req.user._id, coverImage: { $exists: true, $ne: "" } },
             { coverImage: 1, title: 1, _id: 0 },
         );
 
-        const covers = books
+        const mongoCovers = books
             .filter((b) => b.coverImage?.startsWith("http"))
             .map((b) => ({
                 url: b.coverImage,
                 name: b.title,
                 publicId: b.coverImage.split("/").pop(),
             }));
+
+        // 3. Merge both, deduplicate by URL
+        const seen = new Set();
+        const covers = [...cloudinaryCovers, ...mongoCovers].filter((c) => {
+            if (seen.has(c.url)) return false;
+            seen.add(c.url);
+            return true;
+        });
 
         res.status(200).json({ covers });
     } catch (error) {
