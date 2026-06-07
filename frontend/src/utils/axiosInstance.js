@@ -64,7 +64,9 @@ axiosInstance.interceptors.response.use(
 
             const refreshToken = localStorage.getItem(REFRESH_KEY);
             if (!refreshToken) {
-                clearAuthAndRedirect();
+                if (!isOnAuthPage) {
+                    clearAuthAndRedirect();
+                }
                 return Promise.reject(error);
             }
 

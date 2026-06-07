@@ -42,21 +42,28 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
                 We received a request to reset your password for your eBook Creator account.
                 Click the button below to set a new password.
               </p>
+
               <div style="text-align:center;margin:32px 0;">
                 <a href="${resetUrl}"
-                    style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block;">
+                  style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#ffffff;padding:14px 32px;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block;">
                   Reset Password
                 </a>
               </div>
+
               <p style="color:#6b7280;font-size:13px;margin:24px 0 0;line-height:1.6;">
                 This link expires in <strong>15 minutes</strong>. If you didn't request a password reset,
                 you can safely ignore this email — your password won't change.
               </p>
+
               <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
-              <p style="color:#9ca3af;font-size:12px;margin:0;">
-                If the button doesn't work, copy and paste this link:<br>
-                <a href="${resetUrl}" style="color:#7c3aed;word-break:break-all;">${resetUrl}</a>
+
+              <p style="color:#6b7280;font-size:13px;margin:0 0 8px;">
+                <strong>Button not working?</strong> Copy and paste this link into your browser:
               </p>
+              <div style="background:#f3f4f6;padding:12px 16px;border-radius:8px;word-break:break-all;">
+                <a href="${resetUrl}" style="color:#7c3aed;font-size:12px;text-decoration:none;">${resetUrl}</a>
+              </div>
+
             </td>
           </tr>
           <tr>
