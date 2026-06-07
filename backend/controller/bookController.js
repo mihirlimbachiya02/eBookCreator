@@ -129,8 +129,6 @@ export const updateBookCover = async (req, res) => {
         const { id } = req.params;
         const { bookTitle, coverImageUrl } = req.body;
 
-        console.log("coverImageUrl received:", coverImageUrl);
-
         const book = await Book.findById(id);
         if (!book || book.userId.toString() !== req.user._id.toString()) {
             return res.status(404).json({ message: "Book not found." });
@@ -155,17 +153,16 @@ export const updateBookCover = async (req, res) => {
 
         const result = await uploadToCloudinary(req.file.buffer, {
             folder: "ebook-creator/books",
-            public_id: `${safeTitle}_${id}`,
-            overwrite: true,
+            public_id: `${safeTitle}_${Date.now()}`,
+            overwrite: false,
+            resource_type: "image",
             tags: [`user_${req.user._id}`],
         });
-
         book.coverImage = result.secure_url;
         await book.save();
 
         res.status(200).json(book);
     } catch (error) {
-        console.error("DEBUG - [updateBookCover] Error:", error.message);
         res.status(500).json({ message: "Cover update failed." });
     }
 };
@@ -180,7 +177,6 @@ export const deleteBook = async (req, res) => {
         await book.deleteOne();
         res.status(200).json({ message: "Book deleted successfully." });
     } catch (error) {
-        console.error("DEBUG - [deleteBook] Error:", error.message);
         res.status(500).json({ message: "Server error during deletion." });
     }
 };
