@@ -50,7 +50,10 @@ axiosInstance.interceptors.response.use(
         if (error.response?.status === 401) {
             const isOnAuthPage =
                 window.location.pathname === "/login" ||
-                window.location.pathname === "/signup";
+                window.location.pathname === "/signup" ||   
+                window.location.pathname === "/forgot-password" ||
+                window.location.pathname.startsWith("/reset-password");
+
 
             // Don't try to refresh if we're on auth pages
             // or if this IS the refresh request itself (prevents infinite loop)

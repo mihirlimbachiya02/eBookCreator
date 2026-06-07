@@ -95,6 +95,16 @@ const refreshLimiter = rateLimit({
     legacyHeaders: false,
 });
 
+const forgotPasswordLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    max: 3, // max 3 reset requests per IP per hour
+    message: {
+        message: "Too many password reset requests. Please try again later.",
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 const aiLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
     max: 10,
@@ -119,15 +129,6 @@ const generalLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-const forgotPasswordLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 3, // max 3 reset requests per IP per hour
-    message: {
-        message: "Too many password reset requests. Please try again later.",
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-});
 
 // ─── Database ─────────────────────────────────────────────────────────────────
 connectDB();
@@ -137,10 +138,10 @@ mongoose.set("returnDocument", "after");
 app.use("/api/auth/login",            authLimiter);
 app.use("/api/auth/register",         authLimiter);
 app.use("/api/auth/refresh",          refreshLimiter);  // ← NEW
+app.use("/api/auth/forgot-password", forgotPasswordLimiter);
 app.use("/api/ai/generate-cover",     imageLimiter);
 app.use("/api/ai",                    aiLimiter);
 app.use("/api",                       generalLimiter);
-app.use("/api/auth/forgot-password", forgotPasswordLimiter);
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {
