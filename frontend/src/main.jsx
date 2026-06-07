@@ -15,10 +15,13 @@ createRoot(document.getElementById("root")).render(
                 <Toaster
                     position="top-center"
                     reverseOrder={false}
+                    containerStyle={{
+                        top: 80, // pushes it below the browser bookmark bar
+                    }}
                     toastOptions={{
-                        duration: 4000,
+                        duration: 5000,
                         error: {
-                            duration: 5000,
+                            duration: 6000,
                         },
                     }}
                 />
