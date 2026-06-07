@@ -74,3 +74,16 @@ checkSpecific.mjs
 
 # ── Package lock ──────────────────────────────────────────────────────────────
 package-lock.json
+
+# ── Secrets backup files ──────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+
+# ── Temp / scratch files ──────────────────────────────────────────────────────
+temp/
+tmp/
+scratch/

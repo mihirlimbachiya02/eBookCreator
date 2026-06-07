@@ -6,7 +6,9 @@
 .env.production
 .env.test
 frontend/.env
+frontend/.env.*
 backend/.env
+backend/.env.*
 
 # ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
@@ -34,6 +36,7 @@ pnpm-debug.log*
 ._*
 .Spotlight-V100
 .Trashes
+ehthumbs.db
 Thumbs.db
 desktop.ini
 
@@ -76,3 +79,14 @@ backend/checkCovers.mjs
 backend/checkSpecific.mjs
 *.debug.mjs
 *.debug.js
+
+# ── Secrets backup files ──────────────────────────────────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+
+# ── Vercel ────────────────────────────────────────────────────────────────────
+.vercel
