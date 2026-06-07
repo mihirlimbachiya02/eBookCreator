@@ -19,9 +19,9 @@ createRoot(document.getElementById("root")).render(
                         top: 80, // pushes it below the browser bookmark bar
                     }}
                     toastOptions={{
-                        duration: 15000,
+                        duration: 4000,
                         error: {
-                            duration: 16000,
+                            duration: 5000,
                         },
                     }}
                 />
