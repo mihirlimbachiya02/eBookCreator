@@ -58,7 +58,6 @@ axiosInstance.interceptors.response.use(
             // Don't try to refresh if we're on auth pages
             // or if this IS the refresh request itself (prevents infinite loop)
             if (isOnAuthPage || originalRequest._isRetry) {
-                clearAuthAndRedirect();
                 return Promise.reject(error);
             }
 
