@@ -8,7 +8,7 @@ import { useAuth } from "../context/useAuth";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS, BASE_URL } from "../utils/apiPaths";
 
-// ── Defined OUTSIDE all components — prevents remount on every keystroke ───────
+// ── components — prevents remount on every keystroke ───────
 const PasswordInput = ({ label, name, value, show, onToggle, onChange }) => (
     <div className="flex flex-col gap-1.5">
         <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
@@ -78,6 +78,7 @@ const ChangePasswordSection = () => {
         }
     };
 
+
     return (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
             <div className="px-8 pt-6 pb-2 border-b border-slate-100">
@@ -120,6 +121,7 @@ const ChangePasswordSection = () => {
         </div>
     );
 };
+
 
 // ── Main Profile Page ─────────────────────────────────────────────────────────
 const ProfilePage = () => {

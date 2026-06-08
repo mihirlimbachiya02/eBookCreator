@@ -10,7 +10,6 @@ const ViewChapterSidebar = ({
     // Helper to handle selection with mobile-first behavior
     const handleChapterClick = (index) => {
         onSelectChapter(index);
-        // Automatically close on mobile devices (screens smaller than 768px)
         if (window.innerWidth < 768) {
             onClose();
         }

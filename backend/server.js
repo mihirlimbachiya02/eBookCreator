@@ -21,6 +21,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // ─── Environment Check ────────────────────────────────────────────────────────
 if (
     !process.env.JWT_SECRET ||
@@ -36,12 +37,14 @@ if (
     process.exit(1);
 }
 
+
 // ─── Security Middleware ──────────────────────────────────────────────────────
 app.use(
     helmet({
         contentSecurityPolicy: false, // disabled so Cloudinary images load
     }),
 );
+
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
@@ -71,12 +74,15 @@ app.use(
     }),
 );
 
+
 // ─── Body Parsers ─────────────────────────────────────────────────────────────
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true, limit: "2mb" }));
 
+
 // ─── Trust Proxy (required for rate limiter on Render) ────────────────────────
 app.set("trust proxy", 1);
+
 
 // ─── Rate Limiters ────────────────────────────────────────────────────────────
 const authLimiter = rateLimit({
@@ -134,6 +140,7 @@ const generalLimiter = rateLimit({
 connectDB();
 mongoose.set("returnDocument", "after");
 
+
 // ─── Rate Limiting per Route ──────────────────────────────────────────────────
 app.use("/api/auth/login",            authLimiter);
 app.use("/api/auth/register",         authLimiter);
@@ -143,10 +150,12 @@ app.use("/api/ai/generate-cover",     imageLimiter);
 app.use("/api/ai",                    aiLimiter);
 app.use("/api",                       generalLimiter);
 
+
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", message: "Server is awake" });
 });
+
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth",           authRoutes);
@@ -154,6 +163,7 @@ app.use("/api/books",          bookRoutes);
 app.use("/api/ai",             aiRoutes);
 app.use("/api/export",         exportRoutes);
 app.use("/api/uploaded-books", uploadedBookRoutes);
+
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {

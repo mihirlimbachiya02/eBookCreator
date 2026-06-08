@@ -41,7 +41,7 @@ const BookCard = ({ book, onDelete }) => {
             className="group relative w-full max-w-[200px] aspect-[2/3] mx-auto rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 cursor-pointer bg-slate-900 select-none"
             onClick={() => navigate(`/view-book/${book._id}`)}
         >
-            {/* 1. Full Bleed Cover Art Background Layout */}
+            {/* 1. Full Art Background Layout */}
             <div className="absolute inset-0 w-full h-full">
                 {showImage ?
                     <img

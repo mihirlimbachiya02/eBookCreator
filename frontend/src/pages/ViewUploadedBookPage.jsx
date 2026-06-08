@@ -14,8 +14,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 const NON_VIEWABLE = ["zip", "epub", "mobi"];
 
-// ── Helper (outside component — stable reference, no ESLint dep warning) ──────
+
+// ── Helper (outside component — stable reference) ──────
 const getLastPageKey = (bookId) => `pdf-last-page:${bookId}`;
+
 
 // ── PDF Sidebar ───────────────────────────────────────────────────────────────
 const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
@@ -72,12 +74,13 @@ const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
     );
 };
 
+
 // ── PDF Viewer ────────────────────────────────────────────────────────────────
 const PdfViewer = ({ url, bookId }) => {
     const canvasRef = useRef(null);
     const renderTaskRef = useRef(null);
     const containerRef = useRef(null);
-    const pdfRef = useRef(null); // stable ref for ResizeObserver callback
+    const pdfRef = useRef(null); // stable ref 
 
     const [pdf, setPdf] = useState(null);
     const [pageNum, setPageNum] = useState(1);
@@ -90,8 +93,8 @@ const PdfViewer = ({ url, bookId }) => {
     const [outline, setOutline] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
+
     // ── Fit scale calculator ──────────────────────────────────────────────────
-    // Uses rAF to guarantee clientWidth is read after browser has painted
     const calcFitScale = useCallback((pdfDoc) => {
         if (!pdfDoc) return;
         requestAnimationFrame(() => {
@@ -164,6 +167,7 @@ const PdfViewer = ({ url, bookId }) => {
                 setLoading(false);
             }
         };
+
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
         setError(null);
@@ -182,8 +186,7 @@ const PdfViewer = ({ url, bookId }) => {
         }
     }, [pageNum, bookId]);
 
-    // 3. ResizeObserver — fires once container has real dimensions after paint
-    //    Also handles window resize and sidebar open/close
+    // 3. ResizeObserver — fires once container has real dimensions 
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -201,7 +204,7 @@ const PdfViewer = ({ url, bookId }) => {
                 setAutoScale(fit);
 
                 // 2. ONLY update the current scale if we were previously in "Fit" mode
-                // This prevents the PDF from jumping if the user manually zoomed in to 150%
+                // This prevents the PDF from jumping if the user manually zoomed
                 setScale((prev) => {
                     // If the user was using Fit mode, keep using Fit mode
                     if (prev === autoScale) return fit;
@@ -270,6 +273,7 @@ const PdfViewer = ({ url, bookId }) => {
             </div>
         );
 
+
     return (
         <div className="flex flex-1 overflow-hidden relative">
             <PdfSidebar
@@ -294,7 +298,6 @@ const PdfViewer = ({ url, bookId }) => {
                 </div>
 
                 {/* Unified Responsive Controls */}
-                {/* Unified Action Bar: Replaces the current cramped headers */}
                 <div className="flex flex-col border-b border-slate-300 bg-white shrink-0">
                     <div className="flex items-center justify-between px-3 py-2 gap-2">
                         {/* Left: Sidebar Toggle + Page Info */}
@@ -384,7 +387,7 @@ const PdfViewer = ({ url, bookId }) => {
                 >
                     <canvas
                         ref={canvasRef}
-                        className="max-w-full" // Added this to prevent overflow
+                        className="max-w-full"
                         style={{
                             display: "block",
                             boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
@@ -395,6 +398,7 @@ const PdfViewer = ({ url, bookId }) => {
         </div>
     );
 };
+
 
 // ── Non-viewable format screen ─────────────────────────────────────────────────
 const NonViewable = ({ book }) => (
@@ -421,6 +425,7 @@ const NonViewable = ({ book }) => (
         </div>
     </div>
 );
+
 
 // ── Main Page ──────────────────────────────────────────────────────────────────
 const ViewUploadedBookPage = () => {

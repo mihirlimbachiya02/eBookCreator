@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import { uploadToCloudinary } from "../config/cloudinary.js";
 import { sendPasswordResetEmail } from "../config/emailService.js";
 
+
 // ── Token Generators ──────────────────────────────────────────────────────────
 const generateAccessToken = (id, tokenVersion) => {
     return jwt.sign({ id, tokenVersion }, process.env.JWT_SECRET, {
@@ -19,6 +20,7 @@ const generateRefreshToken = (id) => {
 
 const hashToken = (token) =>
     crypto.createHash("sha256").update(token).digest("hex");
+
 
 // ── Register ──────────────────────────────────────────────────────────────────
 export const registerUser = async (req, res) => {
@@ -50,6 +52,7 @@ export const registerUser = async (req, res) => {
     }
 };
 
+
 // ── Login ─────────────────────────────────────────────────────────────────────
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -77,6 +80,7 @@ export const loginUser = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 // ── Refresh ───────────────────────────────────────────────────────────────────
 export const refreshAccessToken = async (req, res) => {
@@ -109,6 +113,7 @@ export const refreshAccessToken = async (req, res) => {
         return res.status(401).json({ message: "Refresh token expired or invalid. Please login again." });
     }
 };
+
 
 // ── Forgot Password ───────────────────────────────────────────────────────────
 export const forgotPassword = async (req, res) => {
@@ -145,6 +150,7 @@ export const forgotPassword = async (req, res) => {
         res.status(500).json({ message: "Failed to send reset email. Please try again." });
     }
 };
+
 
 // ── Reset Password ────────────────────────────────────────────────────────────
 export const resetPassword = async (req, res) => {
@@ -183,6 +189,7 @@ export const resetPassword = async (req, res) => {
     }
 };
 
+
 // ── Change Password (logged in) ───────────────────────────────────────────────
 export const changePassword = async (req, res) => {
     try {
@@ -217,6 +224,7 @@ export const changePassword = async (req, res) => {
     }
 };
 
+
 // ── Get Profile ───────────────────────────────────────────────────────────────
 export const getProfile = async (req, res) => {
     try {
@@ -235,6 +243,7 @@ export const getProfile = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 // ── Update Profile ────────────────────────────────────────────────────────────
 export const updateUserProfile = async (req, res) => {
@@ -264,6 +273,7 @@ export const updateUserProfile = async (req, res) => {
         res.status(500).json({ message: "Server error updating profile" });
     }
 };
+
 
 // ── Logout ────────────────────────────────────────────────────────────────────
 export const logoutUser = async (req, res) => {

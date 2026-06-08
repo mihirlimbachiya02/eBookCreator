@@ -16,9 +16,10 @@ import CreateBookModal from "../components/modals/CreateBookModal";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATHS } from "../utils/apiPaths";
 
-// 📦 PRE-BAKED COMPONENT: Confirmation Modal Pop-up Layout
+// 📦 COMPONENT: Confirmation Modal Pop-up Layout
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
     if (!isOpen) return null;
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-200">
@@ -141,10 +142,8 @@ const DashboardPage = () => {
 
     return (
         <DashboardLayout>
-            {/* CHANGED: px-4 on mobile, px-12 on desktop */}
             <div className="w-full px-4 md:px-12 py-8">
                 {/* ── AI Created Books ── */}
-                {/* CHANGED: flex-col on mobile, flex-row on desktop */}
                 <div
                     id="ai-books"
                     className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-100"
@@ -158,7 +157,6 @@ const DashboardPage = () => {
                             eBooks.
                         </p>
                     </div>
-                    {/* CHANGED: w-full on mobile, w-auto on desktop */}
                     <Button
                         className="w-full md:w-auto justify-center bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
                         onClick={() => setIsCreateModalOpen(true)}
@@ -168,7 +166,7 @@ const DashboardPage = () => {
                     </Button>
                 </div>
 
-                {/* Grid display: changed gap-2 to gap-3 for better mobile touch spacing */}
+                {/* Grid display */}
                 {isLoading ?
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6 justify-items-center">
                         {Array.from({ length: 6 }).map((_, i) => (
@@ -202,7 +200,6 @@ const DashboardPage = () => {
 
                 {/* ── Uploaded Books ── */}
                 <div id="uploaded-books" className="mt-10">
-                    {/* CHANGED: Same stack logic for Uploaded Books header */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-100">
                         <div>
                             <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">

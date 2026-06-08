@@ -1,6 +1,7 @@
 import Book from "../models/Book.js";
 import { uploadToCloudinary, cloudinary } from "../config/cloudinary.js";
 
+
 // @desc    Create a new book
 export const createBook = async (req, res) => {
     try {
@@ -63,6 +64,7 @@ export const createBook = async (req, res) => {
     }
 };
 
+
 // @desc    Get all books for a user
 export const getBooks = async (req, res) => {
     try {
@@ -75,6 +77,7 @@ export const getBooks = async (req, res) => {
         res.status(500).json({ message: "Server error fetching books." });
     }
 };
+
 
 // @desc    Get a single book by ID
 export const getBookById = async (req, res) => {
@@ -89,6 +92,7 @@ export const getBookById = async (req, res) => {
         res.status(500).json({ message: "Server error." });
     }
 };
+
 
 // @desc    Update book text data
 export const updateBook = async (req, res) => {
@@ -122,6 +126,7 @@ export const updateBook = async (req, res) => {
         res.status(500).json({ message: "Update failed due to server error." });
     }
 };
+
 
 // @desc    Update book cover image
 export const updateBookCover = async (req, res) => {
@@ -167,6 +172,7 @@ export const updateBookCover = async (req, res) => {
     }
 };
 
+
 // @desc    Delete a book
 export const deleteBook = async (req, res) => {
     try {
@@ -180,6 +186,7 @@ export const deleteBook = async (req, res) => {
         res.status(500).json({ message: "Server error during deletion." });
     }
 };
+
 
 // @desc    Get all cover images from Cloudinary for current user's books
 export const getCloudinaryCovers = async (req, res) => {

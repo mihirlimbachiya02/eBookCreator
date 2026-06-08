@@ -108,15 +108,11 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
         setFilePreview(URL.createObjectURL(file));
     };
 
-
-
     const handleChapterChange = (index, field, value) => {
         const updatedChapters = [...chapters];
         updatedChapters[index][field] = value;
         setChapters(updatedChapters);
     };
-
-
 
     const handleDeleteChapter = (index) => {
         if (chapters.length <= 1) {
@@ -125,8 +121,6 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
         }
         setChapters(chapters.filter((_, i) => i !== index));
     };
-
-
 
     const handleAddChapter = () => {
         setChapters([
@@ -145,7 +139,6 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
             toast.error("Please provide a book title and topic instructions.");
             return;
         }
-
         if (coverMode === "manual" && !selectedFile) {
             toast.error("Please select a local cover image file to upload.");
             return;
@@ -164,7 +157,6 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                 numChapters: parseInt(numChapters, 10) || 5,
                 style: aiStyle,
             });
-
 
 
             if (import.meta.env.DEV) console.log("AI outline response:", response.data);
@@ -198,13 +190,11 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
         } catch (error) {
             if (import.meta.env.DEV) console.error("Outline error:", error.message);
 
-            // SAFELY CATCHES THE 500 ERROR AND TRANSITIONS GRACEFULLY
             toast.error(
                 error.response?.data?.message ||
                     "AI engine busy. Initializing manual template workspace.",
             );
 
-            // Pre-populates editable form input tracks so users can build chapters if the AI times out
             const fallbackCount = parseInt(numChapters, 10) || 5;
             const fallbackTemplates = Array.from({ length: fallbackCount }).map(
                 (_, i) => ({
@@ -213,7 +203,7 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                 }),
             );
             setChapters(fallbackTemplates);
-            setStep(2); // Forces movement to Step 2 so your app layout never locks up!
+            setStep(2); //movement to Step 2 so your app layout never locks up!
         } finally {
             setIsGeneratingOutline(false);
         }
@@ -242,7 +232,7 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                 formData.append("author", user?.name || "Unknown Author");
                 formData.append("topic", aiTopic.trim());
                 formData.append("style", aiStyle);
-                formData.append("chapters", JSON.stringify(chapters)); // Backend must run JSON.parse() on this!
+                formData.append("chapters", JSON.stringify(chapters)); // Backend run JSON.parse()
                 formData.append("coverImage", selectedFile);
 
                 response = await axiosInstance.post(endpoint, formData, {
@@ -504,7 +494,6 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                     </div>
                 </form>
             :   /* Stage 2 Chapters Outline Editor View */
-
                 <div className="flex flex-col h-full animate-fade-in pt-1">
                     <div className="flex items-center justify-between mb-4 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3">
                         <div className="min-w-0">

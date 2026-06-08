@@ -85,7 +85,6 @@ const Features = () => {
                     })}
                 </div>
 
-                {/* CTA */}
                 <div className="text-center mt-4">
                     <p className="mt-4 text-gray-600 mb-6">Ready to get started?</p>
                     <a

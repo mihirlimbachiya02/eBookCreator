@@ -17,9 +17,6 @@ const ForgotPasswordPage = () => {
 
         setIsLoading(true);
         try {
-            // Use plain axios — NOT axiosInstance
-            // axiosInstance's 401 interceptor would redirect to /login
-            // for unauthenticated requests, breaking this public endpoint
             await axios.post(
                 `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
                 { email },
@@ -34,6 +31,7 @@ const ForgotPasswordPage = () => {
             setIsLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">

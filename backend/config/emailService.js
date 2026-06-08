@@ -68,7 +68,7 @@ export const sendPasswordResetEmail = async (toEmail, resetToken, userName) => {
           </tr>
           <tr>
             <td style="background:#f8fafc;padding:20px 32px;text-align:center;border-top:1px solid #e2e8f0;">
-              <p style="color:#9ca3af;font-size:12px;margin:0;">© 2025 eBook Creator. All rights reserved.</p>
+              <p style="color:#9ca3af;font-size:12px;margin:0;">© 2026 eBook Creator. All rights reserved.</p>
             </td>
           </tr>
         </table>

@@ -1,6 +1,5 @@
 // ── Validation Middleware ─────────────────────────────────────────────────────
 // Wraps Zod schemas into Express middleware.
-// Usage: router.post("/login", validate(loginSchema), loginUser)
 
 export const validate = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body);

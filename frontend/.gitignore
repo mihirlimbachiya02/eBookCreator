@@ -1,4 +1,4 @@
-# ── Environment variables — NEVER commit these ────────────────────────────────
+# ── Environment variables────────────────────────────────
 .env
 .env.local
 .env.development
@@ -10,7 +10,7 @@
 # ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
 
-# ── Build output — Vercel builds this, never commit ──────────────────────────
+# ── Build output — Vercel builds this ──────────────────────────
 dist/
 dist-ssr/
 build/
@@ -62,7 +62,7 @@ coverage/
 # ── Storybook ────────────────────────────────────────────────────────────────
 storybook-static/
 
-# ── pdfjs-dist worker — auto-generated, don't commit ─────────────────────────
+# ── pdfjs-dist worker — auto-generated, ─────────────────────────
 public/pdf.worker.*
 
 # ── Package lock ──────────────────────────────────────────────────────────────

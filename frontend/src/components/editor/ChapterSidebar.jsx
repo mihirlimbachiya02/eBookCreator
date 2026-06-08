@@ -35,6 +35,7 @@ const SortableItem = ({
         zIndex: isDragging ? 50 : "auto",
     };
 
+
     return (
         <div
             ref={setNodeRef}
@@ -112,7 +113,6 @@ const SortableItem = ({
 
 
 /* DND CHAPTERSIDEBAR EXPORT*/
-
 const ChapterSidebar = ({
     book,
     selectedChapterIndex,

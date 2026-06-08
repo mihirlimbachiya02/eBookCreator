@@ -18,7 +18,7 @@ const ViewBookPage = () => {
             if (!bookId) return;
             setIsLoading(true);
             try {
-                // CALL the function with bookId instead of concatenating it
+                // CALL the function with bookId
                 const url = API_PATHS.BOOKS.GET_BOOK_BY_ID(bookId);
 
                 const response = await axiosInstance.get(url);
@@ -41,7 +41,7 @@ const ViewBookPage = () => {
                 <ViewBookSkeleton />
             : book ?
                 <ViewBook book={book} />
-                // Professional "Empty State" for missing content
+                // "Empty State" for missing content
             :   <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
                     <div className="text-6xl mb-4">📖</div>
                     <h3 className="text-xl font-bold text-slate-800">

@@ -142,7 +142,6 @@ const renderInlineTokens = (doc, children, options = {}) => {
                     :   TYPOGRAPHY.fonts.serif,
                 );
             }
-
             const isLast = index === children.length - 1;
             doc.text(child.content, {
                 ...options,

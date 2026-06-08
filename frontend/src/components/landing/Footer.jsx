@@ -3,13 +3,14 @@ import { BookOpen } from "lucide-react"; // Only keep the book icon which we kno
 const Footer = () => {
     return (
         <footer className="relative bg-gradient-to-br from-gray-950 via-gray-950 to-violet-950 text-white overflow-hidden">
-            {/* Subtle Background Decorative Dots */}
+            
             <div className="absolute inset-0 opacity-10 pointer-events-none">
                 <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#e0e7ff_1px,transparent_1px)] [background-size:16px_16px]"></div>
             </div>
 
             <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
                     {/* Brand Section */}
                     <div className="flex flex-col items-start text-left space-y-4">
                         <a
@@ -28,6 +29,7 @@ const Footer = () => {
 
                         {/* Social Links using Native SVG Vectors */}
                         <div className="flex items-center space-x-4 pt-2">
+
                             {/* Twitter (X) */}
                             <a
                                 href="https://twitter.com"

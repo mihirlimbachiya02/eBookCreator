@@ -55,8 +55,7 @@ axiosInstance.interceptors.response.use(
                 window.location.pathname.startsWith("/reset-password");
 
 
-            // Don't try to refresh if we're on auth pages
-            // or if this IS the refresh request itself (prevents infinite loop)
+            // Don't try to refresh if we're on auth pages or if this IS the refresh request itself (prevents infinite loop)
             if (isOnAuthPage || originalRequest._isRetry) {
                 return Promise.reject(error);
             }

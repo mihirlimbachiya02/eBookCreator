@@ -16,7 +16,7 @@ createRoot(document.getElementById("root")).render(
                     position="top-center"
                     reverseOrder={false}
                     containerStyle={{
-                        top: 80, // pushes it below the browser bookmark bar
+                        top: 80, 
                     }}
                     toastOptions={{
                         duration: 4000,

@@ -1,6 +1,6 @@
 const SelectField = ({ icon: Icon, label, name, options = [], ...props }) => {
     return (
-        // Main Form Field Container Stack
+        // Main Form Field Container
         <div className="flex flex-col w-full text-left">
             {/* 🏷️ Label Text Layout */}
             {label && (
@@ -12,16 +12,16 @@ const SelectField = ({ icon: Icon, label, name, options = [], ...props }) => {
                 </label>
             )}
 
-            {/* 🚀 INPUT CHASIS LAYER WRAPPER: relative bounds keeps nested absolute vectors locked inside */}
+            {/* 🚀 INPUT CHASIS LAYER WRAPPER */}
             <div className="relative w-full flex items-center">
-                {/* 🎨 Left Indicator Custom Icon Node Layer */}
+                {/* 🎨 Left Indicator */}
                 {Icon && (
                     <div className="absolute left-3.5 pointer-events-none text-slate-400 z-10 flex items-center justify-center">
                         <Icon className="h-4 w-4" />
                     </div>
                 )}
 
-                {/* 🔽 Native Dropdown Component Input Matrix */}
+                {/* 🔽 Native Dropdown Component */}
                 <select
                     id={name}
                     name={name}
@@ -43,7 +43,7 @@ const SelectField = ({ icon: Icon, label, name, options = [], ...props }) => {
                     })}
                 </select>
 
-                {/* 🛞 Right Side Custom Arrow Vector Overlap Scrim */}
+                {/* 🛞 Right Side  Arrow Vector */}
                 <div className="absolute right-3.5 pointer-events-none text-slate-400 z-10 flex items-center justify-center">
                     <svg
                         className="h-4 w-4 stroke-slate-400"

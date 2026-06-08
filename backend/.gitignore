@@ -1,4 +1,4 @@
-# ── Environment variables — NEVER commit these ────────────────────────────────
+# ── Environment variables ────────────────────────────────
 .env
 .env.local
 .env.development
@@ -26,7 +26,7 @@ pids/
 dist/
 build/
 
-# ── Uploaded files — never commit user data ───────────────────────────────────
+# ── Uploaded files ───────────────────────────────────
 uploads/
 uploads/**
 uploads/books/
@@ -65,7 +65,7 @@ ecosystem.config.js
 .cloudinary/
 .cloudinary-cache/
 
-# ── Debug scripts — never commit ─────────────────────────────────────────────
+# ── Debug scripts ─────────────────────────────────────────────
 fixCovers.mjs
 checkCovers.mjs
 checkSpecific.mjs

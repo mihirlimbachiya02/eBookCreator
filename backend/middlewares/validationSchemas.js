@@ -38,6 +38,7 @@ export const changePasswordSchema = z.object({
     newPassword:     z.string().min(6, "New password must be at least 6 characters").max(100),
 });
 
+
 // ── Books ─────────────────────────────────────────────────────────────────────
 export const createBookSchema = z.object({
     title:    z.string().min(1, "Title required").max(200, "Title too long"),
@@ -92,6 +93,7 @@ export const updateCoverSchema = z.object({
         .optional(),
 });
 
+
 // ── Uploaded Books ────────────────────────────────────────────────────────────
 export const importUrlSchema = z.object({
     url: z
@@ -131,6 +133,7 @@ export const importDriveSchema = z.object({
     mimeType:    z.string().max(100).optional(),
 });
 
+
 // ── AI ────────────────────────────────────────────────────────────────────────
 export const generateOutlineSchema = z.object({
     title: z.string().max(200).optional(),
@@ -140,6 +143,7 @@ export const generateOutlineSchema = z.object({
         .optional()
         .default("Informative"),
 });
+
 
 export const generateTextSchema = z.object({
     bookId:         z.string().max(100).optional(),

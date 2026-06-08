@@ -9,6 +9,7 @@ dotenv.config();
 // ── Gemini client ─────────────────────────────────────────────────────────────
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+
 // ── Retry helper for Gemini API ───────────────────────────────────────────────
 const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -28,6 +29,7 @@ const generateWithRetry = async (ai, params, retries = 3, delayMs = 1000) => {
     }
 };
 
+
 // ── Shared Gemini error handler ───────────────────────────────────────────────
 const handleGeminiError = (error, res, context) => {
     console.error(`Error in ${context}:`, error);
@@ -44,6 +46,7 @@ const handleGeminiError = (error, res, context) => {
     return res.status(500).json({ message: `Server error during ${context}` });
 };
 
+
 // ── Generate outline ──────────────────────────────────────────────────────────
 const outlineSchema = z.object({
     topic:       z.string().min(1).max(300).trim(),
@@ -51,6 +54,7 @@ const outlineSchema = z.object({
     numChapters: z.coerce.number().int().min(1).max(20).optional().default(5),
     description: z.string().max(500).trim().optional(),
 });
+
 
 export const generateOutline = async (req, res) => {
     try {
@@ -87,6 +91,7 @@ Example structure:
 
 Generate the outline now:`;
 
+
         const response = await generateWithRetry(ai, {
             model:             process.env.AI_MODEL || "gemini-2.5-flash",
             contents:          prompt,
@@ -117,12 +122,14 @@ Generate the outline now:`;
     }
 };
 
+
 // ── Generate chapter content ──────────────────────────────────────────────────
 const chapterSchema = z.object({
     chapterTitle:       z.string().min(1).max(300).trim(),
     chapterDescription: z.string().max(500).trim().optional(),
     style:              z.string().min(1).max(100).trim(),
 });
+
 
 export const generateChapterContent = async (req, res) => {
     try {
@@ -168,6 +175,7 @@ Begin writing now:`;
     }
 };
 
+
 // ── Generate generic text ─────────────────────────────────────────────────────
 const generateTextSchema = z.object({
     chapterTitle:   z.string().min(1).max(300).trim(),
@@ -206,6 +214,7 @@ Return only the generated text without any conversational filler or markdown.`;
     }
 };
 
+
 // ── Generate cover image ──────────────────────────────────────────────────────
 // Primary: Hugging Face FLUX.1-dev (requires HF_API_KEY env var)
 // Fallback: Pollinations flux-schnell (free, no key needed)
@@ -226,6 +235,7 @@ export const generateCoverImage = async (req, res) => {
             : "ai_cover";
 
         let imageBuffer = null;
+
 
         // ── Primary: Hugging Face ─────────────────────────────────────────────
         if (process.env.HF_API_KEY) {
@@ -263,6 +273,7 @@ export const generateCoverImage = async (req, res) => {
             }
         }
 
+
         // ── Fallback: Pollinations flux-schnell (free) ────────────────────────
         if (!imageBuffer) {
             try {
@@ -294,6 +305,7 @@ export const generateCoverImage = async (req, res) => {
                 });
             }
         }
+
 
         // ── Upload result to Cloudinary ───────────────────────────────────────
         const cloudinaryResult = await uploadToCloudinary(imageBuffer, {

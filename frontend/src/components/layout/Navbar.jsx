@@ -23,6 +23,7 @@ const Navbar = () => {
         return () => document.removeEventListener("click", handleClickOutside);
     }, [profileDropdownOpen]);
 
+    
     return (
         <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">

@@ -1,4 +1,4 @@
-# ── Environment variables — NEVER commit these ────────────────────────────────
+# ── Environment variables ────────────────────────────────
 .env
 .env.local
 .env.*.local
@@ -47,7 +47,7 @@ desktop.ini
 *.swo
 *~
 
-# ── Uploads — local temp files, never commit ──────────────────────────────────
+# ── Uploads — local temp files ──────────────────────────────────
 backend/uploads/
 backend/uploads/**
 temp/
@@ -73,7 +73,7 @@ coverage/
 # ── Documentation — internal only ────────────────────────────────────────────
 documentations/
 
-# ── Debug scripts — never commit these ───────────────────────────────────────
+# ── Debug scripts ───────────────────────────────────────
 backend/fixCovers.mjs
 backend/checkCovers.mjs
 backend/checkSpecific.mjs

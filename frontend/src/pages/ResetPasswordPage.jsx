@@ -44,9 +44,6 @@ const ResetPasswordPage = () => {
 
         setIsLoading(true);
         try {
-            // Use plain axios — NOT axiosInstance
-            // axiosInstance's 401 interceptor would redirect to /login
-            // for unauthenticated requests, breaking this public endpoint
             await axios.post(
                 `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
                 { password },

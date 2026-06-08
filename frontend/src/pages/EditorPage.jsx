@@ -117,7 +117,7 @@ const EditorPage = () => {
     const handleSaveChanges = async (bookToSave = book, showToast = true) => {
         if (!bookToSave || !bookId) return;
 
-        // 1. Snapshot the data to avoid reference mutation issues
+        // 1. Snapshot the data to avoid reference mutation
         const payload = {
             title: bookToSave.title,
             author: bookToSave.author,
@@ -131,7 +131,6 @@ const EditorPage = () => {
                 `/api/books/${bookId}`,
                 payload,
             );
-            // Update local state with the confirmed server response
             setBook(response.data);
             if (showToast) toast.success("Changes saved!");
         } catch (error) {
@@ -195,13 +194,12 @@ const EditorPage = () => {
     };
 
     const handleCoverImageUpload = async (formData) => {
-        // formData is already created in BookDetailsTab.jsx
         if (!formData) return;
         formData.append("bookTitle", book.title);
         setIsUploading(true);
         try {
             const response = await axiosInstance.put(
-                `/api/books/cover/${bookId}`, // Matches your router.put("/cover/:id")
+                `/api/books/cover/${bookId}`, // Matches your router.put
                 formData,
                 {
                     headers: {
@@ -301,6 +299,7 @@ const EditorPage = () => {
         }
     };
 
+
     const handleExportPDF = async () => {
         toast.loading("Generating PDF...", { id: "export" });
         try {
@@ -323,6 +322,7 @@ const EditorPage = () => {
             toast.error("Failed to generate PDF.", { id: "export" });
         }
     };
+
 
     const handleExportDoc = async () => {
         toast.loading("Generating document...", { id: "export" });
@@ -361,6 +361,7 @@ const EditorPage = () => {
             </div>
         );
     }
+
 
     const currentActiveChapter = book.chapters?.[selectedChapterIndex] || null;
 

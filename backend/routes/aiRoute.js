@@ -20,6 +20,6 @@ router.use(protect);
 router.post("/generate-outline", validate(generateOutlineSchema), generateOutline);
 router.post("/generate-chapter-content", validate(generateChapterSchema), generateChapterContent);
 router.post("/generate", validate(generateTextSchema), generateText);
-router.post("/generate-cover", generateCoverImage); // image gen has its own limiter, no body to validate
+router.post("/generate-cover", generateCoverImage); // image gen has its own limiter
 
 export default router;

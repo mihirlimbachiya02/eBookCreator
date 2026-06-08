@@ -74,7 +74,7 @@ const BookDetailsTab = ({
             const finalizedUrl = response.data.imageUrl;
 
             if (finalizedUrl) {
-                // onAICoverSave already saves to DB — no duplicate PUT needed
+                // onAICoverSave already saves to DB
                 await onAICoverSave(finalizedUrl);
                 toast.success("AI cover generated successfully!", {
                     id: generationToast,
@@ -97,6 +97,7 @@ const BookDetailsTab = ({
         }
     };
 
+
     // Fetch covers from Cloudinary
     const handleOpenCloudinaryPicker = async () => {
         setIsCloudinaryPickerOpen(true);
@@ -114,6 +115,7 @@ const BookDetailsTab = ({
             setIsFetchingCovers(false);
         }
     };
+
 
     // Apply selected Cloudinary cover
     const handleApplyCloudinaryCover = async () => {
@@ -139,9 +141,12 @@ const BookDetailsTab = ({
         }
     };
 
+
+
     return (
         <div className="w-full h-[calc(100vh-120px)] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent pr-4">
             <div className="max-w-5xl mx-auto space-y-8 p-2 animate-fade-in pb-12 select-none">
+
                 {/* SECTION 1: CORE METADATA */}
                 <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.015)] p-4 sm:p-4 transition-all duration-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
                     <div className="flex items-center gap-2.5 pb-5 mb-6 border-b border-slate-100">
@@ -185,6 +190,7 @@ const BookDetailsTab = ({
                         />
                     </div>
                 </div>
+
 
                 {/* SECTION 2: COVER IMAGE STUDIO */}
                 <div className="bg-white rounded-2xl border border-slate-200/80 shadow-[0_2px_12px_rgba(0,0,0,0.015)] p-6 sm:p-8 transition-all duration-200 hover:shadow-[0_4px_20px_rgba(0,0,0,0.02)]">

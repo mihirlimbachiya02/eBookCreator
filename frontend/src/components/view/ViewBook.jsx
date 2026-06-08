@@ -47,6 +47,7 @@ const ViewBook = ({ book }) => {
         localStorage.setItem("book-font-size", fontSize);
     }, [fontSize]);
 
+
     // Scroll to top on every chapter change
     useEffect(() => {
         const frame = requestAnimationFrame(() => {
@@ -86,6 +87,7 @@ const ViewBook = ({ book }) => {
                 Loading book content…
             </div>
         );
+
 
     return (
         <div className="flex h-screen bg-[#0f172a] font-sans overflow-hidden">

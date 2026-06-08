@@ -24,7 +24,7 @@ router.use(protect);
 
 router.post("/upload",       uploadRawBook.single("book"), validate(uploadBookSchema), uploadBook);
 router.post("/import-url",   validate(importUrlSchema),   importFromUrl);
-router.post("/import-drive", validate(importDriveSchema), importFromDrive);  // ← NOW VALIDATED
+router.post("/import-drive", validate(importDriveSchema), importFromDrive);
 router.get("/",              getUploadedBooks);
 router.get("/proxy/:id",     proxyBookFile);
 router.put("/:id",           uploadCoverImage,            updateUploadedBook);

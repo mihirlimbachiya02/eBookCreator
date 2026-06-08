@@ -37,8 +37,9 @@ const ChapterEditorTab = ({
         if (!content) return "";
         let html = content;
 
-        // Custom Break Syntax
-        html = html.replace(/\[break\]/g, '<div class="my-12"></div>');
+        html = html.replace(
+            /\[break\]/g, 
+            '<div class="my-12"></div>');
 
         html = html.replace(
             /^###\s(.*)$/gm,
@@ -119,7 +120,6 @@ const ChapterEditorTab = ({
         <div
             className={`${isFullscreen ? "fixed inset-0 z-50 bg-white p-6" : "flex-1"} flex flex-col h-full`}
         >
-            {/* Header Control Bar */}
             {/* Header Control Bar */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                 <h1 className="text-md font-bold text-slate-800">
