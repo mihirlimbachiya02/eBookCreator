@@ -10,8 +10,11 @@ and manage your entire personal book library in one place.
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+
+**[Live Demo](https://ebook-creator-six.vercel.app)**
 
 </div>
 
@@ -22,7 +25,7 @@ and manage your entire personal book library in one place.
 ### AI eBook Creation
 - 🤖 **AI Outline Generation** — Generate complete book outlines using Google Gemini
 - ✍️ **Chapter Editor** — Full markdown editor with live preview and syntax highlighting
-- 🎨 **AI Cover Generation** — Generate professional book covers using Pollinations AI (free, unlimited)
+- 🎨 **AI Cover Generation** — Generate professional book covers using Hugging Face FLUX (with Pollinations fallback)
 - 📤 **One-Click Export** — Export your book as PDF or DOCX with proper formatting
 - 🖼️ **Cover Management** — Upload custom covers from device, pick from Cloudinary library, or generate with AI
 
@@ -61,6 +64,8 @@ and manage your entire personal book library in one place.
 | md-editor-rt | Markdown Editor |
 | DnD Kit | Drag & Drop |
 | pdfjs-dist | In-browser PDF Rendering |
+| react-hot-toast | Toast notifications |
+| lucide-react | Icons |
 
 ### Backend
 | Technology | Purpose |
@@ -69,22 +74,28 @@ and manage your entire personal book library in one place.
 | Express 5 | Web Framework |
 | MongoDB + Mongoose | Database |
 | JWT | Authentication |
+| bcryptjs | Password Hashing (cost 12) |
 | Helmet | Security Headers |
 | Zod | Input Validation |
+| express-rate-limit | Rate Limiting |
 | PDFKit | PDF Generation |
 | docx | DOCX Generation |
 | multer-storage-cloudinary | File Upload to Cloudinary |
 | axios | Server-side file streaming/proxy |
+| mailgun | Password Reset Emails |
 
 ### External Services
 | Service | Purpose |
 |---|---|
 | Google Gemini API | AI Text Generation |
-| Pollinations AI | AI Cover Image Generation (free) |
+| Hugging Face FLUX.1-schnell | AI Cover Image Generation (primary) |
+| Pollinations AI | AI Cover Image Generation (fallback) |
 | Cloudinary | Image & Book File Storage |
 | MongoDB Atlas | Cloud Database |
 | Google Drive API | Drive file import (optional) |
 | Google Picker API | Drive file picker UI (optional) |
+| Vercel | Frontend Hosting |
+| Render | Backend Hosting |
 
 ---
 
@@ -94,8 +105,9 @@ and manage your entire personal book library in one place.
 eBookCreator/
 ├── backend/
 │   ├── config/
-│   │   ├── cloudinary.js          # Image + raw file upload config
-│   │   └── db.js
+│   │   ├── cloudinary.js        # Image + raw file upload config
+│   │   ├── db.js
+│   │   └── emailService.js
 │   ├── controller/
 │   │   ├── aiController.js        # Gemini + Pollinations AI
 │   │   ├── authController.js
@@ -176,9 +188,11 @@ eBookCreator/
     │   ├── pages/
     │   │   ├── DashboardPage.jsx           # AI books + uploaded books sections
     │   │   ├── EditorPage.jsx
+    │   │   ├── ForgotPasswordPage.jsx
     │   │   ├── LandingPage.jsx
     │   │   ├── LoginPage.jsx
     │   │   ├── ProfilePage.jsx
+    │   │   ├── ResetPasswordPage.jsx
     │   │   ├── SignupPage.jsx
     │   │   ├── ViewBookPage.jsx
     │   │   └── ViewUploadedBookPage.jsx    
@@ -266,6 +280,10 @@ CLOUD_NAME=your_cloudinary_cloud_name
 CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
+# Email (for password reset)
+MAILGUN_API_KEY=your_mailgun_api_key
+MAILGUN_DOMAIN=your_mailgun_sandbox_domain
+
 # Server
 PORT=your_port_number
 FRONTEND_URL=your_frontend_url_here
@@ -286,8 +304,12 @@ VITE_API_URL=your_backend_url_here
 | POST | `/api/auth/register` | Register new user |
 | POST | `/api/auth/login` | Login user |
 | POST | `/api/auth/logout` | Logout and invalidate token |
+| POST | `/api/auth/refresh` | Refresh access token |
 | GET | `/api/auth/profile` | Get current user profile |
 | PUT | `/api/auth/profile` | Update user profile |
+| PUT | `/api/auth/change-password` | Change password (requires current password) |
+| POST | `/api/auth/forgot-password` | Send password reset email |
+| POST | `/api/auth/reset-password/:token` | Reset password via email token |
 
 ### AI eBooks
 | Method | Endpoint | Description |
@@ -295,7 +317,7 @@ VITE_API_URL=your_backend_url_here
 | GET | `/api/books` | Get all AI books for user |
 | POST | `/api/books` | Create new book |
 | GET | `/api/books/:id` | Get book by ID |
-| PUT | `/api/books/:id` | Update book |
+| PUT | `/api/books/:id` | Update book content |
 | DELETE | `/api/books/:id` | Delete book |
 | PUT | `/api/books/cover/:id` | Update book cover |
 | GET | `/api/books/cloudinary/covers` | List covers from Cloudinary library |
@@ -321,7 +343,7 @@ VITE_API_URL=your_backend_url_here
 | POST | `/api/uploaded-books/upload` | Upload book from device |
 | POST | `/api/uploaded-books/import-url` | Import book from URL |
 | POST | `/api/uploaded-books/import-drive` | Import book from Google Drive |
-| GET | `/api/uploaded-books/proxy/:id` | Proxy stream book file (for PDF viewer) |
+| GET | `/api/uploaded-books/proxy/:id` | Authenticated proxy stream for PDF viewer |
 | PUT | `/api/uploaded-books/:id` | Update book metadata + cover |
 | DELETE | `/api/uploaded-books/:id` | Delete book |
 
@@ -351,8 +373,9 @@ cloudinary/
 - ✅ bcrypt password hashing (cost factor 12)
 - ✅ No sensitive data in error responses
 - ✅ MongoDB injection prevention via Mongoose ORM
-- ✅ Token invalidation on logout
+- ✅ Token invalidation on logout and password change
 - ✅ Authenticated proxy for book file access
+- ✅ Password reset tokens hashed in DB with 15-minute expiry
 
 ---
 
@@ -373,9 +396,11 @@ node server.js
 ## Acknowledgements
 
 - [Google Gemini](https://ai.google.dev/) for AI text generation
-- [Pollinations AI](https://pollinations.ai/) for free AI image generation
+- [Hugging Face](https://huggingface.co/) for FLUX.1-schnell free AI image generation
+- [Pollinations AI](https://pollinations.ai/) for fallback free AI image generation
 - [Cloudinary](https://cloudinary.com/) for image and file storage
 - [MongoDB Atlas](https://www.mongodb.com/atlas) for cloud database
 - [PDF.js](https://mozilla.github.io/pdf.js/) for in-browser PDF rendering
+- [Mailgun](https://www.mailgun.com/) for password reset email
 
 ---
