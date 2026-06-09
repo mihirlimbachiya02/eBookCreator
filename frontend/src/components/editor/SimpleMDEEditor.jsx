@@ -20,7 +20,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
                 onChange={handleEditorChange}
                 language="en-US"
                 theme="light"
-                preview={true}
+                preview={false}
                 htmlPreview={true}
                 placeholder="Write your thoughts completely unobstructed..."
                 toolbars={[
@@ -34,7 +34,6 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
                     "orderedList",
                     "-",
                     "link",
-                    "image",
                     "code",
                     "table",
                     "-",
