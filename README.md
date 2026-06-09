@@ -33,7 +33,7 @@ and manage your entire personal book library in one place.
 - 📁 **Upload from Device** — Upload books directly from your local machine
 - 🔗 **Import from URL** — Import books from any direct download link
 - ☁️ **Google Drive Import** — Pick files directly from your Google Drive
-- 📖 **Built-in PDF Viewer** — Read PDFs in-browser with page navigation, zoom, and auto-fit
+- 📖 **Built-in PDF Viewer** — Read PDFs in-browser with page navigation, chapter sidebar, last-page memory, zoom, and auto-fit
 - 📥 **Download Support** — Download EPUB, MOBI, ZIP files with a single click
 - ✏️ **Edit Book Details** — Update title, format, source, and cover image for uploaded books
 - 🗂️ **Supported Formats** — PDF, EPUB, MOBI, HTML, ZIP
@@ -80,7 +80,7 @@ and manage your entire personal book library in one place.
 | express-rate-limit | Rate Limiting |
 | PDFKit | PDF Generation |
 | docx | DOCX Generation |
-| multer-storage-cloudinary | File Upload to Cloudinary |
+| memoryStorage | File Upload to Cloudinary |
 | axios | Server-side file streaming/proxy |
 | mailgun | Password Reset Emails |
 
@@ -280,6 +280,8 @@ CLOUD_NAME=your_cloudinary_cloud_name
 CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
+HF_API_KEY=your_hugging_face_api_key
+
 # Email (for password reset)
 MAILGUN_API_KEY=your_mailgun_api_key
 MAILGUN_DOMAIN=your_mailgun_sandbox_domain
@@ -336,7 +338,7 @@ VITE_API_URL=your_backend_url_here
 | GET | `/api/export/:id/pdf` | Export book as PDF |
 | GET | `/api/export/:id/doc` | Export book as DOCX |
 
-### Uploaded Books (NEW)
+### Uploaded Books
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/uploaded-books` | Get all uploaded books for user |
@@ -367,7 +369,7 @@ cloudinary/
 - ✅ Rate limiting on all routes
 - ✅ Input validation with Zod
 - ✅ XSS protection with DOMPurify
-- ✅ Helmet security headers with CSP
+- ✅ Helmet security headers (CSP disabled for Cloudinary compatibility)
 - ✅ CORS restricted to frontend URL
 - ✅ File upload validation (type and size limits — 50MB for books, 10MB for covers)
 - ✅ bcrypt password hashing (cost factor 12)
