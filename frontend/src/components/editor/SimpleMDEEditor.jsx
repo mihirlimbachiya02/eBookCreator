@@ -1,24 +1,42 @@
 import { MdEditor } from "md-editor-rt";
 import "md-editor-rt/lib/style.css";
 import "./SimpleMDEEditor.css";
+import axiosInstance from "../../utils/axiosInstance";
 
 // Strip HTML tags from AI-generated content before display
 const stripHtml = (text) => {
     if (!text) return "";
     return text
-        .replace(/<[^>]*>/g, "")     
-        .replace(/&nbsp;/g, " ")         
-        .replace(/&amp;/g, "&")          
-        .replace(/&lt;/g, "<")           
-        .replace(/&gt;/g, ">")           
-        .replace(/&quot;/g, '"')         
-        .replace(/&#39;/g, "'");         
+        .replace(/<[^>]*>/g, "")
+        .replace(/&nbsp;/g, " ")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'");
 };
 
 const SimpleMDEEditor = ({ value = "", onChange }) => {
 
     const handleEditorChange = (newValue) => {
         if (onChange) onChange(newValue);
+    };
+
+    // Upload image to Cloudinary via backend, insert URL into editor
+    const handleImageUpload = async (files, callback) => {
+        try {
+            const formData = new FormData();
+            formData.append("coverImage", files[0]);
+            const response = await axiosInstance.post(
+                "/api/books/upload-content-image",
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } },
+            );
+            callback([{ url: response.data.url, alt: files[0].name }]);
+        } catch (err) {
+            console.error("Image upload failed:", err.message);
+            callback([]);
+        }
     };
 
     return (
@@ -31,7 +49,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
                 preview={false}
                 htmlPreview={false}
                 placeholder="Write your thoughts completely unobstructed..."
-                onUploadImg={() => {}}
+                onUploadImg={handleImageUpload}
                 toolbars={[
                     "bold",
                     "italic",
@@ -43,7 +61,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
                     "orderedList",
                     "-",
                     "link",
-                    "image", // kept — users can use Add Image Link
+                    "image",
                     "code",
                     "table",
                     "-",

@@ -81,6 +81,7 @@ Requirements:
 Output Format:
 Return ONLY a valid JSON array with no additional text, markdown, or formatting. Each object must have exactly two keys: "title" and "description".
 
+
 Example structure:
 [
     {
@@ -88,6 +89,8 @@ Example structure:
         "description": "A comprehensive overview introducing the main concepts. Sets the foundation for understanding the subject matter."
     }
 ]
+
+CRITICAL: Output raw text only. Never use HTML tags like <p>, <div>, <br> or any other markup.
 
 Generate the outline now:`;
 
@@ -161,6 +164,8 @@ Format Guidelines:
 - End with a strong conclusion or transition
 - Write in PLAIN TEXT ONLY. No HTML tags, no markdown, no <p> tags, no formatting symbols whatsoever.
 
+CRITICAL: Output raw text only. Never use HTML tags like <p>, <div>, <br> or any other markup.
+
 Begin writing now:`;
 
         const response = await generateWithRetry(ai, {
@@ -200,7 +205,11 @@ Existing Content: ${currentContent ? currentContent.substring(0, 500) : "None"}
 Instructions: ${instructions}
 
 Write the next section of the chapter following the established style.
-Return only the generated text without any conversational filler, markdown, or HTML tags. No <p>, <div>, <br> or any markup whatsoever.`;
+Return only the generated text without any conversational filler, markdown, or HTML tags. No <p>, <div>, <br> or any markup whatsoever.
+
+CRITICAL: Output raw text only. Never use HTML tags like <p>, <div>, <br> or any other markup.
+
+`;
 
         const response = await generateWithRetry(ai, {
             model:            process.env.AI_MODEL || "gemini-2.5-flash",

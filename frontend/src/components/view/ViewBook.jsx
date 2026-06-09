@@ -19,9 +19,14 @@ const formatContent = (content) => {
                 /\*\*(.*?)\*\*/g,
                 '<strong class="font-bold text-[#1e293b]">$1</strong>',
             )
+            .replace(/\*(.*?)\*/g, '<em class="italic text-[#475569]">$1</em>')
             .replace(
-                /\*(.*?)\*/g,
-                '<em class="italic text-[#475569]">$1</em>',
+                /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+                '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />',
+            )
+            .replace(
+                /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+                '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />',
             )
             .split("\n\n")
             .filter((p) => p.trim())
