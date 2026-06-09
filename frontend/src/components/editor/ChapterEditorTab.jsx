@@ -81,6 +81,7 @@ const ChapterEditorTab = ({
         () => ({
             autofocus: true,
             spellChecker: false,
+            preview: "edit",
             toolbar: [
                 "bold",
                 "italic",
