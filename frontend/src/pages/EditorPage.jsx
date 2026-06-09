@@ -282,9 +282,21 @@ const EditorPage = () => {
                 style: book.style || "Informative",
             });
             setBook((prev) => {
+                const stripHtml = (text) => {
+                    if (!text) return "";
+                    return text
+                        .replace(/<[^>]*>/g, "")
+                        .replace(/&nbsp;/g, " ")
+                        .replace(/&amp;/g, "&")
+                        .replace(/&lt;/g, "<")
+                        .replace(/&gt;/g, ">")
+                        .replace(/&quot;/g, '"')
+                        .replace(/&#39;/g, "'");
+                };
                 const updatedChapters = [...prev.chapters];
-                updatedChapters[index].content =
-                    response.data.content || response.data.generatedText || "";
+                updatedChapters[index].content = stripHtml(
+                    response.data.content || response.data.generatedText || "",
+                );
                 const updated = { ...prev, chapters: updatedChapters };
                 handleSaveChanges(updated, false);
                 return updated;

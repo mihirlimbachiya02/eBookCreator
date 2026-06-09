@@ -159,7 +159,7 @@ Format Guidelines:
 - Use clear paragraph breaks for readability
 - Include subheadings if appropriate
 - End with a strong conclusion or transition
-- Write in plain text without markdown formatting
+- Write in PLAIN TEXT ONLY. No HTML tags, no markdown, no <p> tags, no formatting symbols whatsoever.
 
 Begin writing now:`;
 
@@ -200,7 +200,7 @@ Existing Content: ${currentContent ? currentContent.substring(0, 500) : "None"}
 Instructions: ${instructions}
 
 Write the next section of the chapter following the established style.
-Return only the generated text without any conversational filler or markdown.`;
+Return only the generated text without any conversational filler, markdown, or HTML tags. No <p>, <div>, <br> or any markup whatsoever.`;
 
         const response = await generateWithRetry(ai, {
             model:            process.env.AI_MODEL || "gemini-2.5-flash",
