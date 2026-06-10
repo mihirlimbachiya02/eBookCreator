@@ -1,12 +1,13 @@
 import { MdEditor } from "md-editor-rt";
 import "md-editor-rt/lib/style.css";
 import "./SimpleMDEEditor.css";
+import axiosInstance from "../../utils/axiosInstance";
 
-// Only strip HTML tags — preserve markdown syntax like ![alt](url)
+// Strip HTML tags from AI-generated content — preserve markdown syntax
 const stripHtmlTags = (text) => {
     if (!text) return "";
     return text
-        .replace(/<(?!img\b|a\b|strong\b|em\b|br\b)[^>]*>/gi, "")
+        .replace(/<[^>]*>/g, "")
         .replace(/&nbsp;/g, " ")
         .replace(/&amp;/g, "&")
         .replace(/&quot;/g, '"')
@@ -19,25 +20,24 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
         if (onChange) onChange(newValue);
     };
 
-    // Convert image to base64 — no Cloudinary, embedded directly in content
+    // Upload image to Cloudinary content-images folder (separate from book covers)
     const handleImageUpload = async (files, callback) => {
         try {
             const results = await Promise.all(
-                Array.from(files).map((file) =>
-                    new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload  = (e) => resolve({
-                            url: e.target.result, // base64 data URL
-                            alt: file.name,
-                        });
-                        reader.onerror = reject;
-                        reader.readAsDataURL(file);
-                    })
-                )
+                Array.from(files).map(async (file) => {
+                    const formData = new FormData();
+                    formData.append("coverImage", file);
+                    const response = await axiosInstance.post(
+                        "/api/books/upload-content-image",
+                        formData,
+                        { headers: { "Content-Type": "multipart/form-data" } },
+                    );
+                    return { url: response.data.url, alt: file.name };
+                })
             );
             callback(results);
         } catch (err) {
-            console.error("Image read failed:", err.message);
+            console.error("Image upload failed:", err.message);
             callback([]);
         }
     };

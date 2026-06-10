@@ -235,3 +235,22 @@ export const getCloudinaryCovers = async (req, res) => {
     }
 };
 
+
+// @desc    Upload an image for use inside chapter content (not a book cover)
+export const uploadContentImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No image file provided" });
+        }
+        const result = await uploadToCloudinary(req.file.buffer, {
+            folder:        "ebook-creator/content-images",
+            public_id:     `content_${req.user._id}_${Date.now()}`,
+            overwrite:     false,
+            resource_type: "image",
+        });
+        res.status(200).json({ url: result.secure_url });
+    } catch (error) {
+        console.error("[uploadContentImage] Error:", error.message);
+        res.status(500).json({ message: "Image upload failed" });
+    }
+};
