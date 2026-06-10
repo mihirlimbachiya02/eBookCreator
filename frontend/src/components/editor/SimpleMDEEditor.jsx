@@ -3,11 +3,12 @@ import "md-editor-rt/lib/style.css";
 import "./SimpleMDEEditor.css";
 import axiosInstance from "../../utils/axiosInstance";
 
-// Strip HTML tags from AI-generated content — preserve markdown syntax
+// Only strip HTML tags from content — does NOT touch markdown syntax like ![alt](url)
 const stripHtmlTags = (text) => {
     if (!text) return "";
+    // Only remove actual HTML tags, preserve markdown image/link syntax
     return text
-        .replace(/<[^>]*>/g, "")
+        .replace(/<(?!img\b|a\b|strong\b|em\b|br\b)[^>]*>/gi, "")
         .replace(/&nbsp;/g, " ")
         .replace(/&amp;/g, "&")
         .replace(/&quot;/g, '"')
@@ -20,22 +21,17 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
         if (onChange) onChange(newValue);
     };
 
-    // Upload image to Cloudinary content-images folder (separate from book covers)
+    // Upload image to Cloudinary via backend, insert into editor
     const handleImageUpload = async (files, callback) => {
         try {
-            const results = await Promise.all(
-                Array.from(files).map(async (file) => {
-                    const formData = new FormData();
-                    formData.append("coverImage", file);
-                    const response = await axiosInstance.post(
-                        "/api/books/upload-content-image",
-                        formData,
-                        { headers: { "Content-Type": "multipart/form-data" } },
-                    );
-                    return { url: response.data.url, alt: file.name };
-                })
+            const formData = new FormData();
+            formData.append("coverImage", files[0]);
+            const response = await axiosInstance.post(
+                "/api/books/upload-content-image",
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } },
             );
-            callback(results);
+            callback([{ url: response.data.url, alt: files[0].name }]);
         } catch (err) {
             console.error("Image upload failed:", err.message);
             callback([]);
@@ -50,7 +46,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
                 language="en-US"
                 theme="light"
                 preview={false}
-                htmlPreview={true}
+                htmlPreview={false}
                 placeholder="Write your thoughts completely unobstructed..."
                 onUploadImg={handleImageUpload}
                 toolbars={[
