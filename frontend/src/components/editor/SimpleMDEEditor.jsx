@@ -3,15 +3,14 @@ import "md-editor-rt/lib/style.css";
 import "./SimpleMDEEditor.css";
 import axiosInstance from "../../utils/axiosInstance";
 
-// Strip HTML tags from AI-generated content before display
-const stripHtml = (text) => {
+// Only strip HTML tags from content — does NOT touch markdown syntax like ![alt](url)
+const stripHtmlTags = (text) => {
     if (!text) return "";
+    // Only remove actual HTML tags, preserve markdown image/link syntax
     return text
-        .replace(/<[^>]*>/g, "")
+        .replace(/<(?!img\b|a\b|strong\b|em\b|br\b)[^>]*>/gi, "")
         .replace(/&nbsp;/g, " ")
         .replace(/&amp;/g, "&")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">")
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'");
 };
@@ -22,7 +21,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
         if (onChange) onChange(newValue);
     };
 
-    // Upload image to Cloudinary via backend, insert URL into editor
+    // Upload image to Cloudinary via backend, insert into editor
     const handleImageUpload = async (files, callback) => {
         try {
             const formData = new FormData();
@@ -42,7 +41,7 @@ const SimpleMDEEditor = ({ value = "", onChange }) => {
     return (
         <div className="w-full flex-grow flex flex-col h-[calc(100vh-190px)] min-h-[500px] rounded-2xl border border-slate-200/90 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.01)] overflow-hidden transition-all duration-300 focus-within:border-violet-400 focus-within:shadow-[0_0_0_4px_rgba(124,58,237,0.05)] custom-minimalist-editor">
             <MdEditor
-                modelValue={stripHtml(value)}
+                modelValue={stripHtmlTags(value)}
                 onChange={handleEditorChange}
                 language="en-US"
                 theme="light"

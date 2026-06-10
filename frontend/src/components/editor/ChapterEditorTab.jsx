@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { Type, Maximize2, Eye, EyeOff, Sparkles } from "lucide-react";
-import {Button, InputField } from "../ui/index.js";
+import { Button, InputField } from "../ui/index.js";
 import DOMPurify from "dompurify";
 import SimpleMDEEditor from "./SimpleMDEEditor.jsx";
 
@@ -16,65 +16,85 @@ const ChapterEditorTab = ({
 
     const currentChapter = book?.chapters?.[selectedChapterIndex];
 
-    // Effect to handle toolbar button styling
     useEffect(() => {
         const toolbar = document.querySelector(".w-md-editor-toolbar");
         if (!toolbar) return;
-
-        const handleToolbarUpdate = () => {
-            const boldBtn = toolbar.querySelector(".bold");
-            if (boldBtn) {
-                // active states
-            }
-        };
-
+        const handleToolbarUpdate = () => {};
         toolbar.addEventListener("click", handleToolbarUpdate);
         return () => toolbar.removeEventListener("click", handleToolbarUpdate);
     }, []);
 
-    // Simple markdown parser
+    // Markdown parser — handles images, headings, bold, italic, blockquote, lists
     const formatMarkdown = (content) => {
         if (!content) return "";
-        let html = content;
 
-        html = html.replace(
-            /\[break\]/g, 
-            '<div class="my-12"></div>');
+        // Process images FIRST before paragraph splitting
+        // so they don't get wrapped in <p> tags
+        const blocks = content.split("\n\n");
 
-        html = html.replace(
-            /^###\s(.*)$/gm,
-            '<h3 class="text-xl font-bold mb-4 mt-6 text-slate-800">$1</h3>',
-        );
-        html = html.replace(
-            /^##\s(.*)$/gm,
-            '<h2 class="text-2xl font-bold mb-4 mt-8 text-slate-800">$1</h2>',
-        );
-        html = html.replace(
-            /^#\s(.*)$/gm,
-            '<h1 class="text-3xl font-bold mb-6 mt-8 text-slate-900">$1</h1>',
-        );
-        html = html.replace(
-            /\*\*\*(.*?)\*\*\*/g,
-            '<strong class="font-bold italic">$1</strong>',
-        );
-        html = html.replace(
-            /\*\*(.*?)\*\*/g,
-            '<strong class="font-bold">$1</strong>',
-        );
-        html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
-        html = html.replace(
-            /^>\s(.*)$/gm,
-            '<blockquote class="border-l-4 border-violet-500 pl-4 italic text-slate-600 my-4">$1</blockquote>',
-        );
-        html = html.replace(
-            /^- \s(.*)$/gm,
-            '<li class="ml-4 mb-1 text-slate-700">$1</li>',
-        );
-        html = html.replace(
-            /(<li class="ml-4 mb-1 text-slate-700">.*?<\/li>)/gs,
-            '<ul class="list-disc my-4 pl-4">$1</ul>',
-        );
-        return html;
+        const processed = blocks.map((block) => {
+            const trimmed = block.trim();
+            if (!trimmed) return "";
+
+            // Standalone image line
+            if (/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/.test(trimmed)) {
+                return trimmed.replace(
+                    /^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/,
+                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />'
+                );
+            }
+
+            // Page break
+            if (trimmed === "[break]") {
+                return '<div class="my-12"></div>';
+            }
+
+            // Headings
+            if (/^###\s/.test(trimmed)) {
+                return trimmed.replace(/^###\s(.*)$/, '<h3 class="text-xl font-bold mb-4 mt-6 text-slate-800">$1</h3>');
+            }
+            if (/^##\s/.test(trimmed)) {
+                return trimmed.replace(/^##\s(.*)$/, '<h2 class="text-2xl font-bold mb-4 mt-8 text-slate-800">$1</h2>');
+            }
+            if (/^#\s/.test(trimmed)) {
+                return trimmed.replace(/^#\s(.*)$/, '<h1 class="text-3xl font-bold mb-6 mt-8 text-slate-900">$1</h1>');
+            }
+
+            // Blockquote
+            if (/^>\s/.test(trimmed)) {
+                return trimmed.replace(/^>\s(.*)$/, '<blockquote class="border-l-4 border-violet-500 pl-4 italic text-slate-600 my-4">$1</blockquote>');
+            }
+
+            // List items
+            if (/^- /.test(trimmed)) {
+                const items = trimmed
+                    .split("\n")
+                    .filter((l) => l.startsWith("- "))
+                    .map((l) => `<li class="ml-4 mb-1 text-slate-700">${l.replace(/^- /, "")}</li>`)
+                    .join("");
+                return `<ul class="list-disc my-4 pl-4">${items}</ul>`;
+            }
+
+            // Inline formatting within paragraph
+            // Handle inline images inside paragraphs too
+            let inlined = trimmed
+                .replace(
+                    /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-4 shadow-md mx-auto block" loading="lazy" />'
+                )
+                .replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold italic">$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
+
+            // If the block contains an img tag after inline processing, don't wrap in <p>
+            if (inlined.includes("<img")) {
+                return inlined;
+            }
+
+            return `<p class="mb-4 leading-relaxed text-slate-700">${inlined}</p>`;
+        });
+
+        return processed.join("");
     };
 
     const mdeOptions = useMemo(
@@ -131,15 +151,15 @@ const ChapterEditorTab = ({
                     <button
                         type="button"
                         onClick={(e) => {
-                            e.stopPropagation(); // Prevents bubbling
-                            setIsAiOpen(true); // Updates parent state
+                            e.stopPropagation();
+                            setIsAiOpen(true);
                         }}
                         className="md:hidden p-2 bg-violet-100 text-violet-700 rounded-lg border border-violet-100"
                     >
                         <Sparkles className="h-4 w-4" />
                     </button>
 
-                    {/* Edit Mode Toggle */}
+                    {/* Edit / Preview Toggle */}
                     <button
                         type="button"
                         onClick={() => setIsPreviewMode(!isPreviewMode)}
@@ -182,16 +202,25 @@ const ChapterEditorTab = ({
                 </div>
 
                 <div className="flex-1 overflow-y-auto min-h-0 relative">
-                    {isPreviewMode ?
+                    {isPreviewMode ? (
                         <div
-                            className="prose max-w-none p-6 border border-slate-150 rounded-2xl bg-slate-50/40 min-h-[350px] whitespace-pre-wrap text-slate-700 leading-relaxed"
+                            className="prose max-w-none p-6 border border-slate-150 rounded-2xl bg-slate-50/40 min-h-[350px] text-slate-700 leading-relaxed"
                             dangerouslySetInnerHTML={{
                                 __html: DOMPurify.sanitize(
                                     formatMarkdown(currentChapter.content),
+                                    {
+                                        ALLOWED_TAGS: [
+                                            "p", "h1", "h2", "h3",
+                                            "strong", "em", "blockquote",
+                                            "ul", "li", "div", "img", "br",
+                                        ],
+                                        ALLOWED_ATTR: ["src", "alt", "class", "loading"],
+                                    }
                                 ),
                             }}
                         />
-                    :   <div className="h-full">
+                    ) : (
+                        <div className="h-full">
                             <SimpleMDEEditor
                                 key={`mde-chapter-${selectedChapterIndex}`}
                                 value={currentChapter.content || ""}
@@ -203,7 +232,7 @@ const ChapterEditorTab = ({
                                 options={mdeOptions}
                             />
                         </div>
-                    }
+                    )}
                 </div>
             </div>
         </div>

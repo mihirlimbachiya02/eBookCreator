@@ -5,37 +5,62 @@ import DOMPurify from "dompurify";
 
 const formatContent = (content) => {
     if (!content) return "";
-    return DOMPurify.sanitize(
-        content
-            .replace(
-                /^###\s(.*)$/gm,
-                '<h3 class="text-xl font-bold mt-6 mb-2 text-[#334155]">$1</h3>',
-            )
-            .replace(
-                /^##\s(.*)$/gm,
-                '<h2 class="text-2xl font-semibold mt-8 mb-4 text-[#1e293b]">$1</h2>',
-            )
-            .replace(
-                /\*\*(.*?)\*\*/g,
-                '<strong class="font-bold text-[#1e293b]">$1</strong>',
-            )
-            .replace(/\*(.*?)\*/g, '<em class="italic text-[#475569]">$1</em>')
-            .replace(
-                /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-                '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />',
-            )
-            .replace(
-                /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-                '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />',
-            )
-            .split("\n\n")
-            .filter((p) => p.trim())
-            .map(
-                (p) =>
-                    `<p class="mb-6 leading-relaxed text-[#334155]">${p.trim()}</p>`,
-            )
-            .join(""),
+
+    // Step 1: Convert markdown images FIRST before any paragraph splitting
+    // This prevents img tags from being wrapped in <p> tags incorrectly
+    const withImages = content.replace(
+        /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
+        '\n\n__IMG__$2__ALT__$1__ENDIMG__\n\n'
     );
+
+    // Step 2: Split into blocks and process each
+    const blocks = withImages.split("\n\n").filter((p) => p.trim());
+
+    const processed = blocks.map((block) => {
+        const trimmed = block.trim();
+
+        // Image placeholder — render as standalone img
+        if (trimmed.startsWith("__IMG__")) {
+            const match = trimmed.match(/__IMG__(.+?)__ALT__(.*)__ENDIMG__/);
+            if (match) {
+                const url = match[1];
+                const alt = match[2] || "";
+                return `<img src="${url}" alt="${alt}" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />`;
+            }
+        }
+
+        // Headings
+        if (/^###\s/.test(trimmed)) {
+            return trimmed.replace(
+                /^###\s(.*)$/,
+                '<h3 class="text-xl font-bold mt-6 mb-2 text-[#334155]">$1</h3>'
+            );
+        }
+        if (/^##\s/.test(trimmed)) {
+            return trimmed.replace(
+                /^##\s(.*)$/,
+                '<h2 class="text-2xl font-semibold mt-8 mb-4 text-[#1e293b]">$1</h2>'
+            );
+        }
+        if (/^#\s/.test(trimmed)) {
+            return trimmed.replace(
+                /^#\s(.*)$/,
+                '<h1 class="text-3xl font-bold mt-8 mb-4 text-[#1e293b]">$1</h1>'
+            );
+        }
+
+        // Inline formatting within paragraph
+        const inlined = trimmed
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[#1e293b]">$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em class="italic text-[#475569]">$1</em>');
+
+        return `<p class="mb-6 leading-relaxed text-[#334155]">${inlined}</p>`;
+    });
+
+    return DOMPurify.sanitize(processed.join(""), {
+        ALLOWED_TAGS: ["p", "h1", "h2", "h3", "strong", "em", "img", "br"],
+        ALLOWED_ATTR: ["src", "alt", "class", "loading"],
+    });
 };
 
 const ViewBook = ({ book }) => {
@@ -51,7 +76,6 @@ const ViewBook = ({ book }) => {
     useEffect(() => {
         localStorage.setItem("book-font-size", fontSize);
     }, [fontSize]);
-
 
     // Scroll to top on every chapter change
     useEffect(() => {
@@ -92,7 +116,6 @@ const ViewBook = ({ book }) => {
                 Loading book content…
             </div>
         );
-
 
     return (
         <div className="flex h-screen bg-[#0f172a] font-sans overflow-hidden">
@@ -205,19 +228,16 @@ const ViewBook = ({ book }) => {
                             >
                                 ← Previous
                             </button>
-
-                            <span className="text-xs font-mono text-slate-400">
-                                {selectedChapterIndex + 1} /{" "}
-                                {book.chapters?.length}
+                            <span className="text-xs text-slate-400 font-mono">
+                                {selectedChapterIndex + 1} / {book.chapters?.length || 1}
                             </span>
-
                             <button
                                 onClick={() =>
                                     setSelectedChapterIndex((i) => i + 1)
                                 }
                                 disabled={
                                     selectedChapterIndex ===
-                                    (book.chapters?.length ?? 1) - 1
+                                    (book.chapters?.length || 1) - 1
                                 }
                                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 bg-white border border-slate-200 hover:border-violet-400 hover:text-violet-600 transition-all disabled:opacity-30 disabled:pointer-events-none shadow-sm"
                             >
