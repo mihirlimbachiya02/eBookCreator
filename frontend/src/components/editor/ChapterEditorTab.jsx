@@ -29,7 +29,6 @@ const ChapterEditorTab = ({
         if (!content) return "";
 
         // Process images FIRST before paragraph splitting
-        // so they don't get wrapped in <p> tags
         const blocks = content.split("\n\n");
 
         const processed = blocks.map((block) => {
@@ -76,7 +75,6 @@ const ChapterEditorTab = ({
             }
 
             // Inline formatting within paragraph
-            // Handle inline images inside paragraphs too
             let inlined = trimmed
                 .replace(
                     /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
