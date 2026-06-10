@@ -7,7 +7,6 @@ import {
     updateBook,
     deleteBook,
     getCloudinaryCovers,
-    uploadContentImage,
 } from "../controller/bookController.js";
 import { protect } from "../middlewares/authMiddleware.js";
 import { uploadCoverImage } from "../middlewares/uploadMiddleware.js";
@@ -22,7 +21,6 @@ const router = express.Router();
 
 // Static routes MUST come before dynamic /:id routes
 router.get("/cloudinary/covers",      protect, getCloudinaryCovers);
-router.post("/upload-content-image",  protect, uploadCoverImage, uploadContentImage);
 router.get("/",                        protect, getBooks);
 router.get("/:id",                     protect, getBookById);
 router.post("/",                       protect, uploadCoverImage, validate(createBookSchema), createBook);
