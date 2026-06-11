@@ -80,7 +80,7 @@ and manage your entire personal book library in one place.
 | express-rate-limit | Rate Limiting |
 | PDFKit | PDF Generation |
 | docx | DOCX Generation |
-| memoryStorage | File Upload to Cloudinary |
+| multer | File Upload to Cloudinary |
 | axios | Server-side file streaming/proxy |
 | mailgun | Password Reset Emails |
 
@@ -323,6 +323,7 @@ VITE_API_URL=your_backend_url_here
 | DELETE | `/api/books/:id` | Delete book |
 | PUT | `/api/books/cover/:id` | Update book cover |
 | GET | `/api/books/cloudinary/covers` | List covers from Cloudinary library |
+| POST | `/api/books/upload-content-image` | Upload image for chapter content |
 
 ### AI Features
 | Method | Endpoint | Description |
@@ -357,6 +358,7 @@ VITE_API_URL=your_backend_url_here
 cloudinary/
 └── ebook-creator/
     ├── books/           ← AI book cover images
+    ├── content-images   ← Images embedded in chapter content
     ├── profiles/        ← User profile pictures
     └── uploaded-books/  ← Uploaded book files (raw: PDF, EPUB, MOBI, HTML, ZIP)
 ```

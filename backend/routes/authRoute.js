@@ -25,16 +25,16 @@ import {
 const router = express.Router();
 
 // Public routes
-router.post("/register",        validate(registerSchema),       registerUser);
-router.post("/login",           validate(loginSchema),          loginUser);
-router.post("/refresh",                                         refreshAccessToken);
-router.post("/forgot-password", validate(forgotPasswordSchema), forgotPassword);
-router.post("/reset-password/:token", validate(resetPasswordSchema), resetPassword);
+router.post("/register",              validate(registerSchema),       registerUser);
+router.post("/login",                 validate(loginSchema),          loginUser);
+router.post("/refresh",               refreshAccessToken);
+router.post("/forgot-password",       validate(forgotPasswordSchema), forgotPassword);
+router.post("/reset-password/:token", validate(resetPasswordSchema),  resetPassword);
 
 // Protected routes
-router.post("/logout",          protect,                        logoutUser);
-router.get( "/profile",         protect,                        getProfile);
-router.put( "/profile",         protect, uploadProfilePic, validate(updateProfileSchema), updateUserProfile);
-router.put( "/change-password", protect, validate(changePasswordSchema), changePassword);
+router.post("/logout",          protect,   logoutUser);
+router.get( "/profile",         protect,   getProfile);
+router.put( "/profile",         protect,   uploadProfilePic,  validate(updateProfileSchema),  updateUserProfile);
+router.put( "/change-password", protect,   validate(changePasswordSchema), changePassword);
 
 export default router;
