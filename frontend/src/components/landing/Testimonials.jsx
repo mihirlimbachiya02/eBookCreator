@@ -44,7 +44,7 @@ const Testimonials = () => {
                             <div className="flex items-center space-x-1 mb-6">
                                 {[...Array(testimonial.rating)].map((_, i) => (
                                     <Star
-                                        key={i}
+                                        key={`star-${i}`}
                                         className="w-5 h-5 text-violet-500 fill-violet-500"
                                     />
                                 ))}
@@ -80,15 +80,21 @@ const Testimonials = () => {
 
                 <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
                     <div className="text-center">
-                        <div className="text-4xl font-bold text-gray-900 mb-2">50K+</div>
+                        <div className="text-4xl font-bold text-gray-900 mb-2">
+                            50K+
+                        </div>
                         <div className="text-gray-600">Happy Creators</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold text-gray-900 mb-2">4.9/5</div>
+                        <div className="text-4xl font-bold text-gray-900 mb-2">
+                            4.9/5
+                        </div>
                         <div className="text-gray-600">Average Rating</div>
                     </div>
                     <div className="text-center">
-                        <div className="text-4xl font-bold text-gray-900 mb-2">100K+</div>
+                        <div className="text-4xl font-bold text-gray-900 mb-2">
+                            100K+
+                        </div>
                         <div className="text-gray-600">Ebooks Created</div>
                     </div>
                 </div>

@@ -115,7 +115,8 @@ const PdfViewer = ({ url, bookId }) => {
     useEffect(() => {
         let cancelled = false;
 
-        // Reset synchronously so there's no stale-UI flash between renders
+        
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLoading(true);
         setError(null);
         setScale(null);

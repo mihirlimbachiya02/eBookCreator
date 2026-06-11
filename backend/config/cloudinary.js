@@ -47,7 +47,7 @@ export const uploadRawToCloudinary = (buffer, options = {}) => {
 const IMAGE_MIMES = ["image/jpeg", "image/png", "image/webp"];
 const IMAGE_EXTS  = ["jpg", "jpeg", "png", "webp"];
 
-export const uploadImageMiddleware = multer({
+const uploadImageMiddleware = multer({
     storage: multer.memoryStorage(),
     limits:  { fileSize: 10 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
