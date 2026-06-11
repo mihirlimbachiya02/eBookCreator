@@ -7,12 +7,9 @@ const Features = () => {
             className="relative w-full bg-white overflow-hidden pt-6 pb-24"
             style={{ scrollMarginTop: "20px" }}
         >
-            {/* Background gradient */}
             <div className="absolute inset-0 bg-gradient-to-b from-violet-50/50 via-transparent to-purple-50/50 z-0 pointer-events-none" />
 
-            {/* Content Container */}
             <div className="max-w-7xl mx-auto px-6 lg:px-8 relative w-full">
-                {/* Header */}
                 <div className="text-center mb-12 space-y-4">
                     <div className="inline-flex items-center space-x-2 bg-violet-100 px-4 py-2 rounded-full">
                         <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse" />
@@ -34,13 +31,12 @@ const Features = () => {
                     </p>
                 </div>
 
-                {/* Feature Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {FEATURES.map((feature, index) => {
+                    {FEATURES.map((feature) => {
                         const Icon = feature.icon;
                         return (
                             <div
-                                key={index}
+                                key={feature.title}
                                 className="group relative bg-white rounded-2xl p-6 border border-gray-200 hover:border-violet-300 transition-all duration-300 hover:shadow-xl hover:shadow-violet-600/10 hover:-translate-y-1 flex flex-col gap-4 mb-2"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-violet-50/0 to-purple-50/0 group-hover:from-violet-50/50 group-hover:to-purple-50/30 rounded-2xl transition-all duration-300 pointer-events-none" />
@@ -65,18 +61,8 @@ const Features = () => {
                                 <div className="relative opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                     <span className="text-violet-600 text-sm font-medium inline-flex items-center gap-1">
                                         Learn more
-                                        <svg
-                                            className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M9 5l7 7-7 7"
-                                            />
+                                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                     </span>
                                 </div>
@@ -92,18 +78,8 @@ const Features = () => {
                         className="inline-flex items-center space-x-2 bg-gradient-to-r from-violet-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-105 transition-all duration-200"
                     >
                         <span>Start Creating Today</span>
-                        <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7l5 5m0 0l-5 5m5-5H6"
-                            />
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                         </svg>
                     </a>
                 </div>

@@ -307,7 +307,6 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                 step === 1 ? "Configure AI eBook" : "Review & Customize Outline"
             }
         >
-
             {/* PROGRESS STEP HEADERS */}
             <div className="flex items-center justify-center w-full max-w-xs mx-auto mb-6 mt-1 select-none">
                 <div className="flex items-center w-full">
@@ -515,7 +514,11 @@ const CreateBookModal = ({ isOpen, onClose, onBookCreated }) => {
                     >
                         {chapters.map((chapter, index) => (
                             <div
-                                key={index}
+                                key={
+                                    chapter.title ?
+                                        `chapter-${chapter.title}`
+                                    :   `chapter-${index}`
+                                }
                                 className="p-4 bg-white border border-slate-200 rounded-xl flex flex-col gap-3 shadow-sm relative group/row"
                             >
                                 <div className="flex items-center gap-3 justify-between">
