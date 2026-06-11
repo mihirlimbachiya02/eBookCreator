@@ -385,6 +385,7 @@ const EditorPage = () => {
                 <div className="flex w-full items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                         <button
+                            type="button"
                             onClick={() => {
                                 handleSaveChanges(book, false);
                                 navigate("/dashboard");
@@ -394,6 +395,7 @@ const EditorPage = () => {
                             <ArrowLeft className="h-4 w-4" />
                         </button>
                         <button
+                            type="button"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                             className={`p-1.5 rounded-lg ${isSidebarOpen ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-800"}`}
                         >
@@ -425,12 +427,14 @@ const EditorPage = () => {
                     <div className="hidden md:flex items-center gap-4">
                         <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
                             <button
+                                type="button"
                                 onClick={() => setActiveTab("chapter")}
                                 className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
                             >
                                 <BookOpen className="w-3.5 h-3.5" /> Editor
                             </button>
                             <button
+                                type="button"
                                 onClick={() => setActiveTab("details")}
                                 className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400 hover:text-slate-200"}`}
                             >
@@ -438,6 +442,7 @@ const EditorPage = () => {
                             </button>
                         </div>
                         <button
+                            type="button"
                             onClick={() => handleSaveChanges(book, true)}
                             className="px-3 h-8 bg-violet-600 text-white font-bold text-xs rounded-xl"
                         >
@@ -445,7 +450,10 @@ const EditorPage = () => {
                         </button>
                         <Dropdown
                             trigger={
-                                <button className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1">
+                                <button
+                                    type="button"
+                                    className="bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs h-8 px-3 rounded-xl flex items-center gap-1"
+                                >
                                     Export <ChevronDown className="h-3 w-3" />
                                 </button>
                             }
@@ -464,12 +472,14 @@ const EditorPage = () => {
                 <div className="flex md:hidden w-full items-center justify-between mt-3 pt-3 border-t border-slate-800">
                     <div className="flex bg-slate-800 p-1 rounded-xl gap-1">
                         <button
+                            type="button"
                             onClick={() => setActiveTab("chapter")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "chapter" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
                             <BookOpen className="w-3.5 h-3.5" /> Editor
                         </button>
                         <button
+                            type="button"
                             onClick={() => setActiveTab("details")}
                             className={`flex items-center gap-1.5 px-3 h-8 text-xs font-bold rounded-lg ${activeTab === "details" ? "bg-slate-700 text-white" : "text-slate-400"}`}
                         >
@@ -478,6 +488,7 @@ const EditorPage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                         <button
+                            type="button"
                             onClick={() => handleSaveChanges(book, true)}
                             className="p-2 text-violet-400 hover:bg-slate-800 rounded-lg"
                         >
@@ -485,7 +496,10 @@ const EditorPage = () => {
                         </button>
                         <Dropdown
                             trigger={
-                                <button className="p-2 text-slate-200 hover:bg-slate-800 rounded-lg">
+                                <button
+                                    type="button"
+                                    className="p-2 text-slate-200 hover:bg-slate-800 rounded-lg"
+                                >
                                     <ChevronDown className="h-5 w-5" />
                                 </button>
                             }
@@ -589,6 +603,7 @@ const EditorPage = () => {
                                     </h4>
                                 </div>
                                 <button
+                                    type="button"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setIsAiOpen(false);
@@ -601,12 +616,14 @@ const EditorPage = () => {
 
                             <div className="space-y-3 shrink-0 mt-4">
                                 <button
+                                    type="button"
                                     onClick={() => setIsOutlineModalOpen(true)}
                                     className="w-full py-2.5 px-3 bg-white border border-slate-200 hover:border-violet-300 hover:bg-violet-50/20 text-slate-700 hover:text-violet-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
                                 >
                                     Generate Outline Structure
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         handleGenerateChapterContent(
                                             selectedChapterIndex,
@@ -646,6 +663,7 @@ const EditorPage = () => {
                                     className="w-full px-3 py-2.5 text-xs border border-slate-200 focus:border-violet-500 rounded-xl bg-white focus:outline-none resize-none text-slate-700 leading-relaxed"
                                 />
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         handleGenerateChapterContent(
                                             selectedChapterIndex,

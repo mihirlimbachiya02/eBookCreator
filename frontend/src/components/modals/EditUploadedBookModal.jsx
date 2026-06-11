@@ -123,6 +123,7 @@ const EditUploadedBookModal = ({ book, onClose, onUpdated }) => {
                         Edit Book Details
                     </h2>
                     <button
+                        type="button"
                         onClick={onClose}
                         className="text-slate-400 hover:text-slate-600"
                     >
@@ -210,6 +211,7 @@ const EditUploadedBookModal = ({ book, onClose, onUpdated }) => {
                         <div className="flex border-b border-slate-100 mb-3">
                             {COVER_TABS.map(({ id, label, icon: Icon }) => (
                                 <button
+                                    type="button"
                                     key={id}
                                     onClick={() => handleCoverTabChange(id)}
                                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors
@@ -295,6 +297,7 @@ const EditUploadedBookModal = ({ book, onClose, onUpdated }) => {
                                     className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-violet-400"
                                 />
                                 <button
+                                    type="button"
                                     onClick={handleGenerateAi}
                                     disabled={generatingAi}
                                     className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-lg py-2 text-xs font-medium transition-colors"
@@ -315,6 +318,7 @@ const EditUploadedBookModal = ({ book, onClose, onUpdated }) => {
 
                     {/* Save button */}
                     <button
+                        type="button"
                         onClick={handleSave}
                         disabled={saving}
                         className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-lg py-2.5 text-sm font-medium transition-colors"

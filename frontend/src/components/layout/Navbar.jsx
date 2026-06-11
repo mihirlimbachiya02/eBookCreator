@@ -90,6 +90,7 @@ const Navbar = () => {
                         </div>
 
                         <button
+                            type="button"
                             onClick={() => setIsOpen(!isOpen)}
                             className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-xl"
                         >
@@ -120,6 +121,7 @@ const Navbar = () => {
                     <div className="pt-4 pb-6 border-t border-gray-100 px-6 space-y-3">
                         {isAuthenticated ?
                             <button
+                                type="button"
                                 onClick={() => {
                                     logout();
                                     setIsOpen(false);

@@ -8,6 +8,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
             {/* Clickable background layer to exit safely when clicking outside the panel boundaries */}
             <div
+                type="button"
                 className="absolute inset-0 transition-opacity"
                 onClick={onClose}
             />
@@ -22,6 +23,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
                     {/* Circular Exit Controller Button */}
                     <button
+                        type="button"
                         onClick={onClose}
                         className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-all duration-200 cursor-pointer"
                         title="Close Modal"

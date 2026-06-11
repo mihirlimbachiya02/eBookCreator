@@ -44,6 +44,7 @@ const ViewChapterSidebar = ({
                             </span>
                         </div>
                         <button
+                            type="button"
                             onClick={onClose}
                             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                             aria-label="Close sidebar"
@@ -56,6 +57,7 @@ const ViewChapterSidebar = ({
                     <nav className="flex-1 overflow-y-auto py-2">
                         {book?.chapters?.map((chapter, index) => (
                             <button
+                                type="button"
                                 key={index}
                                 onClick={() => handleChapterClick(index)}
                                 className={`w-full text-left px-6 py-4 transition-all duration-200 border-r-4 ${

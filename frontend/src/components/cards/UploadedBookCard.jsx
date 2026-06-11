@@ -50,6 +50,7 @@ const UploadedBookCard = ({ book, onDelete, onUpdate }) => {
                 {/* 3. Action buttons top-right */}
                 <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 z-10">
                     <button
+                        type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             setShowEdit(true);
@@ -60,6 +61,7 @@ const UploadedBookCard = ({ book, onDelete, onUpdate }) => {
                         <Edit className="h-3.5 w-3.5" />
                     </button>
                     <button
+                        type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             onDelete(book._id);

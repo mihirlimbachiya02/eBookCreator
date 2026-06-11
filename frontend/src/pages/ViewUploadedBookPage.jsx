@@ -40,6 +40,7 @@ const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
                 {outline.length > 0 ?
                     outline.map((item, i) => (
                         <button
+                            type="button"
                             key={i}
                             onClick={() => onJumpTo(item.page)}
                             className={`w-full text-left px-4 py-2.5 text-xs transition-all ${
@@ -48,15 +49,21 @@ const PdfSidebar = ({ isOpen, outline, totalPages, currentPage, onJumpTo }) => {
                                 :   "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
                             }`}
                         >
-                            <span className="font-medium line-clamp-2">{item.title}</span>
-                            <span className="text-slate-500 text-[10px] mt-0.5 block">Page {item.page}</span>
+                            <span className="font-medium line-clamp-2">
+                                {item.title}
+                            </span>
+                            <span className="text-slate-500 text-[10px] mt-0.5 block">
+                                Page {item.page}
+                            </span>
                         </button>
                     ))
-                :
-                    Array.from({ length: totalPages }, (_, i) => i + 1)
-                        .filter(p => p === 1 || p % 10 === 0 || p === totalPages)
+                :   Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter(
+                            (p) => p === 1 || p % 10 === 0 || p === totalPages,
+                        )
                         .map((page) => (
                             <button
+                                type="button"
                                 key={page}
                                 onClick={() => onJumpTo(page)}
                                 className={`w-full text-left px-4 py-2 text-xs transition-all ${
@@ -303,6 +310,7 @@ const PdfViewer = ({ url, bookId }) => {
                         {/* Left: Sidebar Toggle + Page Info */}
                         <div className="flex items-center gap-2">
                             <button
+                                type="button"
                                 onClick={() => setSidebarOpen(!sidebarOpen)}
                                 className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                             >
@@ -316,6 +324,7 @@ const PdfViewer = ({ url, bookId }) => {
                         {/* Right: Consolidated Zoom/Nav Pill */}
                         <div className="flex items-center bg-[#f1f5f9] rounded-full border border-slate-200 px-3 py-1 shadow-inner gap-2">
                             <button
+                                type="button"
                                 onClick={() =>
                                     setPageNum((p) => Math.max(1, p - 1))
                                 }
@@ -326,6 +335,7 @@ const PdfViewer = ({ url, bookId }) => {
 
                             <div className="flex items-center gap-2 border-l border-slate-300 pl-2">
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         setScale((s) =>
                                             Math.max(
@@ -344,6 +354,7 @@ const PdfViewer = ({ url, bookId }) => {
                                     {Math.round((scale ?? autoScale) * 100)}%
                                 </span>
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         setScale((s) =>
                                             Math.min(
@@ -359,6 +370,7 @@ const PdfViewer = ({ url, bookId }) => {
                                     A+
                                 </button>
                                 <button
+                                    type="button"
                                     onClick={() => setScale(autoScale)}
                                     className="text-[10px] font-bold text-violet-600 pl-2 border-l border-slate-300"
                                 >
@@ -367,6 +379,7 @@ const PdfViewer = ({ url, bookId }) => {
                             </div>
 
                             <button
+                                type="button"
                                 onClick={() =>
                                     setPageNum((p) =>
                                         Math.min(totalPages, p + 1),
@@ -465,8 +478,11 @@ const ViewUploadedBookPage = () => {
         <div className="flex h-screen bg-[#0f172a] items-center justify-center text-center p-6">
             <div>
                 <FileText className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-4">Book Not Found</h3>
+                <h3 className="text-xl font-bold text-white mb-4">
+                    Book Not Found
+                </h3>
                 <button
+                    type="button"
                     onClick={() => navigate("/dashboard")}
                     className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition"
                 >
@@ -486,6 +502,7 @@ const ViewUploadedBookPage = () => {
                 <header className="h-16 flex items-center justify-between px-4 md:px-6 border-b border-slate-300 bg-white shrink-0">
                     <div className="flex items-center gap-2">
                         <button
+                            type="button"
                             onClick={() => navigate("/dashboard")}
                             className="p-2 text-slate-500 hover:bg-slate-100 rounded-md"
                         >
@@ -508,6 +525,7 @@ const ViewUploadedBookPage = () => {
                             <span className="hidden md:inline">Download</span>
                         </a>
                         <button
+                            type="button"
                             onClick={toggleFullscreen}
                             className="p-2 text-slate-500 hover:bg-slate-100 rounded-full"
                         >

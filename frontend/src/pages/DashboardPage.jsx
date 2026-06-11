@@ -35,12 +35,14 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
                 </div>
                 <div className="flex items-center justify-end gap-2.5 mt-6 pt-4 border-t border-slate-50">
                     <button
+                        type="button"
                         onClick={onClose}
                         className="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors duration-200 cursor-pointer"
                     >
                         Cancel
                     </button>
                     <button
+                        type="button"
                         onClick={() => {
                             onConfirm();
                             onClose();
@@ -158,6 +160,7 @@ const DashboardPage = () => {
                         </p>
                     </div>
                     <Button
+                        type="button"
                         className="w-full md:w-auto justify-center bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
                         onClick={() => setIsCreateModalOpen(true)}
                         icon={Plus}
@@ -180,6 +183,7 @@ const DashboardPage = () => {
                             No eBooks Found
                         </h3>
                         <Button
+                            type="button"
                             className="mt-5 bg-violet-600 text-white"
                             onClick={() => setIsCreateModalOpen(true)}
                             icon={Plus}
@@ -211,6 +215,7 @@ const DashboardPage = () => {
                             </p>
                         </div>
                         <Button
+                            type="button"
                             className="w-full md:w-auto justify-center bg-gradient-to-r from-violet-500 to-violet-600 text-white shadow-md transition-all"
                             onClick={() => setShowUploadModal(true)}
                             icon={Upload}
@@ -226,6 +231,7 @@ const DashboardPage = () => {
                                 No Uploaded Books
                             </h3>
                             <Button
+                                type="button"
                                 className="mt-5 bg-violet-600 text-white"
                                 onClick={() => setShowUploadModal(true)}
                                 icon={Upload}

@@ -15,6 +15,7 @@ const ProfileDropdown = ({
     return (
         <div className="relative">
             <button
+                type="button"
                 onClick={onToggle}
                 className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
                 aria-expanded={isOpen}
@@ -58,6 +59,7 @@ const ProfileDropdown = ({
                     </div>
 
                     <button
+                        type="button"
                         onClick={() => {
                             onToggle({ stopPropagation: () => {} });
                             navigate("/profile");

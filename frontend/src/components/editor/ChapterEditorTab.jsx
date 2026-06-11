@@ -177,6 +177,7 @@ const ChapterEditorTab = ({
 
                     {/* Fullscreen Button */}
                     <Button
+                        type="button"
                         variant="secondary"
                         onClick={() => setIsFullscreen(!isFullscreen)}
                         className="p-2 h-9 flex items-center justify-center"
@@ -200,7 +201,7 @@ const ChapterEditorTab = ({
                 </div>
 
                 <div className="flex-1 overflow-y-auto min-h-0 relative">
-                    {isPreviewMode ? (
+                    {isPreviewMode ?
                         <div
                             className="prose max-w-none p-6 border border-slate-150 rounded-2xl bg-slate-50/40 min-h-[350px] text-slate-700 leading-relaxed"
                             dangerouslySetInnerHTML={{
@@ -208,17 +209,30 @@ const ChapterEditorTab = ({
                                     formatMarkdown(currentChapter.content),
                                     {
                                         ALLOWED_TAGS: [
-                                            "p", "h1", "h2", "h3",
-                                            "strong", "em", "blockquote",
-                                            "ul", "li", "div", "img", "br",
+                                            "p",
+                                            "h1",
+                                            "h2",
+                                            "h3",
+                                            "strong",
+                                            "em",
+                                            "blockquote",
+                                            "ul",
+                                            "li",
+                                            "div",
+                                            "img",
+                                            "br",
                                         ],
-                                        ALLOWED_ATTR: ["src", "alt", "class", "loading"],
-                                    }
+                                        ALLOWED_ATTR: [
+                                            "src",
+                                            "alt",
+                                            "class",
+                                            "loading",
+                                        ],
+                                    },
                                 ),
                             }}
                         />
-                    ) : (
-                        <div className="h-full">
+                    :   <div className="h-full">
                             <SimpleMDEEditor
                                 key={`mde-chapter-${selectedChapterIndex}`}
                                 value={currentChapter.content || ""}
@@ -230,7 +244,7 @@ const ChapterEditorTab = ({
                                 options={mdeOptions}
                             />
                         </div>
-                    )}
+                    }
                 </div>
             </div>
         </div>

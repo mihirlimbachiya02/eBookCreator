@@ -141,9 +141,9 @@ const ChapterSidebar = ({
 
     return (
         <aside className="w-full h-full bg-slate-900 border-r border-slate-800 flex flex-col transition-all z-10 shrink-0">
-            
             <div className="p-3 border-b border-slate-800/50 bg-slate-950/20 shrink-0">
                 <Button
+                    type="button"
                     variant="ghost"
                     size="sm"
                     onClick={() => navigate("/dashboard")}
@@ -187,6 +187,7 @@ const ChapterSidebar = ({
             {/* Bottom Section: Action trigger add button */}
             <div className="p-3 border-t border-slate-850 bg-slate-950/20 shrink-0">
                 <Button
+                    type="button"
                     variant="secondary"
                     onClick={onAddChapter}
                     className="w-full h-9 bg-slate-800 hover:bg-slate-750 text-violet-400 hover:text-violet-300 font-bold text-xs rounded-xl border border-slate-700/60 shadow-sm transition-all"

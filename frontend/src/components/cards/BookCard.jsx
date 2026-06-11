@@ -67,6 +67,7 @@ const BookCard = ({ book, onDelete }) => {
             {/* 3. Floating Action Circles (Visible on Hover States) */}
             <div className="absolute top-2 right-2 flex items-center gap-1.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 z-10">
                 <button
+                    type="button"
                     onClick={(e) => {
                         e.stopPropagation();
                         navigate(`/editor/${book._id}`);
@@ -78,6 +79,7 @@ const BookCard = ({ book, onDelete }) => {
                 </button>
 
                 <button
+                    type="button"
                     onClick={(e) => {
                         e.stopPropagation();
                         onDelete(book._id);

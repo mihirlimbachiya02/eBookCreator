@@ -153,6 +153,7 @@ const UploadBookModal = ({ onClose, onUploaded }) => {
                         Upload a Book
                     </h2>
                     <button
+                        type="button"
                         onClick={onClose}
                         className="text-slate-400 hover:text-slate-600"
                     >
@@ -164,6 +165,7 @@ const UploadBookModal = ({ onClose, onUploaded }) => {
                 <div className="flex border-b border-slate-100">
                     {TABS.map(({ id, label, icon: Icon }) => (
                         <button
+                            type="button"
                             key={id}
                             onClick={() => setTab(id)}
                             className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-medium transition-colors
@@ -260,6 +262,7 @@ const UploadBookModal = ({ onClose, onUploaded }) => {
                                 </p>
                             }
                             <button
+                                type="button"
                                 onClick={handleDrivePick}
                                 className="inline-flex items-center gap-2 border border-slate-300 rounded-lg px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
                             >
@@ -285,6 +288,7 @@ const UploadBookModal = ({ onClose, onUploaded }) => {
                     </div>
 
                     <button
+                        type="button"
                         onClick={handleSubmit}
                         disabled={loading}
                         className="w-full bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white rounded-lg py-2 text-sm font-medium transition-colors"
