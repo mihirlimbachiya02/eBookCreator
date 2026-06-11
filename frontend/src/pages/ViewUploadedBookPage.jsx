@@ -215,7 +215,7 @@ const PdfViewer = ({ url, bookId }) => {
         observer.observe(container);
         return () => observer.disconnect();
         // No dependency on autoScale state — we read autoScaleRef.current inside callback
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []);
 
     // 4. Fallback: if pdf loaded but scale still null, calc fit directly
     useEffect(() => {
