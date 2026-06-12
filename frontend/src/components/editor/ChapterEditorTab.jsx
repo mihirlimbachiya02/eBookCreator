@@ -10,9 +10,10 @@ const ChapterEditorTab = ({
     selectedChapterIndex = 0,
     onChapterChange = () => {},
     setIsAiOpen,
+    isFullscreen = false,
+    setIsFullscreen = () => {},
 }) => {
     const [isPreviewMode, setIsPreviewMode] = useState(false);
-    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const currentChapter = book?.chapters?.[selectedChapterIndex];
 
@@ -39,7 +40,7 @@ const ChapterEditorTab = ({
             if (/^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/.test(trimmed)) {
                 return trimmed.replace(
                     /^!\[([^\]]*)\]\((https?:\/\/[^)]+)\)$/,
-                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />'
+                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-6 shadow-md mx-auto block" loading="lazy" />',
                 );
             }
 
@@ -50,18 +51,30 @@ const ChapterEditorTab = ({
 
             // Headings
             if (/^###\s/.test(trimmed)) {
-                return trimmed.replace(/^###\s(.*)$/, '<h3 class="text-xl font-bold mb-4 mt-6 text-slate-800">$1</h3>');
+                return trimmed.replace(
+                    /^###\s(.*)$/,
+                    '<h3 class="text-xl font-bold mb-4 mt-6 text-slate-800">$1</h3>',
+                );
             }
             if (/^##\s/.test(trimmed)) {
-                return trimmed.replace(/^##\s(.*)$/, '<h2 class="text-2xl font-bold mb-4 mt-8 text-slate-800">$1</h2>');
+                return trimmed.replace(
+                    /^##\s(.*)$/,
+                    '<h2 class="text-2xl font-bold mb-4 mt-8 text-slate-800">$1</h2>',
+                );
             }
             if (/^#\s/.test(trimmed)) {
-                return trimmed.replace(/^#\s(.*)$/, '<h1 class="text-3xl font-bold mb-6 mt-8 text-slate-900">$1</h1>');
+                return trimmed.replace(
+                    /^#\s(.*)$/,
+                    '<h1 class="text-3xl font-bold mb-6 mt-8 text-slate-900">$1</h1>',
+                );
             }
 
             // Blockquote
             if (/^>\s/.test(trimmed)) {
-                return trimmed.replace(/^>\s(.*)$/, '<blockquote class="border-l-4 border-violet-500 pl-4 italic text-slate-600 my-4">$1</blockquote>');
+                return trimmed.replace(
+                    /^>\s(.*)$/,
+                    '<blockquote class="border-l-4 border-violet-500 pl-4 italic text-slate-600 my-4">$1</blockquote>',
+                );
             }
 
             // List items
@@ -69,7 +82,10 @@ const ChapterEditorTab = ({
                 const items = trimmed
                     .split("\n")
                     .filter((l) => l.startsWith("- "))
-                    .map((l) => `<li class="ml-4 mb-1 text-slate-700">${l.replace(/^- /, "")}</li>`)
+                    .map(
+                        (l) =>
+                            `<li class="ml-4 mb-1 text-slate-700">${l.replace(/^- /, "")}</li>`,
+                    )
                     .join("");
                 return `<ul class="list-disc my-4 pl-4">${items}</ul>`;
             }
@@ -78,10 +94,16 @@ const ChapterEditorTab = ({
             let inlined = trimmed
                 .replace(
                     /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-4 shadow-md mx-auto block" loading="lazy" />'
+                    '<img src="$2" alt="$1" class="max-w-full rounded-lg my-4 shadow-md mx-auto block" loading="lazy" />',
                 )
-                .replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="font-bold italic">$1</strong>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                .replace(
+                    /\*\*\*(.*?)\*\*\*/g,
+                    '<strong class="font-bold italic">$1</strong>',
+                )
+                .replace(
+                    /\*\*(.*?)\*\*/g,
+                    '<strong class="font-bold">$1</strong>',
+                )
                 .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
 
             // If the block contains an img tag after inline processing, don't wrap in <p>
@@ -135,9 +157,8 @@ const ChapterEditorTab = ({
     }
 
     return (
-        <div
-            className={`${isFullscreen ? "fixed inset-0 z-50 bg-white p-6" : "flex-1"} flex flex-col h-full`}
-        >
+        <div className="flex-1 flex flex-col h-full">
+            
             {/* Header Control Bar */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                 <h1 className="text-md font-bold text-slate-800">

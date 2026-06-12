@@ -41,6 +41,7 @@ const EditorPage = () => {
     const [isGenerating, setIsGenerating] = useState(false);
     const [aiPrompt, setAiPrompt] = useState("");
     const [isAiOpen, setIsAiOpen] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const fileInputRef = useRef(null);
     const saveTimeoutRef = useRef(null);
@@ -542,7 +543,8 @@ const EditorPage = () => {
                     />
                 </aside>
 
-                {/* CENTRAL WORKING VIEWPORT CANVAS */}
+                {/* CENTRAL WORKING VIEWPORT CANVAS + AI PANEL — grouped so fullscreen covers both */}
+                <div className={`flex flex-grow overflow-hidden ${isFullscreen ? "fixed inset-0 z-[60] bg-white" : ""}`}>
                 <main className="flex-grow flex flex-col h-full bg-white relative overflow-hidden p-6">
                     {activeTab === "details" ?
                         <BookDetailsTab
@@ -560,6 +562,8 @@ const EditorPage = () => {
                             onChapterChange={handleChapterUpdate}
                             isAiOpen={isAiOpen}
                             setIsAiOpen={setIsAiOpen}
+                            isFullscreen={isFullscreen}
+                            setIsFullscreen={setIsFullscreen}
                         />
                     :   <div className="flex-grow flex flex-col items-center justify-center text-center p-8 bg-slate-50 select-none h-full">
                             <HelpCircle className="h-8 w-8 text-slate-300 animate-bounce" />
@@ -687,6 +691,7 @@ const EditorPage = () => {
                         </div>
                     )}
                 </aside>
+                </div>
             </div>
 
             {isOutlineModalOpen && (
