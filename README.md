@@ -128,7 +128,9 @@ eBookCreator/
 │   │   ├── authRoute.js
 │   │   ├── bookRoute.js
 │   │   ├── exportRoutes.js
-│   │   └── uploadedBookRoutes.js  
+│   │   └── uploadedBookRoutes.js
+|   ├── utils/
+|   |   └──urlSafety.js
 │   ├── .env.example
 │   ├── package.json
 │   └── server.js
