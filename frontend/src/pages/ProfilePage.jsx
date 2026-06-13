@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
-import { User, Mail, Camera, Lock, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { User, Mail, Camera, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import DashboardLayout from "../components/layout/DasboardLayout";
 import InputField from "../components/ui/InputField";
 import Button from "../components/ui/Button";
@@ -127,6 +128,7 @@ const ChangePasswordSection = () => {
 const ProfilePage = () => {
     const { user, updateUser, loading: authLoading } = useAuth();
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const [formData,   setFormData]   = useState({
         name:  user?.name  || "",
@@ -189,6 +191,16 @@ const ProfilePage = () => {
     return (
         <DashboardLayout>
             <div className="max-w-2xl mx-auto py-8 px-4">
+                {/* Back button */}
+                <button
+                    type="button"
+                    onClick={() => navigate("/dashboard")}
+                    className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors mb-4"
+                >
+                    <ArrowLeft className="w-4 h-4" />
+                    Back to Dashboard
+                </button>
+
                 {/* Profile Info */}
                 <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <form onSubmit={handleSubmit} className="p-8 space-y-6">
@@ -205,7 +217,7 @@ const ProfilePage = () => {
                                         className="w-full h-full object-cover"
                                     />
                                 </div>
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-50 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-40 group-hover:opacity-100 transition-opacity">
                                     <Camera className="text-white" />
                                 </div>
                                 <input
