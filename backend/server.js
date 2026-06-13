@@ -41,7 +41,17 @@ if (
 // ─── Security Middleware ──────────────────────────────────────────────────────
 app.use(
     helmet({
-        contentSecurityPolicy: false, // disabled so Cloudinary images load
+        contentSecurityPolicy: {
+            directives: {
+                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                "img-src": ["'self'", "data:", "https://res.cloudinary.com"],
+                "connect-src": [
+                    "'self'",
+                    "https://res.cloudinary.com",
+                    process.env.FRONTEND_URL,
+                ],
+            },
+        },
     }),
 );
 

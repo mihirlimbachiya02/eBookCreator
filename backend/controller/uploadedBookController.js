@@ -6,6 +6,7 @@ import {
     uploadToCloudinary,
 } from "../config/cloudinary.js";
 import UploadedBook from "../models/UploadedBook.js";
+import { isUrlSafe } from "../utils/urlSafety.js";
 
 const ALLOWED = ["pdf", "html", "epub", "mobi", "zip"];
 
@@ -64,6 +65,12 @@ export const importFromUrl = async (req, res) => {
             return res.status(400).json({ message: "Invalid URL" });
         }
 
+        if (!(await isUrlSafe(url))) {
+            return res
+                .status(400)
+                .json({ message: "This URL cannot be accessed" });
+        }
+
         const ext = parsed.pathname.split(".").pop().toLowerCase();
         if (!ALLOWED.includes(ext)) {
             return res
@@ -105,42 +112,49 @@ export const importFromUrl = async (req, res) => {
 // @desc    Import a book file from Google Drive
 export const importFromDrive = async (req, res) => {
     try {
-        const { driveUrl, accessToken, title, mimeType } = req.body;  // ← driveUrl not fileId
+        const { driveUrl, accessToken, title, mimeType } = req.body; // ← driveUrl not fileId
         if (!driveUrl || !accessToken) {
-            return res.status(400).json({ message: "driveUrl and accessToken are required" });
+            return res
+                .status(400)
+                .json({ message: "driveUrl and accessToken are required" });
+        }
+        if (!(await isUrlSafe(driveUrl))) {
+            return res
+                .status(400)
+                .json({ message: "This URL cannot be accessed" });
         }
 
         const MIME_TO_EXT = {
-            "application/pdf":      "pdf",
+            "application/pdf": "pdf",
             "application/epub+zip": "epub",
-            "application/zip":      "zip",
-            "text/html":            "html",
+            "application/zip": "zip",
+            "text/html": "html",
         };
 
         const ext = MIME_TO_EXT[mimeType] || "pdf";
 
-        const response = await axios.get(driveUrl, {  
-            responseType:     "arraybuffer",
-            headers:          { Authorization: `Bearer ${accessToken}` },
-            timeout:          60000,
+        const response = await axios.get(driveUrl, {
+            responseType: "arraybuffer",
+            headers: { Authorization: `Bearer ${accessToken}` },
+            timeout: 60000,
             maxContentLength: 50 * 1024 * 1024,
         });
 
         const buffer = Buffer.from(response.data);
 
         const result = await uploadRawToCloudinary(buffer, {
-            folder:    "ebook-creator/uploaded-books",
+            folder: "ebook-creator/uploaded-books",
             public_id: `book_${Date.now()}`,
-            format:    ext,
+            format: ext,
         });
 
         const book = await UploadedBook.create({
-            user:     req.user._id,
-            title:    title || `Drive Book ${Date.now()}`,
-            fileUrl:  result.secure_url,
+            user: req.user._id,
+            title: title || `Drive Book ${Date.now()}`,
+            fileUrl: result.secure_url,
             publicId: result.public_id,
-            format:   ext,
-            source:   "google_drive", 
+            format: ext,
+            source: "google_drive",
         });
 
         res.status(201).json(book);
@@ -206,15 +220,22 @@ export const proxyBookFile = async (req, res) => {
             timeout: 60000,
         });
 
+        const isPdf = book.format === "pdf";
+        const contentType =
+            response.headers["content-type"] || "application/octet-stream";
+
+        // Only allow PDFs to be served with their real content-type (for inline viewing).
         res.setHeader(
             "Content-Type",
-            response.headers["content-type"] || "application/pdf",
+            isPdf ? contentType : "application/octet-stream",
         );
-        res.setHeader(
-            "Access-Control-Allow-Origin",
-            process.env.FRONTEND_URL || "http://localhost:5173",
-        ); 
-        res.setHeader("Access-Control-Allow-Credentials", "true"); 
+        if (!isPdf) {
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="${book.title.replace(/[^a-zA-Z0-9 ._-]/g, "_")}.${book.format}"`,
+            );
+        }
+
         res.setHeader("Cache-Control", "private, max-age=3600");
 
         response.data.pipe(res);
@@ -229,23 +250,23 @@ export const proxyBookFile = async (req, res) => {
 export const updateUploadedBook = async (req, res) => {
     try {
         const book = await UploadedBook.findOne({
-            _id:  req.params.id,
+            _id: req.params.id,
             user: req.user._id,
         });
         if (!book) return res.status(404).json({ message: "Not found" });
 
         const { title, format, source, coverImage } = req.body;
 
-        if (title)      book.title      = title;
-        if (format)     book.format     = format;
-        if (source)     book.source     = source;
+        if (title) book.title = title;
+        if (format) book.format = format;
+        if (source) book.source = source;
         if (coverImage !== undefined) book.coverImage = coverImage;
 
-        // Handle cover image file upload 
+        // Handle cover image file upload
         if (req.file) {
             const result = await uploadToCloudinary(req.file.buffer, {
-                folder:        "ebook-creator/books",
-                public_id:     `cover_${book._id}_${Date.now()}`,
+                folder: "ebook-creator/books",
+                public_id: `cover_${book._id}_${Date.now()}`,
                 resource_type: "image",
             });
             book.coverImage = result.secure_url;

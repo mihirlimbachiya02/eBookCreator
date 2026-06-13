@@ -12,7 +12,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url,
 ).toString();
 
-const NON_VIEWABLE = ["zip", "epub", "mobi"];
+const NON_VIEWABLE = ["zip", "epub", "mobi", "html"];
 
 // Outside component — stable reference, no ESLint dep warning
 const getLastPageKey = (bookId) => `pdf-last-page:${bookId}`;

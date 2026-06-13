@@ -49,8 +49,8 @@ export const registerUser = async (req, res) => {
                     "https://res.cloudinary.com/dbk6z4ise/image/upload/v1781248802/ebook-creator/books/my_life_1781248798561.png",
                 chapters: [
                     {
-                        title: "Chapter 1: Getting Started",
-                        description: "Introduction to eBook Creator",
+                        title: "Chapter 1: Welcome to eBook Creator!",
+                        description: "A quick tour of what you can do here",
                         content: `Welcome to eBook Creator — your AI-powered platform for writing, designing, and publishing professional eBooks.
 
 This is a **demo book** — just for you to explore. Feel free to click around, edit this text, change things, or delete this whole book later. Nothing here is real, so don't worry about messing it up!
