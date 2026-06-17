@@ -51,7 +51,7 @@ export const registerUser = async (req, res) => {
                     {
                         title: "Chapter 1: Welcome to eBook Creator!",
                         description: "A quick tour of what you can do here",
-                        content: `Welcome to eBook Creator — your AI-powered platform for writing, designing, and publishing professional eBooks.
+                        content: `# Welcome to eBook Creator — your AI-powered platform for writing, designing, and publishing professional eBooks.
 
 This is a **demo book** — just for you to explore. Feel free to click around, edit this text, change things, or delete this whole book later. Nothing here is real, so don't worry about messing it up!
 

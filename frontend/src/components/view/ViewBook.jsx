@@ -3,14 +3,21 @@ import { Menu, Maximize, Minimize, ArrowLeft } from "lucide-react";
 import ViewChapterSidebar from "./ViewChapterSidebar";
 import DOMPurify from "dompurify";
 
+const inlineFormat = (text) =>
+    text
+        .replace(
+            /\*\*(.*?)\*\*/g,
+            '<strong class="font-bold text-[#1e293b]">$1</strong>',
+        )
+        .replace(/\*(.*?)\*/g, '<em class="italic text-[#475569]">$1</em>');
+
 const formatContent = (content) => {
     if (!content) return "";
 
     // Step 1: Convert markdown images FIRST before any paragraph splitting
-    // This prevents img tags from being wrapped in <p> tags incorrectly
     const withImages = content.replace(
         /!\[([^\]]*)\]\((https?:\/\/[^)]+)\)/g,
-        '\n\n__IMG__$2__ALT__$1__ENDIMG__\n\n'
+        "\n\n__IMG__$2__ALT__$1__ENDIMG__\n\n",
     );
 
     // Step 2: Split into blocks and process each
@@ -19,7 +26,7 @@ const formatContent = (content) => {
     const processed = blocks.map((block) => {
         const trimmed = block.trim();
 
-        // Image placeholder — render as standalone img
+        // Image placeholder
         if (trimmed.startsWith("__IMG__")) {
             const match = trimmed.match(/__IMG__(.+?)__ALT__(.*)__ENDIMG__/);
             if (match) {
@@ -33,32 +40,62 @@ const formatContent = (content) => {
         if (/^###\s/.test(trimmed)) {
             return trimmed.replace(
                 /^###\s(.*)$/,
-                '<h3 class="text-xl font-bold mt-6 mb-2 text-[#334155]">$1</h3>'
+                '<h3 class="text-xl font-bold mt-6 mb-2 text-[#334155]">$1</h3>',
             );
         }
         if (/^##\s/.test(trimmed)) {
             return trimmed.replace(
                 /^##\s(.*)$/,
-                '<h2 class="text-2xl font-semibold mt-8 mb-4 text-[#1e293b]">$1</h2>'
+                '<h2 class="text-2xl font-semibold mt-8 mb-4 text-[#1e293b]">$1</h2>',
             );
         }
         if (/^#\s/.test(trimmed)) {
             return trimmed.replace(
                 /^#\s(.*)$/,
-                '<h1 class="text-3xl font-bold mt-8 mb-4 text-[#1e293b]">$1</h1>'
+                '<h1 class="text-3xl font-bold mt-8 mb-4 text-[#1e293b]">$1</h1>',
             );
         }
 
-        // Inline formatting within paragraph
-        const inlined = trimmed
-            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[#1e293b]">$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em class="italic text-[#475569]">$1</em>');
+        // Numbered list — every line starts with "1.", "2.", etc.
+        const lines = trimmed.split("\n").filter((l) => l.trim());
+        if (lines.length > 0 && lines.every((l) => /^\d+\.\s/.test(l.trim()))) {
+            const items = lines
+                .map(
+                    (l) =>
+                        `<li class="mb-1">${inlineFormat(l.replace(/^\d+\.\s/, ""))}</li>`,
+                )
+                .join("");
+            return `<ol class="list-decimal list-outside ml-6 mb-6 text-[#334155] space-y-1">${items}</ol>`;
+        }
 
-        return `<p class="mb-6 leading-relaxed text-[#334155]">${inlined}</p>`;
+        // Bullet list — every line starts with "- "
+        if (lines.length > 0 && lines.every((l) => /^-\s/.test(l.trim()))) {
+            const items = lines
+                .map(
+                    (l) =>
+                        `<li class="mb-1">${inlineFormat(l.replace(/^-\s/, ""))}</li>`,
+                )
+                .join("");
+            return `<ul class="list-disc list-outside ml-6 mb-6 text-[#334155] space-y-1">${items}</ul>`;
+        }
+
+        return `<p class="mb-6 leading-relaxed text-[#334155]">${inlineFormat(trimmed)}</p>`;
     });
 
     return DOMPurify.sanitize(processed.join(""), {
-        ALLOWED_TAGS: ["p", "h1", "h2", "h3", "strong", "em", "img", "br"],
+        ALLOWED_TAGS: [
+            "p",
+            "h1",
+            "h2",
+            "h3",
+            "strong",
+            "em",
+            "img",
+            "br",
+            "ul",
+            "ol",
+            "li",
+        ],
         ALLOWED_ATTR: ["src", "alt", "class", "loading"],
     });
 };
